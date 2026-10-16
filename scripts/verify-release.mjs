@@ -1,3 +1,4 @@
+import {fontPackageFiles} from '../src/name-style.js';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -31,8 +32,8 @@ for(const theme of ['christmas','halloween']){
 }
 function crc32(data){let c=0xffffffff;for(const b of data){c^=b;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return(c^0xffffffff)>>>0;}
 const zip=await readFile(join(root,'downloads/Festive-RF-Template.zip'));
-const allowed=new Set(['Festive RF Template.html','Halloween RF Template.html','START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','CHANGELOG.md','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg','assets/README.md',...allArtworkFiles.map(n=>'assets/'+n)]);
-let offset=0,count=0;
+const allowed=new Set(['Festive RF Template.html','Halloween RF Template.html','START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','CHANGELOG.md','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg','docs/images/friendly-help.jpg','assets/README.md',...[...allArtworkFiles,...fontPackageFiles].map(n=>'assets/'+n)]);
+const expectedEntries=allowed.size;let offset=0,count=0;
 while(zip.readUInt32LE(offset)===0x04034b50){
  const nameLen=zip.readUInt16LE(offset+26),extraLen=zip.readUInt16LE(offset+28),size=zip.readUInt32LE(offset+18);
  const name=zip.subarray(offset+30,offset+30+nameLen).toString();assert(allowed.delete(name),'Unexpected or duplicate ZIP entry: '+name);
@@ -42,5 +43,5 @@ while(zip.readUInt32LE(offset)===0x04034b50){
  assert(data.equals(actual),'ZIP differs from source: '+name);
  offset=start+size;count++;
 }
-assert.equal(allowed.size,0,'ZIP entries missing');assert.equal(count,17+allArtworkFiles.length);
+assert.equal(allowed.size,0,'ZIP entries missing');assert.equal(count,expectedEntries);
 console.log('Release audit passed: '+files.length+' source files; both exports; '+count+' ZIP entries and CRCs.');

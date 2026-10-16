@@ -1,3 +1,5 @@
+import {updateNameStyleForm} from './name-style-form.js';
+import {createHelp} from './help.js';
 import {registry,cloneDefaults,validate,render,renderDraft,escapeHTML as e,settingsFile,parseSettings,themes,changeTheme,contrast,namesOf,supportCardDefaults} from './template.js';
 import {logoFile,decorationFile} from './assets.js';
 import {copyFields} from './copy.js';
@@ -49,6 +51,7 @@ function form(){
  selectSettingsGroup(editorGroup,false);features();
 }
 function features(){
+ updateNameStyleForm($('settings'),settings);
  document.querySelectorAll('[data-feature]').forEach(el=>el.hidden=!el.dataset.feature.split('|').some(k=>settings[k])&&!el.querySelector('[data-copy][aria-invalid="true"]')&&!el.contains(document.activeElement));
  document.querySelectorAll('[data-logo-field]').forEach(el=>el.hidden=settings.logoMode!=='custom');
  document.querySelectorAll('[data-seasonal-logo]').forEach(el=>el.hidden=settings.logoMode!=='seasonal');
@@ -116,40 +119,67 @@ $('catalogue-file').addEventListener('change',async event=>{
   const file=event.target.files[0];if(!file)return;
   try{
     if(file.size>2000000)throw Error('Choose an RF CSV export smaller than 2 MB.');
-    const next=parseCatalogue(await file.text(),file.name);catalogue=next;catalogueSource='imported';catalogueSaved=saveCatalogue(storage,catalogue);
-    $('catalogue-error').hidden=true;refresh();$('preview-status').textContent='Imported CSV snapshot. Artwork loads from its image hosts; requests and votes stay in this preview.';openNewPicker();
+    const next=parseCatalogue(await file.text(),file.name);
+    $('catalogue-error').hidden=true;openNewPicker(next);
   }catch(err){$('catalogue-error').textContent=err.message;$('catalogue-error').hidden=false;}
   event.target.value='';
 });
 $('catalogue-source').addEventListener('change',()=>{catalogueSource=$('catalogue-source').value;refresh();$('preview-status').textContent=catalogueSource==='samples'?'Sample songs include labelled message tests.':'Imported CSV snapshot — no live availability or playback information.';});
 $('catalogue-options').addEventListener('click',()=>$('catalogue-dialog').showModal());
 $('close-catalogue').addEventListener('click',()=>$('catalogue-dialog').close());
-$('pick-new').addEventListener('click',openNewPicker);
-let pickedNew=new Set(),pickedCategories=[],detectedNames=[];
+$('pick-new').addEventListener('click',()=>openNewPicker());
+let pickedNew=new Set(),pickedCategories=[],detectedNames=[],pickerCatalogue=null,pendingCatalogue=null,pickerReturnFocus=null;
 const categoryList=(names,kind)=>names.map((name,i)=>`<li><span>${e(name)}</span><button type="button" data-${kind}-up="${i}" aria-label="Move ${e(name)} up" ${i===0?'disabled':''}>↑</button><button type="button" data-${kind}-down="${i}" aria-label="Move ${e(name)} down" ${i===names.length-1?'disabled':''}>↓</button></li>`).join('');
-function pickerCount(){const count=pickedNew.size;const withCategories=$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled;$('new-picker-count').textContent=count+' NEW sashes'+(withCategories?' · '+pickedCategories.length+' category filters':'');$('apply-new').textContent=withCategories?'Apply NEW sashes & categories':'Apply NEW sashes';$('apply-new').disabled=count>200;$('new-picker-list').querySelectorAll('[data-pick-new]').forEach(input=>input.closest('label').querySelector('.new-picker-tag').hidden=!input.checked);}
+function pickerCount(){
+ const count=pickedNew.size,withCategories=$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled;
+ $('new-picker-count').textContent=(pendingCatalogue?pendingCatalogue.songs.length+' songs · ':'')+count+' NEW sashes'+(withCategories?' · '+pickedCategories.length+' category filters':'');
+ $('apply-new').textContent=pendingCatalogue?'Import & apply choices':withCategories?'Apply NEW sashes & categories':'Apply NEW sashes';
+ $('apply-new').disabled=count>200;
+ $('new-picker-list').querySelectorAll('[data-pick-new]').forEach(input=>input.closest('label').querySelector('.new-picker-tag').hidden=!input.checked);
+}
 function pickerCategories(){
   $('picker-category-list').innerHTML=categoryList(pickedCategories,'picker');
 }
-function openNewPicker(){
-  if(!catalogue)return;pickedNew=new Set(namesOf(settings));const present=new Set(catalogue.songs.map(s=>s.name)),outside=[...pickedNew].filter(n=>!present.has(n));
-  $('new-picker-note').textContent='Tick songs to give them a NEW sash on your exported RF page.'+(outside.length?' '+outside.length+' names outside this CSV stay selected unless you clear the selection.':'');
-  const detected=categoryNamesOf(catalogue),proposal=detectedCategories(catalogue,settings),valid=!proposal.error;
+function openNewPicker(candidate=null){
+  const next=candidate||catalogue;if(!next)return;
+  // Keep an import in memory until catalogue, category and NEW choices are confirmed.
+  pendingCatalogue=candidate;pickerCatalogue=next;pickerReturnFocus=candidate?$('catalogue-source'):document.activeElement;
+  $('new-picker-title').textContent=candidate?'Import song list':'Catalogue & NEW sashes';
+  $('cancel-new-bottom').textContent=candidate?'Cancel import':'Cancel';
+  $('cancel-new').setAttribute('aria-label',candidate?'Cancel import':'Close without applying changes');
+  pickedNew=new Set(namesOf(settings));const present=new Set(pickerCatalogue.songs.map(s=>s.name)),outside=[...pickedNew].filter(n=>!present.has(n));
+  $('new-picker-note').textContent=(candidate?candidate.filename+'. Nothing changes until you choose Import & apply choices. ':'')+'Tick songs to give them a NEW sash on your exported RF page.'+(outside.length?' '+outside.length+' names outside this CSV stay selected unless you clear the selection.':'');
+  const detected=categoryNamesOf(pickerCatalogue),proposal=detectedCategories(pickerCatalogue,settings),valid=!proposal.error;
   pickedCategories=proposal.names;
   $('picker-setup-categories').checked=false;$('picker-setup-categories').disabled=!valid;
   $('picker-current-categories').textContent='Current filters: '+(settings.categories?settings.categoryNames.join(' → '):'Off')+'. Detected in CSV: '+(detected.join(', ')||'none')+'.';
-  $('picker-category-help').textContent=valid?'Check this order against RF’s Categories tab; the CSV does not include its saved order. Category changes apply with NEW sashes.':!detected.length?'No categories found. Assign categories in RF, then export again.':catalogue.songs.some(s=>!s.category)?'Some songs have no category. Assign those in RF before automatic setup.':'Automatic setup supports up to 12 categories, each up to 100 characters.';
+  $('picker-category-help').textContent=valid?'Check this order against RF’s Categories tab; the CSV does not include its saved order. Category changes apply with NEW sashes.':!detected.length?'No categories found. Assign categories in RF, then export again.':pickerCatalogue.songs.some(s=>!s.category)?'Some songs have no category. Assign those in RF before automatic setup.':'Automatic setup supports up to 12 categories, each up to 100 characters.';
   pickerCategories();
   $('new-picker-search').value='';
-  $('new-picker-list').innerHTML=catalogue.songs.map((s,i)=>`<label class="new-picker-row" data-search="${e((s.displayName+' '+s.name+' '+s.artist+' '+s.category).toLowerCase())}"><input type="checkbox" data-pick-new="${i}" ${pickedNew.has(s.name)?'checked':''}><span><strong>${e(s.displayName||s.name)}</strong><small>${e(s.artist)}</small><small>RF name: ${e(s.name)}</small><small class="picker-song-category">${e(s.category||'No category set')}</small></span><span class="new-picker-tag" ${pickedNew.has(s.name)?'':'hidden'}>NEW</span></label>`).join('');pickerCount();$('new-picker').showModal();
+  $('new-picker-list').innerHTML=pickerCatalogue.songs.map((s,i)=>`<label class="new-picker-row" data-search="${e((s.displayName+' '+s.name+' '+s.artist+' '+s.category).toLowerCase())}"><input type="checkbox" data-pick-new="${i}" ${pickedNew.has(s.name)?'checked':''}><span><strong>${e(s.displayName||s.name)}</strong><small>${e(s.artist)}</small><small>RF name: ${e(s.name)}</small><small class="picker-song-category">${e(s.category||'No category set')}</small></span><span class="new-picker-tag" ${pickedNew.has(s.name)?'':'hidden'}>NEW</span></label>`).join('');pickerCount();$('new-picker').showModal();
 }
 $('picker-setup-categories').addEventListener('change',pickerCount);
 $('picker-category-list').addEventListener('click',event=>{const b=event.target.closest('button');if(!b)return;const up=b.dataset.pickerUp!==undefined,i=+(up?b.dataset.pickerUp:b.dataset.pickerDown),j=i+(up?-1:1);if(j<0||j>=pickedCategories.length)return;[pickedCategories[i],pickedCategories[j]]=[pickedCategories[j],pickedCategories[i]];$('picker-setup-categories').checked=!$('picker-setup-categories').disabled;pickerCategories();pickerCount();});
 $('clear-new').addEventListener('click',()=>{pickedNew.clear();$('new-picker-list').querySelectorAll('[data-pick-new]').forEach(el=>el.checked=false);pickerCount();});
-$('new-picker-list').addEventListener('change',event=>{const el=event.target;if(el.dataset.pickNew===undefined)return;const name=catalogue.songs[+el.dataset.pickNew].name;if(el.checked)pickedNew.add(name);else pickedNew.delete(name);pickerCount();});
+$('new-picker-list').addEventListener('change',event=>{const el=event.target;if(el.dataset.pickNew===undefined)return;const name=pickerCatalogue?.songs[+el.dataset.pickNew]?.name;if(name===undefined)return;if(el.checked)pickedNew.add(name);else pickedNew.delete(name);pickerCount();});
 $('new-picker-search').addEventListener('input',event=>{const q=event.target.value.toLowerCase().trim();$('new-picker-list').querySelectorAll('[data-search]').forEach(el=>el.hidden=!el.dataset.search.includes(q));});
-$('cancel-new').addEventListener('click',()=>$('new-picker').close());
-$('apply-new').addEventListener('click',()=>{if(pickedNew.size>200)return;settings.newNames=[...pickedNew].join('\n');if($('picker-setup-categories').checked&&!$('picker-setup-categories').disabled)applyCategories(settings,pickedCategories);form();changed();$('new-picker').close();});
+function closeNewPicker(){
+  const target=pickerReturnFocus;
+  pendingCatalogue=null;pickerCatalogue=null;pickedNew.clear();pickedCategories=[];
+  $('new-picker').close();$('new-picker-list').replaceChildren();$('picker-category-list').replaceChildren();$('new-picker-count').textContent='';
+  const focus=target?.isConnected&&target.getClientRects().length?target:$('catalogue-source');focus.focus({preventScroll:true});
+}
+for(const id of ['cancel-new','cancel-new-bottom'])$(id).addEventListener('click',closeNewPicker);
+$('new-picker').addEventListener('cancel',event=>{event.preventDefault();closeNewPicker();});
+$('apply-new').addEventListener('click',()=>{
+  if(!pickerCatalogue||pickedNew.size>200)return;
+  const importing=!!pendingCatalogue;
+  settings.newNames=[...pickedNew].join('\n');
+  if($('picker-setup-categories').checked&&!$('picker-setup-categories').disabled)applyCategories(settings,pickedCategories);
+  if(importing){catalogue=pendingCatalogue;catalogueSource='imported';catalogueSaved=saveCatalogue(storage,catalogue);}
+  closeNewPicker();form();changed();
+  if(importing){clearTimeout(updateTimer);refresh();$('preview-status').textContent=catalogueSaved?'Song list imported. Your NEW and category choices are applied. Requests and votes stay in this preview.':'Song list imported for this session only; browser storage was unavailable. Keep your original CSV.';}
+});
 $('remove-catalogue').addEventListener('click',()=>{catalogue=null;catalogueSource='samples';catalogueSaved=saveCatalogue(storage,null);$('catalogue-error').hidden=catalogueSaved;if(!catalogueSaved)$('catalogue-error').textContent='Removed from this preview, but browser storage could not be updated.';refresh();});
 $('detect-categories').addEventListener('click',()=>{
   if(!catalogue)return;const result=detectedCategories(catalogue,settings);detectedNames=result.names;
@@ -207,6 +237,7 @@ $('settings').addEventListener('click',event=>{
   if(el.id==='pick-new-music')openNewPicker();
   if(el.hasAttribute('data-import-catalogue'))$('catalogue-file').click();
   if(el.dataset.previewMessage)previewMessage(el.dataset.previewMessage,el.dataset.previewMode);
+  if(el.hasAttribute('data-reset-name-colour')){settings.customNameColour=false;$('settings').querySelector('[data-key=customNameColour]').checked=false;$('settings').querySelector('[data-key=customNameColour]').focus();changed();}
   if(el.id==='reset-colours'){settings.colours=cloneDefaults(settings.theme).colours;form();changed();}
   if(el.id==='add-category'&&settings.categoryNames.length<12){settings.categoryNames.push('');form();changed();}
 
@@ -290,9 +321,10 @@ if(source){
   $('setup-result').hidden=false;$('setup-result').scrollIntoView({block:'center',behavior:'instant'});$('setup-result').focus({preventScroll:true});
  }});
  $('close-setup-result').addEventListener('click',()=>{$('setup-result').hidden=true;$('start-setup').focus({preventScroll:true});});
- createTour({storage,startSetup:()=>wizard.start(),
+ const tour=createTour({storage,startSetup:()=>wizard.start(),
   captureContext:()=>({group:editorGroup,view:document.querySelector('.workspace').dataset.view,x:window.scrollX,y:window.scrollY,details:[...document.querySelectorAll('.settings-pane details')].map(el=>[el,el.open])}),
   showArea:group=>selectSettingsGroup(group,false),showView,
   restoreContext:context=>{selectSettingsGroup(context.group,false);for(const [el,open] of context.details)el.open=open;showView(context.view);window.scrollTo({left:context.x,top:context.y,behavior:'instant'});}
  });
+ createHelp({startTour:()=>tour.start({currentTarget:$('open-help')})});
 }

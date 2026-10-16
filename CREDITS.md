@@ -21,3 +21,7 @@ The optional seasonal illustrations in `assets/` were generated for this project
 Font Awesome icons are loaded from cdnjs and remain subject to [Font Awesome's licences](https://fontawesome.com/license/free). Remote Falcon provides the live song, queue, vote and availability behaviour. PulseMesh's official download page provides device routing when its optional links are enabled.
 
 This is a community adaptation. The changes are not presented as the work of, or endorsed by, the original template author or Remote Falcon.
+
+## Optional show-name fonts
+
+Nunito (Rounded), Playfair Display (Elegant), Berkshire Swash (Festive) and Creepster (Spooky) are bundled unmodified from [Google Fonts](https://github.com/google/fonts/tree/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl). They are distributed under the SIL Open Font License 1.1, separately from the template GPL licence. Each font’s copyright and licence notice is included beside it in `assets/fonts/`. Only the selected heading font loads; Default uses the existing system font.

@@ -1098,7 +1098,8 @@
       .cell-vote-row:has(> .cell-vote-playlist:is([[NEW_SELECTORS]])) {
         --los-new-display: grid;
         --los-new-sash: "NEW";
-        --los-new-vote-height: 8.5rem;
+        --los-new-vote-height: var(--los-new-vote-card-height, 8.5rem);
+        --los-new-text-gutter: 3rem;
         --los-new-vote-align: center;
         --los-new-vote-top: auto;
         --los-new-vote-bottom: 0.7rem;

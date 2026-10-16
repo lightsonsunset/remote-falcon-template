@@ -1,8 +1,8 @@
 # Lights on Sunset template
 
-**Your show. Your colours. Your way.**
+**Make your Remote Falcon page your own.**
 
-A ready-made Remote Falcon viewer template, with Christmas and Halloween themes. Personalise its colours, wording and optional features using the visual customiser, or download the template and edit the HTML yourself.
+Start with the Lights on Sunset template, choose your theme and personalise it for your show. No coding required. Prefer to edit the HTML yourself? The ready-made download includes both themes and instructions.
 
 **By christmasdave · Lights on Sunset.** The customiser is specifically for this template and its existing layout.
 
@@ -10,7 +10,7 @@ A ready-made Remote Falcon viewer template, with Christmas and Halloween themes.
 
 ![The Lights on Sunset customiser with settings on the left and a phone preview on the right](docs/images/editor-overview.jpg)
 
-Choose from three logo designs per theme, including pixel-light displays, with an optional editable name heading. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
+Choose from three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
 
 ## Get started in six steps
 
@@ -18,9 +18,13 @@ Choose from three logo designs per theme, including pixel-light displays, with a
 
 Choose **Set up my show** on the welcome screen for a short wizard: Your show, Dates & hours, Listening, then Review & finish. Pick a theme, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Everything remains editable afterwards. You can also enter these details directly under **Site setup**.
 
-The welcome also offers **Open the editor** and **Take a quick tour**. Closing it or pressing Escape starts editing. Your choice is remembered in this browser. Reopen the wizard using **Setup wizard** in the header; it starts with your current settings. **Back** keeps your answers, **Skip** leaves that step as it was when you entered it, and **Cancel setup** applies nothing. Only **Apply & open editor** saves the draft. Your other settings stay intact; unedited defaults follow your chosen theme. These are page details, not FPP scheduling or PulseMesh activation.
+The welcome also offers **Open the editor** and **Take a quick tour**. Closing it or pressing Escape starts editing. Your choice is remembered.
 
-Replay the six-stop orientation using **Quick tour** in the header. The tour keeps your settings and returns you to where you started.
+Reopen **Setup wizard** from the header at any time. It starts with your current settings and only saves when you choose **Apply & open editor**. Back keeps your answers; Skip keeps that step’s previous settings; Cancel changes nothing. Website dates and listening text do not change FPP or activate PulseMesh.
+
+Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**, or **Detailed setup help**. The tour returns you to where you started without changing your settings. The downloaded quick-start guide works offline, with screenshots included.
+
+![Help offers the quick-start guide, tour and detailed setup help](docs/images/friendly-help.jpg)
 
 ![The first-visit welcome with setup, editor and quick-tour choices](docs/images/welcome-modal.jpg)
 
@@ -33,7 +37,7 @@ Replay the six-stop orientation using **Quick tour** in the header. The tour kee
 | Area | What you can change |
 |---|---|
 | Home | Welcome, visitor guidance, notices, extra information, video link and countdown |
-| Music | NEW sashes, category filters, queue wording, optional counters and playlists |
+| Music | Album artwork, NEW sashes, category filters, queue wording, optional counters and playlists |
 | Support | Separate cards for charities, creators and thank-yous, with optional images and Home/Info links |
 | Info | Introduction, YouTube, Quick Facts, FAQs and useful resources |
 | Song messages | Request and voting titles and short explanations, with local preview buttons |
@@ -48,7 +52,7 @@ The preview is a labelled demonstration with **no connection to your show**. Try
 
 ### 4. Bring your song list (optional)
 
-Use **Import RF song CSV** to preview your own titles, artists and artwork. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Check that their names and order match RF; this does not change the categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music.
+Use **Import RF song CSV** to choose a file and review its songs before importing. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Check that their names and order match RF; this does not change the categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All.
 
 Your CSV stays in this browser. The export uses RF's live catalogue, and your settings backup does not contain the imported CSV. Keep the original file. [Import and category instructions](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#catalogue).
 

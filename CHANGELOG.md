@@ -1,5 +1,16 @@
 # Changelog
 
+## 17 October 2026 — Clearer help and show-name styling
+
+- Simpler header with Setup wizard, Help, What’s new and the appearance switch; GitHub moves to the footer.
+- A clearer introduction and one download link for the ready-made template and instructions.
+- Help brings together the illustrated quick-start guide, tour and detailed setup instructions.
+- Five Home show-name styles and an optional independent colour, with a live name sample in the editor and setup wizard. The original style is labelled Default.
+- Existing designs keep their current heading style; font files and licences are included in the manual download.
+- Optional compact song cards without album artwork, with a direct RF artwork-help link. Existing designs keep artwork enabled.
+- Clearer category instructions explain hiding a filter button while keeping its songs under All.
+- CSV imports now wait for confirmation. Cancel import, the X or Escape leaves the previous catalogue, categories and NEW sashes unchanged.
+
 ## 17 October 2026 — Small customiser improvements
 
 - Show name on Home now sits directly below the show name, including in the setup wizard.
