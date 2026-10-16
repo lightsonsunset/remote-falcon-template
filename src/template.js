@@ -1,6 +1,6 @@
 // GPL-3.0-only. Canonical viewer renderer; no preview dependency.
 import {themes} from './themes.js';
-import {assetURL} from './assets.js';
+import {assetBase,logoChoices,decorationChoices,logoFile,decorationFile} from './assets.js';
 import {copyFields,legacyCopyFields,copyFor,formatCopy} from './copy.js';
 import {extraDefaults,listDefinitions,checkedExtraLists,validateExtras,renderExtras} from './visitor-extras.js';
 export {themes};
@@ -17,7 +17,7 @@ const starterFAQ=[
 export const defaults = {
   ...extraDefaults,
   name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
-  logoMode:'icon',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,votesRemaining:false,
+  logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
   dates: 'To be announced',
   schedule: [{day:'Sunday–Thursday',hours:'To be announced'}, {day:'Friday–Saturday',hours:'To be announced'}, {day:'Christmas Eve / Day',hours:'To be announced'}],
@@ -105,6 +105,8 @@ export function checkedSettings(input) {
   if(!Object.hasOwn(themes,s.theme))throw Error('Unknown seasonal theme.');
   Object.assign(s,checkedExtraLists(input));
   if(!['icon','seasonal','custom'].includes(s.logoMode))throw Error('Choose a supported logo option.');
+  if(!logoChoices[s.theme].some(c=>c.id===s.logoStyle))throw Error('Choose a supported logo design.');
+  for(const theme of ['christmas','halloween'])if(!decorationChoices[theme].some(c=>c.id===s[theme+'Decoration']))throw Error('Choose a supported navbar decoration.');
   if(!input.copy||typeof input.copy!=='object'||Array.isArray(input.copy))throw Error('Invalid visitor text settings.');
   s.copy={};for(const [key,,,long] of [...copyFields,...legacyCopyFields]){if(!Object.hasOwn(input.copy,key))continue;const value=input.copy[key];if(typeof value!=='string'||value.length>(key.startsWith('NAV_')?16:long?1000:160)||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value))throw Error('Invalid visitor text: '+key);s.copy[key]=value;}
   if(!Array.isArray(input.donationRecipients)||input.donationRecipients.length>4)throw Error('Use up to five support cards.');
@@ -159,7 +161,7 @@ export function parseSettings(text, allowIncomplete=false) {
   if(f.settings&&typeof f.settings==='object'){
     for(const [key,value] of Object.entries(extraDefaults))if(!(key in f.settings))f.settings[key]=structuredClone(value);
     if(!('logoMode' in f.settings))f.settings.logoMode=f.settings.logo?'custom':'icon';
-    for(const key of ['copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
+    for(const key of ['logoStyle','combineLogoName','showNameOnHome','christmasDecoration','halloweenDecoration','copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
   }
   const s=checkedSettings(f.settings);
   if(!allowIncomplete && Object.keys(validate(s)).length)throw Error('That file has incomplete or invalid settings. Your current work has not changed.');
@@ -204,9 +206,11 @@ function renderDocument(source,s){
   const flags=[s.fm&&'has-fm',s.pulsemesh&&'has-pulsemesh',(s.fm||s.pulsemesh||s.listening.trim())&&'has-listening',s.donations&&'has-donations',s.categories&&s.categoryNames.some(n=>!s.hiddenCategories.includes(n))&&'has-categories',s.newFilter&&'has-new-songs',s.donationHome&&'has-donations-home',s.donationInfo&&'has-donations-info'].filter(Boolean).join(' ');
   const v={
     SHOW_NAME:e(s.name),FEATURE_CLASSES:flags,WELCOME:e(s.welcome),SHOW_DATES:e(s.dates),
-    LOGO:s.logoMode==='seasonal'?`<img class="show-logo" src="${assetURL(s.theme,'logo')}" alt="">`:s.logoMode==='custom'&&s.logo?`<img class="show-logo" src="${e(s.logo)}" alt="${e(s.name)} logo">`:`<i class="fa-solid ${t.icon}" aria-hidden="true"></i>`,
+    LOGO:s.logoMode==='seasonal'?`<img class="show-logo" src="${assetBase+logoFile(s)}" alt="">`:s.logoMode==='custom'&&s.logo?`<img class="show-logo" src="${e(s.logo)}" alt="${e(s.name)} logo">`:`<i class="fa-solid ${t.icon}" aria-hidden="true"></i>`,
+    BRAND_CLASS:s.logoMode==='seasonal'&&s.combineLogoName&&s.showNameOnHome?'brand-combined':'',
+    NAME_CLASS:s.showNameOnHome?'':'show-name-hidden',
     NEIGHBOUR:(s.neighbourTitle.trim()?`<p class="rf-titles">${e(s.neighbourTitle)}</p>`:'')+(s.neighbourText.trim()?`<p class="neighbour-message">${e(s.neighbourText)}</p>`:''),
-    DECORATION_CSS:s.decorations?decorationCSS(s.theme):'',
+    DECORATION_CSS:s.decorations?decorationCSS(s):'',
     NOTICE_HIDDEN:s.notice?'':'hidden',NOTICE_TITLE:e(s.noticeTitle||'Show update'),NOTICE_TEXT:e(s.noticeText),
     SCHEDULE_ROWS:s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('\n'),
     SCHEDULE_FAQ:'<div class="hours-list">'+s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('')+'</div>',
@@ -279,13 +283,13 @@ const halloweenCSS=`
 .los-menu__item.tab-blue { --nav-tint:#193d30;--nav-accent:#9ce6bb; }
 .los-menu__item.tab-yellow { --nav-tint:#45233c;--nav-accent:#f2b2d8; }
 `;
-function decorationCSS(theme){return `
+function decorationCSS(s){return `
 /* One optional seasonal ornament follows the selected menu item. */
 .los-menu { --nav-decoration-index:0; }
 body:has(#music-panel:target) .los-menu, body:has(#music-panel :target) .los-menu { --nav-decoration-index:1; }
 body:has(#support-panel:target) .los-menu { --nav-decoration-index:2; }
 body:has(#info-panel:target) .los-menu, body:has(#info-panel :target) .los-menu { --nav-decoration-index:3; }
-.los-menu::after { content:"";position:absolute;width:34px;height:34px;top:-6px;left:calc(7px + (100% - 26px) / 4 - 38px + (100% - 10px) / 4 * var(--nav-decoration-index));background:url("${assetURL(theme,'detail')}") center / contain no-repeat;pointer-events:none;z-index:2;transition:left 180ms ease; }
+.los-menu::after { content:"";position:absolute;width:34px;height:34px;top:-6px;left:calc(7px + (100% - 26px) / 4 - 38px + (100% - 10px) / 4 * var(--nav-decoration-index));background:url("${assetBase+decorationFile(s)}") center / contain no-repeat;pointer-events:none;z-index:2;transition:left 180ms ease; }
 @media(prefers-reduced-motion:reduce) { .los-menu::after { transition:none; } }
 `;}
 export const registry = [{id:templateId,name:'Lights on Sunset',defaults,themes,source:'templates/christmas.html',supportedSettings:Object.keys(defaults),render}];

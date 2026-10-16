@@ -16,7 +16,7 @@ The sharing template is distributed under GNU GPL version 3. A verbatim copy of 
 
 ## Other components
 
-The four optional seasonal illustrations in `assets/` were generated for this project using OpenAI's built-in image-generation tool, then resized and encoded as WebP with transparency preserved. They are shared with this project under the same GPL-3.0 terms. Artwork dimensions and provenance are recorded in `assets/README.md`. These are generic seasonal illustrations, not third-party show logos. Imported RF artwork belongs to its respective owners and is not bundled or redistributed by this project.
+The optional seasonal illustrations in `assets/` were generated for this project using OpenAI's built-in image-generation tool, then resized and encoded as WebP with transparency preserved. They are shared with this project under the same GPL-3.0 terms. Artwork dimensions and provenance are recorded in `assets/README.md`. These are generic seasonal illustrations, not third-party show logos. Imported RF artwork belongs to its respective owners and is not bundled or redistributed by this project.
 
 Font Awesome icons are loaded from cdnjs and remain subject to [Font Awesome's licences](https://fontawesome.com/license/free). Remote Falcon provides the live song, queue, vote and availability behaviour. PulseMesh's official download page provides device routing when its optional links are enabled.
 

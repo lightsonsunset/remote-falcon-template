@@ -1,7 +1,7 @@
 // Editor-only setup draft. Validation and theme behaviour are shared with the editor.
 import {changeTheme,validate,checkedSettings} from './template.js';
 export const setupSteps=['Your show','Dates & hours','Listening','Review & finish'];
-export const setupKeys=[['theme','name','welcome','logoMode','logo'],['dates','schedule'],['fm','frequency','pulsemesh','listening']];
+export const setupKeys=[['theme','name','welcome','logoMode','logo','logoStyle','combineLogoName','showNameOnHome'],['dates','schedule'],['fm','frequency','pulsemesh','listening']];
 export function setupErrors(settings,step){
  const keys=setupKeys[step]||setupKeys.flat();
  return Object.fromEntries(Object.entries(validate(settings)).filter(([key])=>keys.some(k=>key===k||key.startsWith(k+'.'))));

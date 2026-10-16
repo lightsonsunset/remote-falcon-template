@@ -1,4 +1,5 @@
 import {registry,cloneDefaults,validate,render,renderDraft,escapeHTML as e,settingsFile,parseSettings,themes,changeTheme,contrast,namesOf,supportCardDefaults} from './template.js';
+import {logoFile,decorationFile} from './assets.js';
 import {copyFields} from './copy.js';
 import {listDefinitions} from './visitor-extras.js';
 import {editorGroups,completeWebAddress} from './editor-layout.js';
@@ -48,7 +49,9 @@ function form(){
 function features(){
  document.querySelectorAll('[data-feature]').forEach(el=>el.hidden=!el.dataset.feature.split('|').some(k=>settings[k])&&!el.querySelector('[data-copy][aria-invalid="true"]')&&!el.contains(document.activeElement));
  document.querySelectorAll('[data-logo-field]').forEach(el=>el.hidden=settings.logoMode!=='custom');
- document.querySelectorAll('.artwork-choice').forEach(el=>el.hidden=settings.logoMode!=='seasonal');
+ document.querySelectorAll('[data-seasonal-logo]').forEach(el=>el.hidden=settings.logoMode!=='seasonal');
+ document.querySelectorAll('.artwork-choice').forEach(el=>{el.hidden=settings.logoMode!=='seasonal';el.src='assets/'+logoFile(settings);});
+ document.querySelectorAll('.decoration-choice').forEach(el=>el.src='assets/'+decorationFile(settings));
  $('settings').querySelectorAll('[data-season-only]').forEach(el=>el.hidden=el.dataset.seasonOnly!==settings.theme||!editorGroups[editorGroup].sections.includes(+el.dataset.section));
 }
 function setError(text){$('load-error').textContent=text;$('load-error').hidden=!text;}
