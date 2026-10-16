@@ -7,14 +7,14 @@ export const tourSteps=[
  {title:'Try the preview',view:'preview',target:'.preview-controls-main',text:'Check phone, tablet and desktop sizes. Try On air / Off air and Jukebox / Voting. The preview is a demo: it never connects to your show or changes your RF settings.'},
  {title:'Bring your songs and add filters',view:'preview',target:'#catalogue-tools',text:'Import your RF song CSV to preview your titles and artwork. Detect categories sets up filter buttons, so visitors can browse groups of songs. Check that their names and order match RF; this does not change your categories in RF. Set NEW sashes marks your new songs. Your imported catalogue stays in this browser.'},
  {title:'Make the messages yours',area:'messages',view:'settings',target:'[data-section="12"] > summary',open:12,text:'Song messages holds request and voting feedback. Edit the short title and explanation, then use its preview button to see how it looks. RF still decides when each message appears.'},
- {title:'Keep your work and use it in RF',view:'settings',target:'#save-export',text:'Download a settings backup so you can edit again later. Copy HTML or download your finished page, then paste it into a separate RF draft. Save, validate and test there before making it live. Setup help has the full instructions.'}
+ {title:'Keep your work and use it in RF',view:'settings',target:'#save-export',text:'Download a settings backup so you can edit again later. Copy HTML or download your finished page, then paste it into a separate RF draft. Save, validate and test there before making it live. Open Help for the illustrated quick-start guide and detailed setup instructions.'}
 ];
 
 export function createTour({storage,captureContext,showArea,showView,restoreContext,startSetup}){
  const $=id=>document.getElementById(id),welcome=$('tour-welcome'),dialog=$('quick-tour'),card=$('tour-card'),spot=$('tour-highlight');
  let step=0,context=null,returnFocus=null,scrollStyle='',welcomeScrollStyle='',frame=0;
  const remember=()=>{writePreferences(storage,{tourSeen:true});if(welcome.open){welcome.close();document.body.style.overflow=welcomeScrollStyle;}};
- const dismissWelcome=()=>{remember();$('start-tour').focus({preventScroll:true});};
+ const dismissWelcome=()=>{remember();$('open-help').focus({preventScroll:true});};
  const focusable=()=>[...card.querySelectorAll('button')].filter(b=>!b.disabled&&!b.hidden);
  function position(){
   if(!dialog.open)return;
@@ -50,11 +50,10 @@ export function createTour({storage,captureContext,showArea,showView,restoreCont
  function finish(){
   if(!dialog.open)return;
   dialog.close();cancelAnimationFrame(frame);document.body.style.overflow=scrollStyle;
-  restoreContext(context);const focus=returnFocus?.isConnected&&returnFocus.getClientRects().length?returnFocus:$('start-tour');focus.focus({preventScroll:true});
+  restoreContext(context);const focus=returnFocus?.isConnected&&returnFocus.getClientRects().length?returnFocus:$('open-help');focus.focus({preventScroll:true});
   context=null;
  }
- $('start-tour').disabled=false;
- $('start-tour').addEventListener('click',start);$('welcome-tour').addEventListener('click',start);
+ $('welcome-tour').addEventListener('click',start);
  $('welcome-setup').addEventListener('click',()=>{remember();startSetup();});
  $('welcome-skip').addEventListener('click',dismissWelcome);$('welcome-close').addEventListener('click',dismissWelcome);
  welcome.addEventListener('cancel',event=>{event.preventDefault();dismissWelcome();});

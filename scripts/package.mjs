@@ -1,3 +1,4 @@
+import {fontPackageFiles} from '../src/name-style.js';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {deflateRawSync} from 'node:zlib';
 import {resolve} from 'node:path';
@@ -13,8 +14,8 @@ await writeFile(resolve(out,'Halloween RF Template.html'),halloween);
 // A small dependency-free ZIP writer with stable timestamps and UTF-8 names.
 function crc32(buffer){let crc=0xffffffff;for(const b of buffer){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return (crc^0xffffffff)>>>0;}
 const files=new Map([['Festive RF Template.html',Buffer.from(html)],['Halloween RF Template.html',Buffer.from(halloween)]]);
-for(const name of ['START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','CHANGELOG.md','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg'])files.set(name,await readFile(resolve(root,name)));
-for(const name of allArtworkFiles)files.set('assets/'+name,await readFile(resolve(root,'assets',name)));
+for(const name of ['START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','CHANGELOG.md','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg','docs/images/friendly-help.jpg'])files.set(name,await readFile(resolve(root,name)));
+for(const name of [...allArtworkFiles,...fontPackageFiles])files.set('assets/'+name,await readFile(resolve(root,'assets',name)));
 files.set('assets/README.md',await readFile(resolve(root,'assets/README.md')));
 const local=[],central=[];let offset=0;
 for(const [name,data] of files){

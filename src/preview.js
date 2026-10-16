@@ -150,7 +150,7 @@ export function createPreview(iframe, notify) {
       const song=imported?.songs[0],img=element(doc,'img','sequence-image');img.alt='';
       if(imported){img.referrerPolicy='no-referrer';if(song?.imageUrl)img.src=song.imageUrl;else{img.alt='Artwork unavailable';img.classList.add('preview-artwork-placeholder');}}
       else img.src=artwork('#a54550');
-      el.replaceChildren(img,element(doc,'span','',song?(song.displayName||song.name):themes[settings.theme].demoSongs[0]),element(doc,'div',mode==='voting'?'cell-vote-playlist-artist':'jukebox-list-artist',song?song.artist:'Illustrative demo song'),element(doc,'small','preview-playback-label','Artwork preview only · no live playback'));
+      el.replaceChildren(img,element(doc,'span','',song?(song.displayName||song.name):themes[settings.theme].demoSongs[0]),element(doc,'div',mode==='voting'?'cell-vote-playlist-artist':'jukebox-list-artist',song?song.artist:'Illustrative demo song'),element(doc,'small','preview-playback-label',settings.showAlbumArtwork?'Artwork preview only · no live playback':'Song preview only · no live playback'));
     });
     doc.querySelectorAll('.next-playlist,.jukebox-queue-container,.los-song-list,.request-feedback__location').forEach(el=>el.replaceChildren());
     updateCountdown(doc);

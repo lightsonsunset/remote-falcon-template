@@ -1,4 +1,5 @@
 // GPL-3.0-only. Canonical viewer renderer; no preview dependency.
+import {nameFonts,nameStyleDefaults,nameStyleCSS} from './name-style.js';
 import {themes} from './themes.js';
 import {assetBase,logoChoices,decorationChoices,logoFile,decorationFile} from './assets.js';
 import {copyFields,legacyCopyFields,copyFor,formatCopy} from './copy.js';
@@ -15,9 +16,9 @@ const starterFAQ=[
   {kind:'text',question:'How do you build a show like this?',answer:'Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.'}
 ];
 export const defaults = {
-  ...extraDefaults,
+  ...extraDefaults,...nameStyleDefaults,
   name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
-  logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,votesRemaining:false,
+  logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,showAlbumArtwork:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
   dates: 'To be announced',
   schedule: [{day:'Sunday–Thursday',hours:'To be announced'}, {day:'Friday–Saturday',hours:'To be announced'}, {day:'Christmas Eve / Day',hours:'To be announced'}],
@@ -107,6 +108,8 @@ export function checkedSettings(input) {
   if(!['icon','seasonal','custom'].includes(s.logoMode))throw Error('Choose a supported logo option.');
   if(!logoChoices[s.theme].some(c=>c.id===s.logoStyle))throw Error('Choose a supported logo design.');
   for(const theme of ['christmas','halloween'])if(!decorationChoices[theme].some(c=>c.id===s[theme+'Decoration']))throw Error('Choose a supported navbar decoration.');
+  if(!nameFonts.some(f=>f.id===s.nameFont))throw Error('Choose a supported show-name font.');
+  if(!/^#[a-f0-9]{6}$/i.test(s.nameColour))throw Error('Choose a six-digit show-name colour.');
   if(!input.copy||typeof input.copy!=='object'||Array.isArray(input.copy))throw Error('Invalid visitor text settings.');
   s.copy={};for(const [key,,,long] of [...copyFields,...legacyCopyFields]){if(!Object.hasOwn(input.copy,key))continue;const value=input.copy[key];if(typeof value!=='string'||value.length>(key.startsWith('NAV_')?16:long?1000:160)||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value))throw Error('Invalid visitor text: '+key);s.copy[key]=value;}
   if(!Array.isArray(input.donationRecipients)||input.donationRecipients.length>4)throw Error('Use up to five support cards.');
@@ -159,9 +162,9 @@ export function parseSettings(text, allowIncomplete=false) {
   if(!f||typeof f!=='object'||f.version!==2||f.template!==templateId)throw Error('This file uses an unsupported version or template. Your current work has not changed.');
   // Preserve older settings created before Home cards and FAQ editing.
   if(f.settings&&typeof f.settings==='object'){
-    for(const [key,value] of Object.entries(extraDefaults))if(!(key in f.settings))f.settings[key]=structuredClone(value);
+    for(const [key,value] of Object.entries({...extraDefaults,...nameStyleDefaults}))if(!(key in f.settings))f.settings[key]=structuredClone(value);
     if(!('logoMode' in f.settings))f.settings.logoMode=f.settings.logo?'custom':'icon';
-    for(const key of ['showMenuLabels','onAirPulse','logoStyle','combineLogoName','showNameOnHome','christmasDecoration','halloweenDecoration','copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
+    for(const key of ['showMenuLabels','showAlbumArtwork','onAirPulse','logoStyle','combineLogoName','showNameOnHome','christmasDecoration','halloweenDecoration','copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
   }
   const s=checkedSettings(f.settings);
   if(!allowIncomplete && Object.keys(validate(s)).length)throw Error('That file has incomplete or invalid settings. Your current work has not changed.');
@@ -285,6 +288,21 @@ const halloweenCSS=`
 .los-menu__item.tab-yellow { --nav-tint:#45233c;--nav-accent:#f2b2d8; }
 `;
 function viewerOptionsCSS(s){return [
+  nameStyleCSS(s),
+  !s.showAlbumArtwork&&`
+/* Compact song cards. Artwork remains stored in Remote Falcon. */
+.content__body { --los-new-vote-card-height:6.8rem; }
+.content__body .playing-now img,
+.content__body .los-song-list .jukebox-list img,
+.content__body .los-song-list .cell-vote-playlist img { display:none; }
+.content__body .playing-now { min-height:0; }
+.content__body .los-song-list .jukebox-list,
+.content__body .los-song-list .cell-vote-playlist { grid-template-columns:minmax(0,1fr);column-gap:0;min-height:64px; }
+.content__body .los-song-list .jukebox-list { padding-right:calc(.78em + var(--los-new-text-gutter,0px)); }
+.content__body .los-song-list .jukebox-list-artist,
+.content__body .los-song-list .cell-vote-playlist-artist { grid-column:1; }
+.content__body .cell-vote-row > .cell-vote-playlist { min-height:var(--los-new-vote-height,64px); }
+`,
   !s.showMenuLabels&&'.los-menu__label { display:none; }',
   s.onAirPulse&&`
 /* Optional gentle live-status glow; no change to RF availability. */

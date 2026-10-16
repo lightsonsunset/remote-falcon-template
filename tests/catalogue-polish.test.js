@@ -33,3 +33,12 @@ test('optional counters and location code use dedicated parser wrappers; Home sw
  const defaults=render(source,cloneDefaults());assert.doesNotMatch(defaults,/\{QUEUE_SIZE\}|\{VOTES_REMAINING\}/);assert.equal(copyFor(s).PULSE_INTRO,'At the show? Open PulseMesh and select our display to listen.');s.copy.PULSE_INTRO='My listening advice';assert.equal(copyFor(changeTheme(s,'halloween')).PULSE_INTRO,'My listening advice');
 });
 
+
+
+test('artwork defaults remain visible while older settings and backups preserve other choices',()=>{
+ const legacy=cloneDefaults();delete legacy.showAlbumArtwork;legacy.name='Saved name';legacy.hiddenCategories=['Christmas'];
+ const migrated=parseSettings(settingsFile(legacy));assert.equal(migrated.showAlbumArtwork,true);assert.equal(migrated.name,'Saved name');assert.deepEqual(migrated.hiddenCategories,['Christmas']);
+ migrated.showAlbumArtwork=false;const next=changeTheme(parseSettings(settingsFile(migrated)),'halloween');assert.equal(next.showAlbumArtwork,false);
+ const hidden=render(source,next);assert.match(hidden,/Compact song cards/);assert.match(hidden,/grid-template-columns:minmax\(0,1fr\)/);assert.match(hidden,/grid-column:1/);assert.doesNotMatch(hidden,/<script\b|localhost|Demo:/);
+ next.showAlbumArtwork=true;assert.doesNotMatch(render(source,next),/Compact song cards/);
+});
