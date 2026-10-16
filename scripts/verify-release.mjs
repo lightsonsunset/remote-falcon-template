@@ -31,7 +31,7 @@ for(const theme of ['christmas','halloween']){
 }
 function crc32(data){let c=0xffffffff;for(const b of data){c^=b;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return(c^0xffffffff)>>>0;}
 const zip=await readFile(join(root,'downloads/Festive-RF-Template.zip'));
-const allowed=new Set(['Festive RF Template.html','Halloween RF Template.html','START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg','assets/README.md',...allArtworkFiles.map(n=>'assets/'+n)]);
+const allowed=new Set(['Festive RF Template.html','Halloween RF Template.html','START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','CHANGELOG.md','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg','assets/README.md',...allArtworkFiles.map(n=>'assets/'+n)]);
 let offset=0,count=0;
 while(zip.readUInt32LE(offset)===0x04034b50){
  const nameLen=zip.readUInt16LE(offset+26),extraLen=zip.readUInt16LE(offset+28),size=zip.readUInt32LE(offset+18);
@@ -42,5 +42,5 @@ while(zip.readUInt32LE(offset)===0x04034b50){
  assert(data.equals(actual),'ZIP differs from source: '+name);
  offset=start+size;count++;
 }
-assert.equal(allowed.size,0,'ZIP entries missing');assert.equal(count,16+allArtworkFiles.length);
+assert.equal(allowed.size,0,'ZIP entries missing');assert.equal(count,17+allArtworkFiles.length);
 console.log('Release audit passed: '+files.length+' source files; both exports; '+count+' ZIP entries and CRCs.');

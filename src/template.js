@@ -17,7 +17,7 @@ const starterFAQ=[
 export const defaults = {
   ...extraDefaults,
   name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
-  logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,votesRemaining:false,
+  logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
   dates: 'To be announced',
   schedule: [{day:'Sunday–Thursday',hours:'To be announced'}, {day:'Friday–Saturday',hours:'To be announced'}, {day:'Christmas Eve / Day',hours:'To be announced'}],
@@ -161,7 +161,7 @@ export function parseSettings(text, allowIncomplete=false) {
   if(f.settings&&typeof f.settings==='object'){
     for(const [key,value] of Object.entries(extraDefaults))if(!(key in f.settings))f.settings[key]=structuredClone(value);
     if(!('logoMode' in f.settings))f.settings.logoMode=f.settings.logo?'custom':'icon';
-    for(const key of ['logoStyle','combineLogoName','showNameOnHome','christmasDecoration','halloweenDecoration','copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
+    for(const key of ['showMenuLabels','onAirPulse','logoStyle','combineLogoName','showNameOnHome','christmasDecoration','halloweenDecoration','copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
   }
   const s=checkedSettings(f.settings);
   if(!allowIncomplete && Object.keys(validate(s)).length)throw Error('That file has incomplete or invalid settings. Your current work has not changed.');
@@ -211,6 +211,7 @@ function renderDocument(source,s){
     NAME_CLASS:s.showNameOnHome?'':'show-name-hidden',
     NEIGHBOUR:(s.neighbourTitle.trim()?`<p class="rf-titles">${e(s.neighbourTitle)}</p>`:'')+(s.neighbourText.trim()?`<p class="neighbour-message">${e(s.neighbourText)}</p>`:''),
     DECORATION_CSS:s.decorations?decorationCSS(s):'',
+    VIEWER_OPTIONS_CSS:viewerOptionsCSS(s),
     NOTICE_HIDDEN:s.notice?'':'hidden',NOTICE_TITLE:e(s.noticeTitle||'Show update'),NOTICE_TEXT:e(s.noticeText),
     SCHEDULE_ROWS:s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('\n'),
     SCHEDULE_FAQ:'<div class="hours-list">'+s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('')+'</div>',
@@ -283,6 +284,19 @@ const halloweenCSS=`
 .los-menu__item.tab-blue { --nav-tint:#193d30;--nav-accent:#9ce6bb; }
 .los-menu__item.tab-yellow { --nav-tint:#45233c;--nav-accent:#f2b2d8; }
 `;
+function viewerOptionsCSS(s){return [
+  !s.showMenuLabels&&'.los-menu__label { display:none; }',
+  s.onAirPulse&&`
+/* Optional gentle live-status glow; no change to RF availability. */
+.show-status--live { --live-dot-rgb:${s.theme==='halloween'?'255,185,120':'139,233,180'}; }
+.show-status--live .show-status__label::before { animation:los-live-glow 2.8s ease-in-out infinite; }
+@keyframes los-live-glow {
+  0%,100% { box-shadow:0 0 0 3px rgba(var(--live-dot-rgb),.1),0 0 7px rgba(var(--live-dot-rgb),.3); }
+  50% { box-shadow:0 0 0 5px rgba(var(--live-dot-rgb),.16),0 0 15px rgba(var(--live-dot-rgb),.65); }
+}
+@media(prefers-reduced-motion:reduce) { .show-status--live .show-status__label::before { animation:none; } }
+`
+].filter(Boolean).join('\n');}
 function decorationCSS(s){return `
 /* One optional seasonal ornament follows the selected menu item. */
 .los-menu { --nav-decoration-index:0; }

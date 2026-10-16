@@ -1,6 +1,13 @@
 # Changelog
 
-## Updates after 1.4.0
+## 17 October 2026 — Small customiser improvements
+
+- Show name on Home now sits directly below the show name, including in the setup wizard.
+- Optional gentle On air dot glow, respecting reduced-motion preferences.
+- Optional icons-only navbar, retaining accessible button names.
+- A What’s new screen in the customiser, with this update history.
+
+## 16 October 2026 — Artwork and demo songs
 
 - Five additional navbar decorations and two additional logo designs for each theme, including light-show artwork.
 - Editable show names paired with logo artwork, plus an option to hide the visible Home name for uploaded logos that already include it.
