@@ -8,12 +8,20 @@ const check=(name,ok)=>{const li=document.createElement('li');li.className=ok?'p
 document.getElementById('run').onclick=async()=>{
  results.replaceChildren();const button=document.getElementById('run');button.disabled=true;
  try{
- const source=await (await fetch('../templates/christmas.html')).text();
+ const source=await (await fetch('../templates/christmas.html')).text(),adapter=createPreview(frame,()=>{});
  for(const theme of Object.keys(themes)){
+ const starter=cloneDefaults(theme),starterHTML=render(source,starter);
+ for(const mode of ['jukebox','voting']){
+  adapter.update(starterHTML,starter,{mode,air:true});await wait(350);
+  adapter.navigate('music');await wait(30);
+  const d=frame.contentDocument,rows=[...d.querySelectorAll('.los-song-list [role=button]')];
+  check(theme+' '+mode+': two sample sashes with no user NEW assignments',rows.filter(r=>getComputedStyle(r,'::after').content==='"NEW"').length===2&&starter.newNames==='');
+ }
+ check(theme+': sample sashes never enter the exported template',!starterHTML.includes('data-demo-new')&&themes[theme].demoSongs.every(name=>!starterHTML.includes(name)));
  const s=cloneDefaults(theme);Object.assign(s,{fm:true,pulsemesh:true,listening:'Please bring headphones.',categories:true,newFilter:true,newNames:'New "quotes" & a \\ backslash\n'+themes[theme].demoSongs[2],notice:true,noticeTitle:'Tonight’s notice',noticeText:'A short message for visitors.',donations:true,donationHome:true,donationInfo:true,charity:'A local charity',donationText:'Help our community.',donationUrl:'https://example.org/donate',homeCard:true,homeCardTitle:'Photo spot',homeCardText:'Try our selfie wings.'});
  Object.assign(s,{logoMode:'seasonal',decorations:true,homeLiveSchedule:true,neighbourText:'Please keep driveways clear.\nEnjoy the lights together.'});
  s.copy={LISTEN_TITLE:'Listen to our seasonal magic',SUCCESS_TITLE:'A brilliant pick!',SUCCESS_JUKEBOX:'Your choice is queued. Enjoy the show!',SUCCESS_VOTING:'Your vote is counted. Enjoy the show!'};
- const html=render(source,s),adapter=createPreview(frame,()=>{});
+ const html=render(source,s);
  for(const {width,height} of Object.values(viewports).flat()){
   frame.style.width=width+'px';frame.style.height=height+'px';
   for(const mode of ['jukebox','voting'])for(const air of [true,false]){
@@ -34,7 +42,7 @@ document.getElementById('run').onclick=async()=>{
    const list=d.querySelector('.los-song-list');
    d.querySelector('.music-filter a[href="#songs-new"]').click();await wait(30);
    const rows=[...list.querySelectorAll('[role=button]')].filter(visible);
-   check(`${width}px ${mode}: NEW filter and escaped-name sash`,rows.length===2&&rows.every(r=>getComputedStyle(r,'::after').content==='"NEW"'));
+   check(`${width}px ${mode}: NEW filter and escaped-name sash`,rows.length===4&&rows.every(r=>getComputedStyle(r,'::after').content==='"NEW"'));
    check(`${width}px ${mode}: unavailable NEW song stays disabled`,rows.some(r=>r.classList.contains('sequence-unavailable')&&r.getAttribute('aria-disabled')==='true'));
    d.querySelector('.music-filter a[href="#songs-category-2"]').click();await wait(30);
    check(`${width}px ${mode}: second category filter`,[...list.querySelectorAll('[role=button]')].filter(visible).every(r=>r.closest('.category-section')===list.querySelectorAll('.category-section')[1]));
