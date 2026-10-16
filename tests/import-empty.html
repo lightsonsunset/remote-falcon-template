@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Import guidance check</title><button id="run">Check no-import guidance</button><p id="result"></p><iframe id="editor" src="../" title="Isolated editor"></iframe><script type="module">
+import {CATALOGUE_KEY} from '../src/catalogue.js';
+const frame=document.querySelector('#editor');
+document.querySelector('#run').onclick=async()=>{
+ if(location.hostname!=='localhost')throw Error('Use isolated localhost origin');
+ const previous=localStorage.getItem(CATALOGUE_KEY);
+ try{
+  localStorage.removeItem(CATALOGUE_KEY);
+  await new Promise(r=>{frame.onload=()=>setTimeout(r,400);frame.contentWindow.location.reload();});
+  const d=frame.contentDocument;
+  const ok=d.querySelector('#detect-categories').disabled&&d.querySelector('#pick-new').disabled&&d.querySelector('#pick-new-help').textContent.includes('Import your song list');
+  document.querySelector('#result').textContent=ok?'PASS — Both actions visible, disabled and explained before import':'FAIL';
+ }finally{
+  if(previous===null)localStorage.removeItem(CATALOGUE_KEY);else localStorage.setItem(CATALOGUE_KEY,previous);
+  frame.contentWindow.location.reload();
+ }
+};
+</script></html>

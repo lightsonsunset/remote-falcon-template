@@ -1,0 +1,37 @@
+name: Bug report
+description: Report a problem with the template or customiser.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "Please use generic examples. Do not upload private settings, full catalogues, credentials or conversation screenshots. Report security issues privately through the Security tab."
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the result and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, device and version
+  - type: dropdown
+    id: location
+    attributes:
+      label: Where does it happen?
+      options:
+        - Customiser or demo preview
+        - Exported page in Remote Falcon
+        - Manual download or instructions
+  - type: textarea
+    id: details
+    attributes:
+      label: Additional details
+      description: Optional screenshots of the problem only, with personal information removed.

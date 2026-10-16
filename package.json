@@ -1,0 +1,23 @@
+{
+  "name": "lights-on-sunset-template",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/package.mjs",
+    "start": "node scripts/serve.mjs",
+    "verify": "npm test && npm run build && node scripts/verify-release.mjs",
+    "build:site": "node scripts/site.mjs"
+  },
+  "description": "Lights on Sunset Remote Falcon template and visual customiser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lightsonsunset/remote-falcon-template.git"
+  },
+  "homepage": "https://lightsonsunset.github.io/remote-falcon-template/",
+  "engines": {
+    "node": ">=22"
+  }
+}

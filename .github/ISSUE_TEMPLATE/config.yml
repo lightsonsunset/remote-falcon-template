@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup guide
+    url: https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html
+    about: Installation and customisation instructions.
+  - name: Private security report
+    url: https://github.com/lightsonsunset/remote-falcon-template/security/advisories/new
+    about: Report a suspected vulnerability privately.

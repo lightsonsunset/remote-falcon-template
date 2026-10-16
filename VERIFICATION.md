@@ -1,0 +1,11 @@
+# Verification and compatibility
+
+The customiser is tested at three separate levels:
+
+- Automated Node tests cover settings migrations, rendering, escaping, URL validation, catalogue parsing and export safety.
+- Local browser checks cover the illustrative demo, both seasonal themes, Jukebox/Voting, On air/Off air, navigation, category filters, NEW sashes, messages, narrow layouts, enlarged text, keyboard focus, setup, tour and settings persistence.
+- Generated pages have passed Remote Falcon’s validator in a separate non-live draft. That validates markup compatibility; it does not establish live playback, location-code acceptance, vote limits or live countdown updates.
+
+Device presets check layout, not a particular phone operating system. Test your own exported page in an RF draft and with your show before making it live. The demo never sends RF requests or votes.
+
+Run `npm run verify` for automated release checks. Browser harnesses in `tests/` are local development tools and are excluded from the published website. Publication checks verify the final URLs, artwork, documentation and downloads separately.

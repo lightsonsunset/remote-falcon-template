@@ -1,0 +1,14 @@
+name: Feature suggestion
+description: Suggest an improvement to this specific template.
+title: "[Idea] "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What would this help you do?
+      description: Explain the use case and your suggested change.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "This customiser personalises the Lights on Sunset layout. It is not a general page builder or an official Remote Falcon product."
