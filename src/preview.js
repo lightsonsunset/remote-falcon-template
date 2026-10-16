@@ -8,7 +8,9 @@ const catalogue = [
   {id:'Sleigh Bells at Sunset',category:0,colour:'#2e7860',demoNew:true},
   {id:'A Little Christmas Sparkle',category:0,colour:'#a87c32',unavailable:true},
   {id:'Dance Under the Lights',category:1,colour:'#4f6eae'},
-  {id:'One More Rainbow',category:1,colour:'#84629d'}
+  {id:'One More Rainbow',category:1,colour:'#84629d'},
+  {id:'Twinkling Together',category:0,colour:'#397b83'},
+  {id:'The Christmas Light Parade',category:1,colour:'#b25c41'}
 ];
 // Deliberate message fixtures, labelled in the UI; never an RF request/response.
 export const messageExamples=[

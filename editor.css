@@ -36,3 +36,5 @@
 .category-warning{padding:10px;border-left:3px solid var(--red);background:var(--soft);border-radius:5px;line-height:1.6}
 .catalogue-tools button.catalogue-help{display:inline;padding:0;margin-top:8px;background:none;border:0;text-decoration:underline;font-size:11px}
 #detected-category-list{list-style:none;padding:0}#detected-category-list li{display:flex;gap:8px;align-items:center;margin:8px 0}#detected-category-list li span{flex:1;overflow-wrap:anywhere}
+
+.decoration-choice{display:block;width:72px;height:72px;object-fit:contain;margin:0 auto 12px}

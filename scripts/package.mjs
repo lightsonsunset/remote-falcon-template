@@ -2,7 +2,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {deflateRawSync} from 'node:zlib';
 import {resolve} from 'node:path';
 import {render,cloneDefaults} from '../src/template.js';
-import {artwork} from '../src/assets.js';
+import {allArtworkFiles} from '../src/assets.js';
 import {buildReadme} from './readme.mjs';
 const root=resolve(import.meta.dirname,'..'),out=resolve(root,'downloads');await mkdir(out,{recursive:true});
 await buildReadme(root);
@@ -14,7 +14,7 @@ await writeFile(resolve(out,'Halloween RF Template.html'),halloween);
 function crc32(buffer){let crc=0xffffffff;for(const b of buffer){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return (crc^0xffffffff)>>>0;}
 const files=new Map([['Festive RF Template.html',Buffer.from(html)],['Halloween RF Template.html',Buffer.from(halloween)]]);
 for(const name of ['START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg'])files.set(name,await readFile(resolve(root,name)));
-for(const name of Object.values(artwork).flatMap(a=>Object.values(a)))files.set('assets/'+name,await readFile(resolve(root,'assets',name)));
+for(const name of allArtworkFiles)files.set('assets/'+name,await readFile(resolve(root,'assets',name)));
 files.set('assets/README.md',await readFile(resolve(root,'assets/README.md')));
 const local=[],central=[];let offset=0;
 for(const [name,data] of files){

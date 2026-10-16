@@ -1753,6 +1753,9 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
       body:not(:has(#show-options.has-listening)) .music-options::after { content: "Listening details will be announced soon."; }
       body:not(:has(#show-options.has-listening)) #info-listening .linked-listening::after { content: "Listening details will be announced soon."; }
       .show-logo { display:block; width:auto; max-width:min(280px,100%); max-height:180px; margin:0 auto 1rem; object-fit:contain; }
+      .content__body .share-brand .show-name-hidden { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip-path:inset(50%); white-space:nowrap!important; border:0!important; }
+      .share-brand.brand-combined .show-logo { max-width:min(340px,100%); max-height:150px; margin-bottom:0; }
+      .content__body .share-brand.brand-combined h1 { max-width:340px; margin:0 auto .75rem; padding:.35rem .35rem .55rem; color:var(--gold); font-size:clamp(1.45rem,5vw,2.15rem); font-weight:800; line-height:1.15; letter-spacing:.015em; text-wrap:balance; border-bottom:1px solid var(--gold); border-radius:0 0 45% 45%; }
       .share-brand h1, .share-brand p, .show-notice p, .support-card p, .hours-row span { overflow-wrap:anywhere; }
       .show-notice p, .other-listening { white-space:pre-line; }
       .content__body .section-card { background-color:var(--panel); }
@@ -1842,9 +1845,9 @@ a.visitor-link:hover{border-color:var(--section-accent)}a.visitor-link:focus-vis
       <div class="content__body tab-red" id="home-panel" data-tab-panel="home">
         <!-- SHOW BRANDING: text works without uploading any images.
              Optional: replace the icon and h1 with your own hosted logo image. -->
-        <div class="content__subitem logo-stage share-brand">
+        <div class="content__subitem logo-stage share-brand ">
           <i class="fa-solid fa-ghost" aria-hidden="true"></i>
-          <h1>Your Halloween Show</h1>
+          <h1 class="">Your Halloween Show</h1>
           <p>A little spooky magic, shared with you.</p>
         </div>
         <!-- HOME NOTICE: edit the title and message, then remove hidden.

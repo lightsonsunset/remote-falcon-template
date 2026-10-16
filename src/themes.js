@@ -19,7 +19,7 @@ export const themes = {
       UNAVAILABLE_TITLE: 'A little sleigh break', UNAVAILABLE_MESSAGE: "This song isn't available right now. Pick another favourite to keep the cheer going.",
       VOTE_LIMIT_MESSAGE: "You've used your votes for this show. Settle in and enjoy the Christmas magic!"
     },
-    demoSongs: ['Winter Starlight','Sleigh Bells at Sunset','A Little Christmas Sparkle','Dance Under the Lights','One More Rainbow']
+    demoSongs: ['Winter Starlight','Sleigh Bells at Sunset','A Little Christmas Sparkle','Dance Under the Lights','One More Rainbow','Twinkling Together','The Christmas Light Parade']
   },
   halloween: {
     name: 'Halloween', description: 'Pumpkin orange, violet & eerie green', icon: 'fa-ghost',
@@ -40,6 +40,6 @@ export const themes = {
       UNAVAILABLE_TITLE: 'Taking a little ghost break', UNAVAILABLE_MESSAGE: "This song isn't available right now. Pick another favourite to keep the spooky fun going.",
       VOTE_LIMIT_MESSAGE: "You've used your votes for this show. Settle in and enjoy the Halloween magic!"
     },
-    demoSongs: ['Moonlit Mischief','Pumpkin Parade','A Little Midnight Magic','Dance Under the Lights','One More Rainbow']
+    demoSongs: ['Moonlit Mischief','Pumpkin Parade','A Little Midnight Magic','Dance Under the Lights','One More Rainbow','Lanterns After Dark','The Monster Light Parade']
   }
 };
