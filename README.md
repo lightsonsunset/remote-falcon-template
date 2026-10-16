@@ -10,7 +10,7 @@ A ready-made Remote Falcon viewer template, with Christmas and Halloween themes.
 
 ![The Lights on Sunset customiser with settings on the left and a phone preview on the right](docs/images/editor-overview.jpg)
 
-Choose from three logo designs per theme, including pixel-light displays, with an optional editable name heading. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween.
+Choose from three logo designs per theme, including pixel-light displays, with an optional editable name heading. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
 
 ## Get started in six steps
 

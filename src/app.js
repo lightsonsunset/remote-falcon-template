@@ -6,12 +6,14 @@ import {editorGroups,completeWebAddress} from './editor-layout.js';
 import {settingsForm} from './editor-form.js';
 import {restore,persist,readPreferences,writePreferences} from './storage.js';
 import {createTour} from './tour.js';
+import {createChangelog} from './changelog.js';
 import {createSetupWizard} from './setup-wizard.js';
 import {createPreview} from './preview.js';
 import {viewports,defaultViewports} from './viewports.js';
 import {parseCatalogue,categoryNamesOf,saveCatalogue,restoreCatalogue} from './catalogue.js';
 import {detectedCategories,applyCategories,catalogueMatches} from './category-settings.js';
 const $=id=>document.getElementById(id);
+createChangelog();
 let storage;try{storage=window.localStorage;}catch{storage=null;}
 const restored=restore(storage);
 const restoredCatalogue=restoreCatalogue(storage);
