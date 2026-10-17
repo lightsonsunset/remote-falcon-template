@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1 — Preview navigation fix
+
+- Keep preview tabs and filters inside the viewer when a browser follows a native fragment link, fixing the editor appearing inside its own preview on iPhone.
+- Exported RF pages and saved settings are unchanged.
+
 ## 1.5.0 — Ready to share
 
 - Finish & export shortcuts lead to validation or the existing output controls.
