@@ -69,7 +69,7 @@ test('seasonal assets and visitor guidance export without demo data or scripts',
  const previous=JSON.parse(settingsFile(s));delete previous.settings.logoMode;delete previous.settings.decorations;delete previous.settings.neighbourText;delete previous.settings.neighbourTitle;previous.settings.logo='https://example.org/logo.png';const migrated=parseSettings(JSON.stringify(previous));assert.equal(migrated.logoMode,'custom');assert.ok(migrated.neighbourText);assert.equal(migrated.decorations,false);
 });
 test('all editable visitor-copy fields render and survive seasonal changes',()=>{
- const s=cloneDefaults();s.queueCount=true;copyFields.forEach(([key],i)=>s.copy[key]='Custom_'+i+'_');const html=render(source,s),full=render(source,{...s,countdownFormat:'full'});copyFields.forEach(([key],i)=>assert.ok((html+full).includes('Custom_'+i+'_'),key+' was not rendered'));assert.deepEqual(tokens(html),tokens(render(source,cloneDefaults())));
+ const s=cloneDefaults();s.queueCount=true;s.pulsemesh=true;s.pulsemeshButtons='both';s.pulsemeshUrl='https://player.pulsemesh.io/';copyFields.forEach(([key],i)=>s.copy[key]='Custom_'+i+'_');const html=render(source,s),full=render(source,{...s,countdownFormat:'full'});copyFields.forEach(([key],i)=>assert.ok((html+full).includes('Custom_'+i+'_'),key+' was not rendered'));assert.deepEqual(tokens(html),tokens(render(source,cloneDefaults())));
  const h=changeTheme(s,'halloween');assert.deepEqual(h.copy,s.copy);assert.deepEqual(parseSettings(settingsFile(h)).copy,s.copy);
  delete h.copy.SUCCESS_TITLE;assert.equal(copyFor(h).SUCCESS_TITLE,'A frightfully good choice!');
 });

@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.5 / 17 October 2026
+<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.6 / 17 October 2026
      Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
      Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
      No custom JavaScript. Install in a separate RF draft before going live.
@@ -569,6 +569,14 @@
       .faq-item p {
         margin-bottom: 0;
       }
+
+      .linked-listening { display: grid; gap: 0.85em; margin-top: 0.6em; }
+      .faq-item .linked-listening p { margin: 0; }
+      .linked-listening .share-pulsemesh { display: grid; gap: 0.7em; }
+      .faq-pulse-option { display: grid; justify-items: start; gap: 0.1em; min-width: 0; }
+      .faq-pulse-option a { display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; overflow-wrap: anywhere; }
+      .faq-pulse-option small { color: var(--text-secondary); font-size: 0.85em; }
+      .linked-listening .other-listening { overflow-wrap: anywhere; }
 
       .info-pill-list {
         display: flex;
@@ -1869,8 +1877,8 @@
               <div class="music-option share-fm">[[FM_INTRO]] <span class="radio-frequency">[[FM_FREQUENCY]] FM</span></div>
               <div class="music-option share-pulsemesh">[[PULSE_INTRO]]
                 <div class="pulsemesh-download-wrap">
-                  <a class="pulsemesh-download" href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download" aria-hidden="true"></i><span>[[PULSE_BUTTON]]</span></a>
-                  <span class="pulsemesh-platforms">[[PULSE_PLATFORMS]]</span>
+[[PULSE_DISPLAY_LINK]]
+[[PULSE_DOWNLOAD_CONTENT]]
                 </div>
               </div>
             </div>
@@ -1894,8 +1902,8 @@
               <div class="music-option share-fm">[[FM_INTRO]] <span class="radio-frequency">[[FM_FREQUENCY]] FM</span></div>
               <div class="music-option share-pulsemesh">[[PULSE_INTRO]]
                 <div class="pulsemesh-download-wrap">
-                  <a class="pulsemesh-download" href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download" aria-hidden="true"></i><span>[[PULSE_BUTTON]]</span></a>
-                  <span class="pulsemesh-platforms">[[PULSE_PLATFORMS]]</span>
+[[PULSE_DISPLAY_LINK]]
+[[PULSE_DOWNLOAD_CONTENT]]
                 </div>
               </div>
             </div>

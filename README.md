@@ -8,6 +8,8 @@ Start with the Lights on Sunset template, choose your theme and personalise it f
 
 [Open the template customiser](https://lightsonsunset.github.io/remote-falcon-template/) · [Download template + instructions](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) · [Full setup guide](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html)
 
+**New to Remote Falcon?** [Remote Falcon](https://remotefalcon.com/) lets visitors request or vote for songs at your light show. Use this customiser to personalise the page they see. Visit the [official documentation](https://docs.remotefalcon.com/) to learn how to set up and connect your show.
+
 ![The Lights on Sunset customiser with settings on the left and a phone preview on the right](docs/images/editor-overview.jpg)
 
 Choose from three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
@@ -16,7 +18,7 @@ Choose from three logo designs per theme, including pixel-light displays, with a
 
 ### 1. Add your show details
 
-Choose **Set up my show** on the welcome screen for a short wizard: Your show, Dates & hours, Listening, then Review & finish. Pick a theme, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Everything remains editable afterwards. You can also enter these details directly under **Site setup**.
+Choose **Set up my show** on the welcome screen for a short wizard: Your show, Dates & hours, Music & listening, then Review & finish. Pick a theme, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Choose whether to show song artwork; songs without an assigned image still display neatly as text. Everything remains editable afterwards. You can also enter these details directly under **Site setup**.
 
 The welcome also offers **Open the editor** and **Take a quick tour**. Closing it or pressing Escape starts editing. Your choice is remembered.
 
@@ -43,6 +45,10 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 | Song messages | Request and voting titles and short explanations, with local preview buttons |
 
 Selecting a page opens it in the preview. Shared show details, colours, schedule and listening options live in **Site setup**. Start with the features you need; optional extras can stay off.
+
+To use a three-button visitor menu, untick **Support → Support page → Show Support in menu**. Your Support page and saved content remain available, including through existing direct links. Home and Info support cards still open their recipient links. Choose those placements for any cards visitors should find without the Support menu button.
+
+For PulseMesh, choose **Download app only**, **Listen on PulseMesh only** or **Both buttons** under **Site setup → Listening**, or in the wizard. Listen needs your full public display link from PulseMesh. It is reused on Home and in the listening FAQ. [PulseMesh explains display links and supported plans](https://pulsemesh.io/docs/topics/display-codes); the buttons do not activate the service or change its access rules.
 
 ### 3. Check the preview
 

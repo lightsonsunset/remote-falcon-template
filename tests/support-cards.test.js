@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {cloneDefaults,checkedSettings,parseSettings,settingsFile,render,renderDraft,validate,supportCardDefaults} from '../src/template.js';
+import {cloneDefaults,checkedSettings,parseSettings,settingsFile,render,renderDraft,validate,supportCardDefaults,changeTheme} from '../src/template.js';
 import {settingsForm} from '../src/editor-form.js';
 const source=await readFile(new URL('../templates/christmas.html',import.meta.url),'utf8');
 function configured(){const s=cloneDefaults();Object.assign(s,{donations:true,charity:'Community cause',donationUrl:'https://example.org/give',donationHome:true,donationInfo:true});s.donationRecipients=[{name:'Local podcast',description:'Stories from our community.',url:'https://example.org/listen',image:'',home:true,info:true,...supportCardDefaults,button:'Listen to {charity}',callout:'Discover <stories> & {charity}',hint:'Tap to listen'}];return s;}
@@ -32,4 +32,36 @@ test('editor clearly separates Support wording from each Home/Info teaser',()=>{
  assert.equal(html.split('<summary>Home &amp; Info teaser</summary>').length-1,2);
  assert.equal(html.split('data-copy="DONATE_BUTTON"').length-1,1);
  for(const part of ['button','callout','hint'])assert.equal(html.split('data-part="'+part+'"').length-1,1);
+});
+
+test('Support menu visibility defaults on for older designs and preserves card settings',()=>{
+ const old=configured();delete old.showSupportTab;
+ const s=parseSettings(settingsFile(old));assert.equal(s.showSupportTab,true);
+ s.showSupportTab=false;s.copy.SUPPORT_TITLE='Our supporters';s.copy.NAV_SUPPORT='Thanks';
+ const roundTrip=parseSettings(settingsFile(s));assert.deepEqual(roundTrip,s);
+ const next=changeTheme(roundTrip,'halloween');assert.equal(next.showSupportTab,false);
+ assert.deepEqual(next.donationRecipients,s.donationRecipients);assert.equal(next.donationHome,true);assert.equal(next.donationInfo,true);
+ assert.equal(next.copy.SUPPORT_TITLE,'Our supporters');assert.equal(next.copy.NAV_SUPPORT,'Thanks');
+ assert.throws(()=>checkedSettings({...s,showSupportTab:'false'}),/showSupportTab/);
+});
+
+test('hiding Support changes only its menu entry and decoration positions',()=>{
+ for(const theme of ['christmas','halloween']){
+  const s=changeTheme(configured(),theme);s.decorations=true;s.showSupportTab=false;
+  const html=render(source,s);
+  assert.match(html,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(html,/\.los-menu__item\[data-tab-target="support"\] \{ display:none; \}/);
+  assert.match(html,/id="support-panel"/);assert.match(html,/Our community|Local podcast/);
+  // All original recipient links and teasers remain available, independent of menu visibility.
+  assert.equal((html.match(/href="https:\/\/example.org\/give"/g)||[]).length,5);
+  assert.equal((html.match(/href="https:\/\/example.org\/listen"/g)||[]).length,5);
+  assert.match(html,/#info-panel :target\) \.los-menu \{ --nav-decoration-index:2; \}/);
+  assert.match(html,/#support-panel :target\) \.los-menu::after \{ content:none; \}/);
+  assert.doesNotMatch(html,/<script\b|localhost|data-demo-/);
+  const form=settingsForm(s);assert.equal(form.split('data-key="showSupportTab"').length-1,1);
+  assert.match(form,/Show or hide Support in the menu/);assert.match(form,/existing direct links to it still work/);
+  s.showSupportTab=true;const shown=render(source,s);
+  assert.doesNotMatch(shown,/\.los-menu__item\[data-tab-target="support"\] \{ display:none; \}/);
+  assert.match(shown,/#info-panel :target\) \.los-menu \{ --nav-decoration-index:3; \}/);
+ }
 });
