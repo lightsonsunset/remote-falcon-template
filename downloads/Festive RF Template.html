@@ -1095,6 +1095,26 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
         overflow-wrap: break-word;
       }
 
+      /* RF omits images that have not been assigned. Its unwrapped title must
+         not be auto-placed in the narrow artwork column. Compact each row
+         independently so catalogues can contain songs with and without art. */
+      .los-song-list .jukebox-list:not(:has(img)),
+      .los-song-list .cell-vote-playlist:not(:has(img)) {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+        min-height: 64px;
+      }
+      .los-song-list .jukebox-list:not(:has(img)) {
+        padding-right: calc(.78em + var(--los-new-text-gutter, 0px));
+      }
+      .los-song-list .jukebox-list:not(:has(img)) > .jukebox-list-artist,
+      .los-song-list .cell-vote-playlist:not(:has(img)) > .cell-vote-playlist-artist {
+        grid-column: 1;
+      }
+      .cell-vote-row > .cell-vote-playlist:not(:has(img)) {
+        min-height: var(--los-new-vote-height, 64px);
+      }
+
       /* NEW SONG ASSIGNMENTS: edit the sequence names in BOTH selectors.
          Add more [data-key="Exact RF sequence name"] entries to BOTH :is() lists.
          These assignments drive the sash AND the New this year filter.
