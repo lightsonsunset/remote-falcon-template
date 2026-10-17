@@ -137,6 +137,9 @@ export function createPreview(iframe, notify) {
     const positions=scrollPositions(), y=iframe.contentWindow?.scrollY||0;
     html=html.replaceAll(assetBase,new URL('../assets/',import.meta.url).href);
     const doc=new DOMParser().parseFromString(html,'text/html');
+    // srcdoc otherwise inherits the editor URL, so native fragment links can
+    // load the editor inside the preview. Keep the base local to this document.
+    const base=doc.createElement('base');base.href='about:srcdoc';doc.head.prepend(base);
     for(const el of [...doc.querySelectorAll('*')]){
       if(el.hasAttribute('{after-hours-message}')&&air)el.replaceChildren();
       if(el.hasAttribute('{jukebox-dynamic-container}')&&(!air||mode!=='jukebox'))el.replaceChildren();
