@@ -1,0 +1,14 @@
+name: Share feedback
+description: Tell us what worked well or what was confusing.
+title: "[Feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for trying the template! This is public. Please leave out private settings, song lists and account details."
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What would you like to tell us?
+      description: A few words is fine — what helped, or what could be clearer?
+    validations:
+      required: true

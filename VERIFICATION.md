@@ -8,4 +8,6 @@ The customiser is tested at three separate levels:
 
 Device presets check layout, not a particular phone operating system. Test your own exported page in an RF draft and with your show before making it live. The demo never sends RF requests or votes.
 
+The v1.5 release checks also cover backup confirmation and cancellation, export navigation and filenames, clipboard fallback, Help focus, and show-name contrast advice. A local CSS simulation checks the simple scrollable layout when `:has()` is unavailable; it is not a test on an actual older device. Recent browsers retain the normal panel navigation and filters.
+
 Run `npm run verify` for automated release checks. Browser harnesses in `tests/` are local development tools and are excluded from the published website. Publication checks verify the final URLs, artwork, documentation and downloads separately.
