@@ -84,13 +84,16 @@ export function createPreview(iframe, notify) {
         const card=element(doc,'div',cls+(s.unavailable?' sequence-unavailable':''));card.dataset.key=s.id;
         if(s.demoNew)card.dataset.demoNew='';
         card.setAttribute('role','button');card.tabIndex=s.unavailable?-1:0;card.setAttribute('aria-disabled',String(!!s.unavailable));
-        const img=element(doc,'img','');img.alt='';
-        if(imported){
-          img.loading='lazy';img.referrerPolicy='no-referrer';
-          const missing=()=>{img.removeAttribute('src');img.alt='Artwork unavailable';img.classList.add('preview-artwork-placeholder');};
-          img.addEventListener('error',missing,{once:true});if(s.imageUrl)img.src=s.imageUrl;else missing();
-        }else img.src=artwork(s.colour);
-        card.append(img,element(doc,'span','',s.title||s.id),element(doc,'span',cls+'-artist',imported?s.artist:s.messageId?'Message test only · no request or vote':s.custom?'Your NEW sash preview example':'Illustrative demo song'));
+        if(!imported||s.imageUrl?.trim()){
+          const img=element(doc,'img','sequence-image');img.alt='';
+          if(imported){
+            img.loading='lazy';img.referrerPolicy='no-referrer';img.src=s.imageUrl;
+            img.addEventListener('error',()=>{img.removeAttribute('src');img.alt='Artwork unavailable';img.classList.add('preview-artwork-placeholder');},{once:true});
+          }else img.src=artwork(s.colour);
+          card.append(img);
+        }
+        // RF uses a text node for available titles and omits unassigned artwork.
+        card.append(s.unavailable?element(doc,'span','',s.title||s.id):doc.createTextNode(s.title||s.id),element(doc,'div',cls+'-artist',imported?s.artist:s.messageId?'Message test only · no request or vote':s.custom?'Your NEW sash preview example':'Illustrative demo song'));
         if(s.messageId)card.dataset.demoMessage=s.messageId;
         if(s.unavailable)card.append(element(doc,'span','sequence-unavailable-hint','Back next show'));
         const activate=()=>{
@@ -153,7 +156,8 @@ export function createPreview(iframe, notify) {
       const song=imported?.songs[0],img=element(doc,'img','sequence-image');img.alt='';
       if(imported){img.referrerPolicy='no-referrer';if(song?.imageUrl)img.src=song.imageUrl;else{img.alt='Artwork unavailable';img.classList.add('preview-artwork-placeholder');}}
       else img.src=artwork('#a54550');
-      el.replaceChildren(img,element(doc,'span','',song?(song.displayName||song.name):themes[settings.theme].demoSongs[0]),element(doc,'div',mode==='voting'?'cell-vote-playlist-artist':'jukebox-list-artist',song?song.artist:'Illustrative demo song'),element(doc,'small','preview-playback-label',settings.showAlbumArtwork?'Artwork preview only · no live playback':'Song preview only · no live playback'));
+      const hasImage=!imported||!!song?.imageUrl?.trim();
+      el.replaceChildren(...(hasImage?[img]:[]),element(doc,'span','',song?(song.displayName||song.name):themes[settings.theme].demoSongs[0]),element(doc,'div',mode==='voting'?'cell-vote-playlist-artist':'jukebox-list-artist',song?song.artist:'Illustrative demo song'),element(doc,'small','preview-playback-label',settings.showAlbumArtwork&&hasImage?'Artwork preview only · no live playback':'Song preview only · no live playback'));
     });
     doc.querySelectorAll('.next-playlist,.jukebox-queue-container,.los-song-list,.request-feedback__location').forEach(el=>el.replaceChildren());
     updateCountdown(doc);

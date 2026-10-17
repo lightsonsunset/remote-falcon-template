@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2 — Songs without artwork
+
+- Song rows without an assigned image now use the full text width in Jukebox and Voting. Mixed catalogues can keep artwork enabled without squeezing image-free titles into the artwork column.
+- Imported catalogue previews omit unassigned images and use RF's available-song title structure, making this layout visible before export.
+- Existing RF pages need fresh HTML from the customiser (or the updated manual template) to receive this CSS fix. Saved settings are unchanged.
+
 ## 1.5.1 — Preview navigation fix
 
 - Keep preview tabs and filters inside the viewer when a browser follows a native fragment link, fixing the editor appearing inside its own preview on iPhone.
