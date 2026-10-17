@@ -1,4 +1,5 @@
 import {updateNameStyleForm} from './name-style-form.js';
+import {viewerFilename} from './release-ux.js';
 import {createHelp} from './help.js';
 import {registry,cloneDefaults,validate,render,renderDraft,escapeHTML as e,settingsFile,parseSettings,themes,changeTheme,contrast,namesOf,supportCardDefaults} from './template.js';
 import {logoFile,decorationFile} from './assets.js';
@@ -267,18 +268,38 @@ $('copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(currentHTML);showOutput('Copied! Your complete viewer page is on the clipboard.');}
   catch{showOutput('Clipboard access was unavailable. Select and copy the HTML below, or download the same file.',true);}
 });
-$('download').addEventListener('click',()=>{if(exportNow()){download(currentHTML,'My RF Viewer.html');showOutput('Downloaded! Open the file in a text editor and copy all its contents into RF.');}});
-$('fallback-download').addEventListener('click',()=>download(currentHTML,'My RF Viewer.html'));
+$('download').addEventListener('click',()=>{if(exportNow()){download(currentHTML,viewerFilename(settings));showOutput('Downloaded! Open the file in a text editor and copy all its contents into RF.');}});
+$('fallback-download').addEventListener('click',()=>download(currentHTML,viewerFilename(settings)));
 $('close-output').addEventListener('click',()=>$('output-dialog').close());
 $('save-settings').addEventListener('click',()=>{
   download(settingsFile(settings),'Lights on Sunset template settings.json','application/json');setError('');
 });
+let pendingSettings=null;
+const closeSettingsLoad=()=>{$('load-settings-dialog').close();pendingSettings=null;$('load-settings-button').focus({preventScroll:true});};
+$('load-settings-button').addEventListener('click',()=>$('load-settings').click());
+$('cancel-load-settings').addEventListener('click',closeSettingsLoad);
+$('close-load-settings').addEventListener('click',closeSettingsLoad);
+$('load-settings-dialog').addEventListener('cancel',event=>{event.preventDefault();closeSettingsLoad();});
+$('backup-before-load').addEventListener('click',()=>download(settingsFile(settings),'Lights on Sunset template settings.json','application/json'));
+$('confirm-load-settings').addEventListener('click',()=>{
+ if(!pendingSettings)return;
+ const next=pendingSettings;closeSettingsLoad();clearTimeout(updateTimer);settings=next;form();changed();setError('');
+});
 $('load-settings').addEventListener('change',async event=>{
   const file=event.target.files[0];if(!file)return;
-  try{if(file.size>1000000)throw Error('That settings file is too large.');const next=parseSettings(await file.text(),true);settings=next;form();changed();setError('');}
+  try{if(file.size>1000000)throw Error('That settings file is too large.');const next=parseSettings(await file.text(),true);pendingSettings=next;$('load-settings-description').textContent='Load “'+file.name+'” for '+next.name+' ('+themes[next.theme].name+')? This replaces your current design. Your imported song list stays as it is.';$('load-settings-dialog').showModal();$('cancel-load-settings').focus();setError('');}
   catch(err){setError(err.message);}
   event.target.value='';
 });
+function finishExport(){
+ clearTimeout(updateTimer);refresh();
+ document.querySelector('.workspace').dataset.view='settings';document.querySelectorAll('.narrow-tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.view==='settings'));
+ const hasErrors=!$('validation-summary').hidden,target=hasErrors?$('validation-summary'):$('save-export');
+ if(hasErrors)target.open=true;
+ target.scrollIntoView({block:'center',behavior:'instant'});
+ (hasErrors?$('validation-count'):$('export-heading')).focus({preventScroll:true});
+}
+document.querySelectorAll('[data-finish-export]').forEach(button=>button.addEventListener('click',finishExport));
 $('reset-settings').addEventListener('click',()=>$('reset-dialog').showModal());
 $('cancel-reset').addEventListener('click',()=>$('reset-dialog').close());
 $('confirm-reset').addEventListener('click',()=>{settings=cloneDefaults(settings.theme);form();changed();setError('');$('reset-dialog').close();});

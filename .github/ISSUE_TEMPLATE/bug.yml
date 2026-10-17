@@ -1,4 +1,4 @@
-name: Bug report
+name: Report a problem
 description: Report a problem with the template or customiser.
 title: "[Bug] "
 body:
@@ -15,9 +15,8 @@ body:
   - type: textarea
     id: steps
     attributes:
-      label: Steps to reproduce
-    validations:
-      required: true
+      label: How can we see it happen? (optional)
+      description: A few steps or a screenshot with private details removed is helpful.
   - type: input
     id: environment
     attributes:

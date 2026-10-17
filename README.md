@@ -52,7 +52,7 @@ The preview is a labelled demonstration with **no connection to your show**. Try
 
 ### 4. Bring your song list (optional)
 
-Use **Import RF song CSV** to choose a file and review its songs before importing. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Check that their names and order match RF; this does not change the categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All.
+Use **Import RF song CSV** to choose a file and review its songs before importing. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Category rows select RF categories by position: row 1 selects RF’s first category, row 2 its second, and so on. Renaming a button does not change its songs. Match RF’s names and order; this does not change categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All.
 
 Your CSV stays in this browser. The export uses RF's live catalogue, and your settings backup does not contain the imported CSV. Keep the original file. [Import and category instructions](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#catalogue).
 
@@ -60,13 +60,15 @@ Your CSV stays in this browser. The export uses RF's live catalogue, and your se
 
 ### 5. Keep a settings backup
 
-The customiser saves your edits locally in this browser. Use **Download settings backup** to keep a portable copy, and **Load settings backup** to continue later or on another computer. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
+The customiser saves your edits locally in this browser. Use **Download settings backup** to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
 
 ### 6. Copy your page into RF
 
-Choose **Copy HTML** or **Download my HTML**. In RF, create a separate draft under **Viewer Page → New Page**, replace its HTML with the complete document, then save and check RF's validator and preview. Test your own show before choosing **Set as Live**.
+Choose **Finish & export** above the settings (or after the wizard). It takes you to any fields needing attention, or to **Copy HTML** and **Download my HTML**. Downloaded HTML is named after your show and theme. In RF, create a separate draft under **Viewer Page → New Page**, replace its HTML with the complete document, then save and check RF's validator and preview. Test your own show before choosing **Set as Live**.
 
 ![Export instructions for installing the complete HTML in an RF draft](docs/images/export-to-rf.jpg)
+
+On older browsers without CSS `:has()` support, the viewer presents one scrollable page with section links and no category/NEW filters. Current browsers retain the normal page tabs and filters. This fallback does not add JavaScript or change RF’s request rules.
 
 Both music modes and availability states are included in the export. No custom JavaScript enters your RF page. Real requests, voting, availability, countdown values and playback are supplied by Remote Falcon.
 
@@ -80,7 +82,7 @@ The package also includes **README.html**: an offline, browser-readable copy of 
 
 ## Help and feedback
 
-Read the setup guide first, then use [GitHub Issues](https://github.com/lightsonsunset/remote-falcon-template/issues) for bugs and suggestions. Share generic examples rather than private settings or catalogues. [Report security issues privately](https://github.com/lightsonsunset/remote-falcon-template/security/advisories/new).
+Choose **Help → Feedback & questions** for short forms to report a problem, share feedback, suggest an improvement or ask a question. A free GitHub account is needed. Read the setup guide first, then use [GitHub Issues](https://github.com/lightsonsunset/remote-falcon-template/issues) for bugs and suggestions. Share generic examples rather than private settings or catalogues. [Report security issues privately](https://github.com/lightsonsunset/remote-falcon-template/security/advisories/new).
 
 ## Credits and licence
 

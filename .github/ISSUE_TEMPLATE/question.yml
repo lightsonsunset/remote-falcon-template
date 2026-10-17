@@ -1,0 +1,23 @@
+name: Ask a question
+description: Get help using or installing this template.
+title: "[Question] "
+body:
+  - type: markdown
+    attributes:
+      value: "For a quick start, see [the illustrated guide](https://lightsonsunset.github.io/remote-falcon-template/README.html). This is a community template, not official RF support. Please keep account details and private settings out of your question."
+  - type: textarea
+    id: question
+    attributes:
+      label: What would you like help with?
+      description: Tell us what you're trying to do and where you got stuck.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where are you working? (optional)
+      options:
+        - Customiser
+        - Installing or using the page in Remote Falcon
+        - Manual template download
+        - Something else

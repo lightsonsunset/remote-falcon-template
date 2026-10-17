@@ -10,7 +10,7 @@ The original Dynamic Menu template was the starting point for the Lights on Suns
 
 ## Sharing edition
 
-Template customiser edition 1.4, modified 16 October 2026. The generic template and setup guide were prepared from the customised Lights on Sunset page. Personal show assets and links were removed. The visual builder adds validated settings, an isolated illustrative preview, local backups and generated HTML. FM, donations, PulseMesh and category/NEW filter buttons are optional. The manual package and builder share one canonical source and renderer.
+Template customiser edition 1.5, modified 17 October 2026. The generic template and setup guide were prepared from the customised Lights on Sunset page. Personal show assets and links were removed. The visual builder adds validated settings, an isolated illustrative preview, local backups and generated HTML. FM, donations, PulseMesh and category/NEW filter buttons are optional. The manual package and builder share one canonical source and renderer.
 
 The sharing template is distributed under GNU GPL version 3. A verbatim copy of the upstream licence is included in [LICENSE](LICENSE). The complete editable HTML/CSS source is supplied as `Festive RF Template.html`. Please keep the attribution, modification notice and licence with redistributed copies. The software is provided without warranty; the licence sets out the full terms.
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.0 — Ready to share
+
+- Finish & export shortcuts lead to validation or the existing output controls.
+- Settings backups ask before replacing a design and offer a current-settings download.
+- HTML downloads include the show name and seasonal theme.
+- Clearer category-position guidance, local-saving reminders and CSV privacy wording.
+- Home show-name contrast advice in the editor and wizard.
+- A scrollable viewer fallback for browsers without CSS :has(); unsupported filter controls are hidden.
+- Help links to short public forms for problems, feedback, ideas and questions.
+- Includes the artwork, display, help, name-style and import-confirmation improvements listed below.
+
 ## 17 October 2026 — Clearer help and show-name styling
 
 - Simpler header with Setup wizard, Help, What’s new and the appearance switch; GitHub moves to the footer.
