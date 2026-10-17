@@ -272,7 +272,8 @@
       .hours-row span:last-child {
         color: var(--gold);
         font-weight: 700;
-        white-space: nowrap;
+        white-space: normal;
+        text-align: right;
       }
 
       .donation-card img {
@@ -1396,7 +1397,7 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
         }
 
         .hours-row span:last-child {
-          white-space: normal;
+          text-align: center;
         }
 
         .preview-link,
@@ -1766,7 +1767,6 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
       }
       .share-donation > i, .additional-donation > i { font-size: 2.4rem; color: var(--gold); text-align: center; }
       .share-donation.support-card { grid-template-columns: minmax(0, 1fr); }
-      .hours-row span:last-child { white-space: normal; text-align: right; }
       .music-option { min-width: 0; }
       .radio-frequency { overflow-wrap: anywhere; }
 
