@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1 — Mobile schedule alignment
+
+- Centre the hours beneath each day when schedule rows stack on small screens. The shared fix covers Home, off-air Music, the schedule FAQ and the optional on-air schedule in both themes and music modes.
+- Wider layouts retain their side-by-side day and hours alignment. Saved settings are unchanged.
+- Existing RF pages need freshly exported HTML or the updated manual template to receive this styling fix.
+
 ## 1.6.0 — PulseMesh choices and music setup
 
 - Choose a PulseMesh download button, a display-link button, or both. The display link and editable wording appear on Home and in the listening FAQ; existing designs keep the download button.
