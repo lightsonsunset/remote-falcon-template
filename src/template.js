@@ -22,12 +22,12 @@ export const defaults = {
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
   dates: 'To be announced',
   schedule: [{day:'Sunday–Thursday',hours:'To be announced'}, {day:'Friday–Saturday',hours:'To be announced'}, {day:'Christmas Eve / Day',hours:'To be announced'}],
-  fm: false, frequency: '88.7', pulsemesh: false, listening: '',
+  fm: false, frequency: '88.7', pulsemesh: false, pulsemeshButtons: 'download', pulsemeshUrl: '', listening: '',
   theme: 'christmas', colours: {...themes.christmas.colours},
   newNames: '', newFilter: false, categories: false, categoryNames: [...themes.christmas.categories], hiddenCategories:[],
   notice: false, noticeTitle: 'Show update', noticeText: '',
   donations: false, charity: 'Your chosen charity', donationText: 'Support a cause close to our community.', donationUrl: '', donationImage: '',
-  donationHome:false,donationInfo:false,donationRecipients:[],
+  donationHome:false,donationInfo:false,donationRecipients:[],showSupportTab:true,
   homeCard:false,homeCardTitle:'A little extra magic',homeCardText:'',homeCardLink:'',homeCardLinkLabel:'Find out more',
   faq:starterFAQ,copy:{}
 };
@@ -56,6 +56,7 @@ export function validate(s) {
   for (const key of ['name','dates']) if (!s[key].trim()) errors[key]='Please enter a value.';
   if (s.logoMode==='custom' && !isHTTPS(s.logo)) errors.logo='Start with https:// and use a direct image link, for example https://example.org/logo.png.';
   if (s.fm && !/^\d{2,3}(\.\d{1,2})?$/.test(s.frequency.trim())) errors.frequency='Enter a frequency, for example 88.7 (without FM).';
+  if (s.pulsemesh && s.pulsemeshButtons!=='download' && !isHTTPS(s.pulsemeshUrl)) errors.pulsemeshUrl='Paste your full PulseMesh display link starting with https://, or choose Download app only.';
   if (s.notice) for (const key of ['noticeTitle','noticeText']) if (!s[key].trim()) errors[key]='Add this before enabling your notice.';
   if (s.donations) {
     for (const key of ['charity','donationText']) if (!s[key].trim()) errors[key]='Add this before showing support cards.';
@@ -104,6 +105,7 @@ export function checkedSettings(input) {
     s[k]=input[k];
   }
   if(!Object.hasOwn(themes,s.theme))throw Error('Unknown seasonal theme.');
+  if(!['download','listen','both'].includes(s.pulsemeshButtons))throw Error('Choose supported PulseMesh buttons.');
   Object.assign(s,checkedExtraLists(input));
   if(!['icon','seasonal','custom'].includes(s.logoMode))throw Error('Choose a supported logo option.');
   if(!logoChoices[s.theme].some(c=>c.id===s.logoStyle))throw Error('Choose a supported logo design.');
@@ -162,6 +164,9 @@ export function parseSettings(text, allowIncomplete=false) {
   if(!f||typeof f!=='object'||f.version!==2||f.template!==templateId)throw Error('This file uses an unsupported version or template. Your current work has not changed.');
   // Preserve older settings created before Home cards and FAQ editing.
   if(f.settings&&typeof f.settings==='object'){
+    if(!('pulsemeshUrl' in f.settings))f.settings.pulsemeshUrl='';
+    if(!('pulsemeshButtons' in f.settings))f.settings.pulsemeshButtons='download';
+    if(!('showSupportTab' in f.settings))f.settings.showSupportTab=true;
     for(const [key,value] of Object.entries({...extraDefaults,...nameStyleDefaults}))if(!(key in f.settings))f.settings[key]=structuredClone(value);
     if(!('logoMode' in f.settings))f.settings.logoMode=f.settings.logo?'custom':'icon';
     for(const key of ['showMenuLabels','showAlbumArtwork','onAirPulse','logoStyle','combineLogoName','showNameOnHome','christmasDecoration','halloweenDecoration','copy','decorations','homeLiveSchedule','countdown','halloweenCountdown','homeMusicLink','queueCount','votesRemaining','hiddenCategories','musicFM','donationRecipients','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','faq','donationHome','donationInfo'])if(!(key in f.settings))f.settings[key]=structuredClone(defaults[key]);
@@ -183,6 +188,7 @@ export function renderDraft(source,input){
   for(const key of ['name','dates','noticeTitle','charity','donationText','homeCardTitle','homeCardLinkLabel'])if(!s[key].trim())s[key]=d[key];
   if(s.notice&&!s.noticeText.trim())s.noticeText='Your notice message will appear here.';
   if(!isHTTPS(s.logo))s.logo='';
+  if(!isHTTPS(s.pulsemeshUrl))s.pulsemeshUrl='';
   if(!isHTTPS(s.donationImage))s.donationImage='';
   if(!isHTTPS(s.homeCardLink))s.homeCardLink='';
   if(s.homeCard&&!s.homeCardText.trim())s.homeCardText='Your Home card message will appear here.';
@@ -219,8 +225,10 @@ function renderDocument(source,s){
     SCHEDULE_ROWS:s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('\n'),
     SCHEDULE_FAQ:'<div class="hours-list">'+s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('')+'</div>',
     FM_FREQUENCY:e(s.frequency),
+    PULSE_DISPLAY_LINK:s.pulsemesh&&s.pulsemeshButtons!=='download'&&isHTTPS(s.pulsemeshUrl)?`<a class="pulsemesh-download pulsemesh-listen" href="${e(s.pulsemeshUrl)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-headphones" aria-hidden="true"></i><span>${c.PULSE_LISTEN_BUTTON}</span></a>`:'',
+    PULSE_DOWNLOAD_CONTENT:s.pulsemeshButtons!=='listen'?`<a class="pulsemesh-download" href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download" aria-hidden="true"></i><span>${c.PULSE_BUTTON}</span></a><span class="pulsemesh-platforms">${c.PULSE_PLATFORMS}</span>`:'',
     OTHER_LISTENING:s.listening.trim()?`<div class="music-option other-listening">${e(s.listening)}</div>`:'',
-    OTHER_LISTENING_FAQ:s.listening.trim()?`<span class="other-listening"> ${e(s.listening)}</span>`:'',
+    OTHER_LISTENING_FAQ:s.listening.trim()?`<p class="other-listening">${e(s.listening)}</p>`:'',
     CHARITY_NAME:e(s.charity||'Your chosen charity'),DONATION_DESCRIPTION:e(s.donationText||'Support a cause close to our community.'),DONATION_URL:s.donations&&isHTTPS(s.donationUrl)?e(s.donationUrl):'#support-panel',
     DONATION_ICON:s.donations&&s.donationImage?`<img class="donation-image donation-image--compact" src="${e(s.donationImage)}" alt="">`:'<i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>',
     DONATION_IMAGE:s.donations&&s.donationImage?`<img class="donation-image" src="${e(s.donationImage)}" alt="">`:'',
@@ -253,8 +261,9 @@ function renderDocument(source,s){
   };
   for(const place of ['home','info','support'])v['EXTRA_DONATIONS_'+place.toUpperCase()]=s.donations?s.donationRecipients.filter(r=>place==='support'||r[place]).map(r=>recipientCard(r,place!=='support')).join('\n'):'';
   v.LIVE_SCHEDULE=s.homeLiveSchedule?`<div class="section-card compact live-schedule"><h2>${c.DATES_TITLE}</h2><p>${v.SHOW_DATES}</p><h3>${c.HOURS_TITLE}</h3><div class="hours-list">${v.SCHEDULE_ROWS}</div></div>`:'';
-  const listening=`<span class="share-fm">${c.FM_INTRO} ${v.FM_FREQUENCY} FM. </span><span class="share-pulsemesh"> <a href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer">${c.PULSE_BUTTON}</a> · ${c.PULSE_PLATFORMS}</span>${v.OTHER_LISTENING_FAQ}`;
-  v.FAQ_ITEMS=s.faq.map(f=>`<div class="faq-item"${f.kind==='listening'?' id="info-listening"':''}><strong>${e(f.question)}</strong>${f.kind==='schedule'?`<p>${v.SHOW_DATES}</p>${v.SCHEDULE_FAQ}`:f.kind==='listening'?`<p class="linked-listening">${listening}</p>`:''}${f.answer?`<p class="faq-answer">${e(f.answer)}</p>`:''}${f.kind==='text'&&isHTTPS(f.linkUrl)?`<p><a class="faq-link" href="${e(f.linkUrl)}" target="_blank" rel="noopener noreferrer">${e(f.linkLabel||'Find out more')}</a></p>`:''}</div>`).join('\n')+v.PLAYLIST_FAQ;
+  const pulseFAQ=[s.pulsemesh&&s.pulsemeshButtons!=='download'&&isHTTPS(s.pulsemeshUrl)?`<div class="faq-pulse-option"><a class="pulsemesh-listen" href="${e(s.pulsemeshUrl)}" target="_blank" rel="noopener noreferrer">${c.PULSE_LISTEN_BUTTON}</a></div>`:'',s.pulsemeshButtons!=='listen'?`<div class="faq-pulse-option"><a href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer">${c.PULSE_BUTTON}</a><small>${c.PULSE_PLATFORMS}</small></div>`:''].filter(Boolean).join('');
+  const listening=`<p class="share-fm">${c.FM_INTRO} ${v.FM_FREQUENCY} FM.</p><div class="share-pulsemesh">${pulseFAQ}</div>${v.OTHER_LISTENING_FAQ}`;
+  v.FAQ_ITEMS=s.faq.map(f=>`<div class="faq-item"${f.kind==='listening'?' id="info-listening"':''}><strong>${e(f.question)}</strong>${f.kind==='schedule'?`<p>${v.SHOW_DATES}</p>${v.SCHEDULE_FAQ}`:f.kind==='listening'?`<div class="linked-listening">${listening}</div>`:''}${f.answer?`<p class="faq-answer">${e(f.answer)}</p>`:''}${f.kind==='text'&&isHTTPS(f.linkUrl)?`<p><a class="faq-link" href="${e(f.linkUrl)}" target="_blank" rel="noopener noreferrer">${e(f.linkLabel||'Find out more')}</a></p>`:''}</div>`).join('\n')+v.PLAYLIST_FAQ;
   if(!s.faq.some(f=>f.kind==='listening'))v.FAQ_ITEMS='<span id="info-listening"></span>'+v.FAQ_ITEMS;
   v.FAQ_SECTION=s.faq.length||v.PLAYLIST_FAQ?`<div class="section-card info-card"><h2>${c.FAQ_TITLE}</h2><div class="info-faq">${v.FAQ_ITEMS}</div></div>`:'<span id="info-listening"></span>';
   for(const [i,k] of ['home','music','support','info'].entries()){
@@ -304,6 +313,11 @@ function viewerOptionsCSS(s){return [
 .content__body .cell-vote-row > .cell-vote-playlist { min-height:var(--los-new-vote-height,64px); }
 `,
   !s.showMenuLabels&&'.los-menu__label { display:none; }',
+  !s.showSupportTab&&`
+/* Hide only the menu entry; retain Support for direct links and editor preview. */
+.los-menu { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.los-menu__item[data-tab-target="support"] { display:none; }
+`,
   s.onAirPulse&&`
 /* Optional gentle live-status glow; no change to RF availability. */
 .show-status--live { --live-dot-rgb:${s.theme==='halloween'?'255,185,120':'139,233,180'}; }
@@ -315,13 +329,14 @@ function viewerOptionsCSS(s){return [
 @media(prefers-reduced-motion:reduce) { .show-status--live .show-status__label::before { animation:none; } }
 `
 ].filter(Boolean).join('\n');}
-function decorationCSS(s){return `
+function decorationCSS(s){const count=s.showSupportTab?4:3;return `
 /* One optional seasonal ornament follows the selected menu item. */
 .los-menu { --nav-decoration-index:0; }
 body:has(#music-panel:target) .los-menu, body:has(#music-panel :target) .los-menu { --nav-decoration-index:1; }
 body:has(#support-panel:target) .los-menu { --nav-decoration-index:2; }
-body:has(#info-panel:target) .los-menu, body:has(#info-panel :target) .los-menu { --nav-decoration-index:3; }
-.los-menu::after { content:"";position:absolute;width:34px;height:34px;top:-6px;left:calc(7px + (100% - 26px) / 4 - 38px + (100% - 10px) / 4 * var(--nav-decoration-index));background:url("${assetBase+decorationFile(s)}") center / contain no-repeat;pointer-events:none;z-index:2;transition:left 180ms ease; }
+body:has(#info-panel:target) .los-menu, body:has(#info-panel :target) .los-menu { --nav-decoration-index:${count-1}; }
+.los-menu::after { content:"";position:absolute;width:34px;height:34px;top:-6px;left:calc(7px + (100% - 26px) / ${count} - 38px + (100% - 10px) / ${count} * var(--nav-decoration-index));background:url("${assetBase+decorationFile(s)}") center / contain no-repeat;pointer-events:none;z-index:2;transition:left 180ms ease; }
+${s.showSupportTab?'':'body:has(#support-panel:target) .los-menu::after, body:has(#support-panel :target) .los-menu::after { content:none; }'}
 @media(prefers-reduced-motion:reduce) { .los-menu::after { transition:none; } }
 `;}
 export const registry = [{id:templateId,name:'Lights on Sunset',defaults,themes,source:'templates/christmas.html',supportedSettings:Object.keys(defaults),render}];

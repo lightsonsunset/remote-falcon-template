@@ -54,6 +54,8 @@ function form(){
 function features(){
  updateNameStyleForm($('settings'),settings);
  document.querySelectorAll('[data-feature]').forEach(el=>el.hidden=!el.dataset.feature.split('|').some(k=>settings[k])&&!el.querySelector('[data-copy][aria-invalid="true"]')&&!el.contains(document.activeElement));
+ document.querySelectorAll('[data-pulsemesh-link]').forEach(el=>el.hidden=settings.pulsemeshButtons==='download');
+ document.querySelectorAll('[data-support-menu-note]').forEach(el=>el.hidden=settings.showSupportTab);
  document.querySelectorAll('[data-logo-field]').forEach(el=>el.hidden=settings.logoMode!=='custom');
  document.querySelectorAll('[data-seasonal-logo]').forEach(el=>el.hidden=settings.logoMode!=='seasonal');
  document.querySelectorAll('.artwork-choice').forEach(el=>{el.hidden=settings.logoMode!=='seasonal';el.src='assets/'+logoFile(settings);});
@@ -67,7 +69,7 @@ function refresh(options={}){
   const errors=validate(settings);document.querySelectorAll('[data-error]').forEach(el=>el.textContent=errors[el.dataset.error]||'');
   document.querySelectorAll('[data-extra-list]').forEach(el=>el.setAttribute('aria-invalid',String(!!errors[el.dataset.extraList])));
   document.querySelectorAll('[data-key],[data-schedule],[data-category],[data-faq],[data-copy],[data-donation],[data-list]').forEach(el=>{const k=el.dataset.copy?'copy.'+el.dataset.copy:el.dataset.key||(el.dataset.list?`${el.dataset.list}.${el.dataset.row}.${el.dataset.part}`:el.dataset.donation!==undefined?`donationRecipients.${el.dataset.donation}.${el.dataset.part}`:el.dataset.category!==undefined?`categoryNames.${el.dataset.category}`:el.dataset.faq!==undefined?`faq.${el.dataset.faq}.${el.dataset.part}`:`schedule.${el.dataset.schedule}.${el.dataset.part}`);el.setAttribute('aria-invalid',String(!!errors[k]));});
-  const labels={name:'Show name',dates:'Show dates',logo:'Logo URL',frequency:'FM frequency',noticeTitle:'Notice title',noticeText:'Notice message',charity:'Support card name',donationText:'Support card description',donationUrl:'Support card link',donationImage:'Support card image',newNames:'NEW sequence names',homeCardTitle:'Home card title',homeCardText:'Home card message',homeCardLink:'Home card URL',homeCardLinkLabel:'Home card button label'};
+  const labels={name:'Show name',dates:'Show dates',logo:'Logo URL',frequency:'FM frequency',pulsemeshUrl:'PulseMesh display link',noticeTitle:'Notice title',noticeText:'Notice message',charity:'Support card name',donationText:'Support card description',donationUrl:'Support card link',donationImage:'Support card image',newNames:'NEW sequence names',homeCardTitle:'Home card title',homeCardText:'Home card message',homeCardLink:'Home card URL',homeCardLinkLabel:'Home card button label'};
   for(const [key,label] of copyFields)labels['copy.'+key]=label;
   settings.donationRecipients.forEach((_,i)=>{for(const part of ['name','description','url','image','button','callout','hint'])labels['donationRecipients.'+i+'.'+part]='Support card '+(i+2)+' '+({callout:'teaser heading',hint:'teaser helper',button:'button text'}[part]||part);});
  features();

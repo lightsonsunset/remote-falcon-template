@@ -14,7 +14,7 @@ const fields=(...keys)=>keys.map(key=>{
 });
 export const editorCopy={
  schedule:[['Schedule headings',fields('DATES_TITLE','HOURS_TITLE')]],
- listening:[['Listening heading & links',fields('LISTEN_TITLE','LISTEN_WAYS','LISTEN_FALLBACK')],['FM wording',fields('FM_INTRO','TUNE_SHORT')],['PulseMesh wording',fields('PULSE_INTRO','PULSE_BUTTON','PULSE_PLATFORMS')]],
+ listening:[['Listening heading & links',fields('LISTEN_TITLE','LISTEN_WAYS','LISTEN_FALLBACK')],['FM wording',fields('FM_INTRO','TUNE_SHORT')],['PulseMesh wording',fields('PULSE_INTRO','PULSE_BUTTON','PULSE_LISTEN_BUTTON','PULSE_PLATFORMS')]],
  navigation:[['Navigation labels',fields('NAV_HOME','NAV_MUSIC','NAV_SUPPORT','NAV_INFO')]],
  home:[['Link to Music on Home',fields('HOME_JUKEBOX_HELP','HOME_VOTING_HELP')],['Seasonal countdown',fields('COUNTDOWN_TITLE','COUNTDOWN_DAYS')]],
  countdownUnits:[['Full countdown labels',fields('COUNTDOWN_DAY_UNIT','COUNTDOWN_HOURS','COUNTDOWN_MINUTES','COUNTDOWN_SECONDS')]],

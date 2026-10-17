@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0 — PulseMesh choices and music setup
+
+- Choose a PulseMesh download button, a display-link button, or both. The display link and editable wording appear on Home and in the listening FAQ; existing designs keep the download button.
+- The setup wizard's Music & listening step includes the same PulseMesh choices and the album-artwork switch. Cancel and Skip preserve previous settings.
+- Added display-link validation and official PulseMesh setup guidance.
+- Listening FAQs separate FM, PulseMesh links and extra instructions into spaced blocks, preserving entered line breaks.
+- Help and the quick-start guide include a short Remote Falcon introduction, with links to its website and official documentation.
+- Support can be hidden from the visitor menu without deleting its page or cards. The remaining three buttons fill the navbar, including seasonal decoration; Home and Info card links continue to work.
+
 ## 1.5.2 — Songs without artwork
 
 - Song rows without an assigned image now use the full text width in Jukebox and Voting. Mixed catalogues can keep artwork enabled without squeezing image-free titles into the artwork column.
