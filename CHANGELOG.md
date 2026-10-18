@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.1 — Current screenshots and setup guidance — 18 October 2026
+
+### Shared customiser
+
+- Refreshed supporting screenshots and corrected setup guidance in the README, offline quick start and both manual packages, including song badges, uncategorised artwork and Support visibility.
+- Documentation only; saved designs and viewer behaviour are unchanged. Existing RF pages do not need fresh HTML.
+
 ## 1.9.0 — Clearer editing and updates — 18 October 2026
 
 ### Shared customiser

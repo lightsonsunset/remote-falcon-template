@@ -1,5 +1,14 @@
 # Verification and compatibility
 
+Entries below record checks at the time of each batch. Earlier feature limitations and unpublished status are historical; use the latest release notes for current product status.
+
+## 1.9.1 documentation refresh — 18 October 2026
+
+- Compared the published README with the released source, reviewed all eight documentation images, and refreshed five stale supporting screenshots. Captures use generic defaults and the labelled illustrative preview; the current chooser is now included in the README.
+- Corrected the detailed guide’s Support visibility path, badge-picker workflow, uncategorised-artwork fallback and Announcement wording. The guides now describe Released / In progress. Earlier verification entries remain dated history.
+- The source guides over HTTP and directly from disk, plus both extracted manual packages, passed 24 layout checks at 320px, 390px and 1440px. All screenshots, local links and section anchors resolved without overflow or browser errors. Of 24 external destinations checked read-only, 23 returned successfully; the retained AusChristmasLighting profile rejected automated access with HTTP 403 and was not independently verified in this pass.
+- All 126 Node tests and both package/privacy audits passed. Canonical viewer changes are limited to the 1.9.1 edition header; no editor logic, settings schema, saved designs or viewer behaviour changed. No RF/FPP page, setting, request or vote was changed.
+
 ## 1.9.0 release preparation — 18 October 2026
 
 The combined editor/menu and update-dialog changes passed 126 Node tests, package/privacy verification and the allowlisted site build. The release-dialog matrix was rerun for both templates in light/dark modes at 320px, 390px and desktop widths, including doubled text, keyboard navigation, focus restoration, unchanged saved designs and local history-fetch recovery. Released history identifies 1.9.0; completed menu work is absent from In progress while approved themes remain planned. Both canonical templates and all four manual starters carry matching version/date headers; viewer changes are limited to that metadata. The existing seven menu-related browser suites and compact-invitation checks are recorded below. These remain local checks, with no new hosted RF or physical-device rehearsal.
