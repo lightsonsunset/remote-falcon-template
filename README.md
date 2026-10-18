@@ -53,7 +53,7 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 | Area | What you can change |
 |---|---|
 | Home (Lights on Sunset) | Welcome, visitor guidance, notices, extra information, off-air video and countdown |
-| Music | Song artwork, Now Playing artwork, NEW sashes, Moving heads badges, categories, queue wording and counters. Compact console also keeps its welcome, notice, off-air video and countdown here. Its visitor guidance is under Info. |
+| Music | Song artwork, Now Playing artwork, NEW sashes, Moving spotlights badges, categories, queue wording and counters. Compact console also keeps its welcome, notice, off-air video and countdown here. Its visitor guidance is under Info. |
 | Support | Cards for charities, creators and thank-yous, with optional images and main-screen/Info links |
 | Info | Introduction, YouTube, Quick Facts, FAQs and resources. Compact console also keeps extra-information cards and playlists here; Lights on Sunset’s playlists are edited under Music. |
 | Site setup | Show identity, dates, listening, colours, menu and optional social links |
@@ -89,7 +89,9 @@ The preview is a labelled demonstration with **no connection to your show**. Try
 
 ### 4. Bring your song list (optional)
 
-Use **Import RF song CSV** to choose a file and review its songs before importing. Tick songs under **Select songs to mark as NEW** to add NEW sashes. All songs are imported, whether ticked or not. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Category rows select RF categories by position: row 1 selects RF’s first category, row 2 its second, and so on. Renaming a button does not change its songs. Match RF’s names and order; this does not change categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All. Songs without a category also appear under All (and New this year when marked NEW), but not under named category filters. They do not need an extra category row.
+In [RF’s Sequences page](https://remotefalcon.com/control-panel/sequences/list), choose **Export** at the top to download your CSV. **How to export from RF**, beside the catalogue controls and under **Music → Song badges**, opens a short reminder with links to RF.
+
+Use **Import RF song CSV** to choose a file and review its songs before importing. Under **Choose song badges**, mark each song as **NEW**, **Moving heads**, both or neither. All songs are imported, whether marked or not. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Category rows select RF categories by position: row 1 selects RF’s first category, row 2 its second, and so on. Renaming a button does not change its songs. Match RF’s names and order; this does not change categories saved in RF. **Set song badges** reopens both choices without typing exact sequence names. Manual entry is also available under **Music → Song badges**. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All. Songs without a category also appear under All (and New this year when marked NEW), but not under named category filters. They do not need an extra category row.
 
 **How category filters work** opens a short guide from the import window or **Music → Categories**, with a link to RF’s category documentation. Import review counts songs without a category and recommends assigning every song one; you can still import and review them.
 
@@ -97,7 +99,7 @@ Your CSV stays in this browser. The export uses RF's live catalogue, and your se
 
 ![The tour explaining how detected categories become visitor filter buttons](docs/images/category-tour.jpg)
 
-Under **Music → Moving heads**, choose songs from your imported catalogue or enter exact RF sequence names manually. Apply adds a **Moving heads** badge to their song-list cards in Jukebox and Voting. Songs also marked NEW show **NEW · Moving heads** together; NEW-only songs retain their sash. This does not change categories, requests or which lights run. Cancel, X and Escape discard pending badge choices.
+Under **Music → Song badges**, choose songs from your imported catalogue or enter exact RF sequence names manually. Select **Moving heads** to add a **Moving spotlights** badge to their song-list cards in Jukebox and Voting. NEW always keeps its corner sash; songs with both selections show the sash and a separate Moving spotlights pill. The combined section shows both selection counts, separate manual name lists and the **Show “New this year” filter** option. This does not change categories, requests or which lights run. Both choices are available during CSV import and later through **Set song badges**. **Clear badges** clears both pending lists, including names outside the CSV. Cancel, X and Escape discard pending badge choices.
 
 ### 5. Keep a settings backup
 

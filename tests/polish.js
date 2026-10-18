@@ -15,7 +15,7 @@ run.onclick=async()=>{
   const q=s=>d.querySelector(s),p=()=>q('#preview').contentDocument;
   const input=async(selector,value)=>{const el=q(selector);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));await wait(400);};
   const click=async selector=>{q(selector).click();await wait(400);};
-  check('Primary catalogue controls use consistent wording',q('#detect-categories').textContent==='Detect categories'&&q('#pick-new').textContent==='Set NEW sashes'&&q('#catalogue-options').textContent==='Import details & help');
+  check('Primary catalogue controls use consistent wording',q('#detect-categories').textContent==='Detect categories'&&q('#pick-new').textContent==='Set song badges'&&q('#catalogue-options').textContent==='Import details & help');
   if(cat){
    await input('[data-key="newNames"]',cat.songs[0].name);await click('#detect-categories');const before=q('[data-key="newNames"]').value;
    check('Detection opens review without changing selections',q('#category-picker').open&&q('[data-key="newNames"]').value===before);await click('#cancel-categories');check('Cancel leaves categories unchanged',!q('[data-key="categories"]').checked);

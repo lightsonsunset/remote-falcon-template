@@ -3,7 +3,7 @@ import {copyFields,messageCopyGroups} from './copy.js';
 // Editor organisation only: saved field names and RF markup remain independent.
 export const editorGroups={
  home:{name:'Home',sections:[11,19,13,20,7,8,26,21],panel:'home'},
- music:{name:'Music',sections:[30,6,32,18,22,23,24,25,15],panel:'music'},
+ music:{name:'Music',sections:[30,6,18,22,23,24,25,15],panel:'music'},
  support:{name:'Support',sections:[16,9],panel:'support'},
  info:{name:'Info',sections:[17,27,28,10,29],panel:'info'},
  setup:{name:'Site setup',sections:[1,2,3,4,5,31,14]},

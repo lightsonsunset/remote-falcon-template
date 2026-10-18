@@ -324,7 +324,7 @@ function viewerOptionsCSS(s){return [
   nameStyleCSS(s),
   s.homeCard&&informationCSS,
   artworkCSS(s),
-  songBadgeCSS(s,escapeCSS),
+  songBadgeCSS(s,escapeCSS,accentInk(s.colours.gold)),
   !s.showMenuLabels&&'.los-menu__label { display:none; } .los-menu .los-menu__item i { font-size:24px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1; }',
   !s.showSupportTab&&`
 /* Hide only the menu entry; retain Support for direct links and editor preview. */

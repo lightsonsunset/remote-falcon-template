@@ -1,4 +1,5 @@
 import {createCategoryHelp,missingCategoryNotice} from './category-help.js';
+import {createRFExportHelp} from './rf-export-help.js';
 import {categoryIcon,songArtworkMode,renameCategoryArtwork} from './song-artwork.js';
 import {updateSongArtworkForm} from './song-artwork-form.js';
 import {informationCards,setInformationCards,newInformationCard,informationKey} from './information-cards.js';
@@ -30,6 +31,7 @@ import {detectedCategories,applyCategories,catalogueMatches} from './category-se
 const $=id=>document.getElementById(id);
 createChangelog();
 createCategoryHelp();
+createRFExportHelp();
 let storage;try{storage=window.localStorage;}catch{storage=null;}
 const designStore=createDesignStore(storage),initial=designStore.read();
 let settings=initial.settings,catalogue=initial.catalogue,catalogueSource=catalogue?'imported':'samples',catalogueSaved=true;
@@ -154,13 +156,10 @@ function categoriesMatch(){
 function catalogueUI(){
   $('catalogue-source').querySelector('[value="imported"]').disabled=!catalogue;
   $('pick-new').disabled=!catalogue;
-  $('pick-new-music').disabled=!catalogue;
-  $('pick-moving-music').disabled=!catalogue;
-  $('moving-selected-count').textContent=namesOf(settings,'movingHeadNames').length+' selected';
-  $('moving-music-help').innerHTML=catalogue?'Choices add Moving heads badges to your exported RF page.':'Import your RF song CSV in Preview catalogue, or enter names below. <button type="button" class="inline-link" data-import-catalogue>Import song CSV</button>';
-  $('new-selected-count').textContent=namesOf(settings).length+' selected';
-  $('new-music-help').innerHTML=catalogue?'Choices add NEW sashes to your exported RF page.':'Import your RF song CSV in Preview catalogue, or enter names below. <button type="button" class="inline-link" data-import-catalogue>Import song CSV</button>';
-  $('pick-new-help').textContent=catalogue?'Choices add NEW sashes to your exported RF page.':'Import your song list to detect categories and choose NEW sashes. Manual entry is under Music.';
+  $('pick-song-badges').disabled=!catalogue;
+  $('song-badge-count').textContent=namesOf(settings).length+' NEW · '+namesOf(settings,'movingHeadNames').length+' Moving heads';
+  $('song-badges-help').innerHTML=catalogue?'Choose which songs to mark as NEW or Moving heads.':'Import your RF song CSV in Preview catalogue, or enter names below. <button type="button" class="inline-link" data-import-catalogue>Import song CSV</button>';
+  $('pick-new-help').textContent=catalogue?'Choose NEW sashes and Moving spotlights badges for your song cards.':'Import your song list to detect categories and choose song badges. Manual entry is under Music → Song badges.';
   $('detect-categories').disabled=!catalogue;
   $('catalogue-source').value=catalogueSource;$('remove-catalogue').hidden=!catalogue;
   $('catalogue-summary').textContent=catalogue&&catalogueSource==='imported'?`${catalogue.songs.length} imported songs`:'Sample songs';
@@ -190,65 +189,62 @@ $('catalogue-source').addEventListener('change',()=>{catalogueSource=$('catalogu
 $('catalogue-options').addEventListener('click',()=>$('catalogue-dialog').showModal());
 $('close-catalogue').addEventListener('click',()=>$('catalogue-dialog').close());
 $('pick-new').addEventListener('click',()=>openNewPicker());
-let pickerKind='new',pickedNew=new Set(),pickedCategories=[],detectedNames=[],pickerCatalogue=null,pendingCatalogue=null,pickerReturnFocus=null;
+let pickedNew=new Set(),pickedMoving=new Set(),pickedCategories=[],detectedNames=[],pickerCatalogue=null,pendingCatalogue=null,pickerReturnFocus=null;
 const categoryList=(names,kind)=>names.map((name,i)=>`<li><span>${e(name)}</span><button type="button" data-${kind}-up="${i}" aria-label="Move ${e(name)} up" ${i===0?'disabled':''}>↑</button><button type="button" data-${kind}-down="${i}" aria-label="Move ${e(name)} down" ${i===names.length-1?'disabled':''}>↓</button></li>`).join('');
 function pickerCount(){
- const count=pickedNew.size,withCategories=pickerKind==='new'&&$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled;
- $('new-picker-count').textContent=(pendingCatalogue?pendingCatalogue.songs.length+' songs · ':'')+count+(pickerKind==='moving'?' Moving heads badges':' NEW sashes')+(withCategories?' · '+pickedCategories.length+' category filters':'');
- $('apply-new').textContent=pickerKind==='moving'?'Apply Moving heads badges':pendingCatalogue?'Import & apply choices':withCategories?'Apply NEW sashes & categories':'Apply NEW sashes';
- $('apply-new').disabled=count>200;
- $('new-picker-list').querySelectorAll('[data-pick-new]').forEach(input=>input.closest('label').querySelector('.new-picker-tag').hidden=!input.checked);
+ const withCategories=$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled;
+ $('new-picker-count').textContent=pickerCatalogue.songs.length+' songs · '+pickedNew.size+' NEW · '+pickedMoving.size+' Moving heads'+(withCategories?' · '+pickedCategories.length+' category filters':'');
+ $('apply-new').textContent=pendingCatalogue?'Import & apply choices':'Apply choices';
+ const tooMany=pickedNew.size>200||pickedMoving.size>200;
+ $('apply-new').disabled=tooMany;$('picker-limit-error').hidden=!tooMany;
 }
 function pickerCategories(){
   $('picker-category-list').innerHTML=categoryList(pickedCategories,'picker');
 }
-function openNewPicker(candidate=null,kind='new'){
-  pickerKind=kind;
+function openNewPicker(candidate=null){
   const next=candidate||catalogue;if(!next)return;
-  // Keep an import in memory until catalogue, category and NEW choices are confirmed.
+  // Keep an import in memory until catalogue, categories and both badge choices are confirmed.
   pendingCatalogue=candidate;pickerCatalogue=next;pickerReturnFocus=candidate?$('catalogue-source'):document.activeElement;
-  $('new-picker-title').textContent=kind==='moving'?'Moving heads badges':candidate?'Import song list':'Catalogue & NEW sashes';
+  $('new-picker-title').textContent=candidate?'Import song list':'Choose song badges';
   $('cancel-new-bottom').textContent=candidate?'Cancel import':'Cancel';
   $('cancel-new').setAttribute('aria-label',candidate?'Cancel import':'Close without applying changes');
-  pickedNew=new Set(namesOf(settings,kind==='moving'?'movingHeadNames':'newNames'));
-  $('new-selection-title').textContent=kind==='moving'?'Select songs with moving-head lights':'Select songs to mark as NEW';
-  $('new-picker').querySelector('.picker-categories').hidden=kind==='moving';
-  $('new-picker').querySelector('[data-category-help-links]').hidden=kind==='moving';
-  const present=new Set(pickerCatalogue.songs.map(s=>s.name)),outside=[...pickedNew].filter(n=>!present.has(n));
-  $('new-picker-note').textContent=(candidate?candidate.filename+'. Nothing changes until you choose Import & apply choices.':'Nothing changes until you apply your choices.')+(outside.length?' '+outside.length+' names outside this CSV stay selected unless you clear the selection.':'');
-  $('new-selection-help').textContent=kind==='moving'?'Tick songs to add a Moving heads badge. Unticked songs stay in your catalogue.':'Tick songs to add a NEW sash to their cards. This is optional; '+(candidate?'all songs will be imported, whether ticked or not.':'unticked songs stay in your catalogue.');
+  pickedNew=new Set(namesOf(settings));pickedMoving=new Set(namesOf(settings,'movingHeadNames'));
+  $('new-selection-title').textContent='Choose song badges';
+  const present=new Set(pickerCatalogue.songs.map(s=>s.name)),outside=[...new Set([...pickedNew,...pickedMoving])].filter(n=>!present.has(n));
+  $('new-picker-note').textContent=(candidate?candidate.filename+'. Nothing changes until you choose Import & apply choices.':'Nothing changes until you apply your choices.')+(outside.length?' '+outside.length+' names outside this CSV stay selected unless you clear the badges.':'');
+  $('new-selection-help').textContent='Mark songs as NEW, Moving heads, or both. Moving heads appear as a “Moving spotlights” badge. '+(candidate?'All songs will be imported, whether marked or not.':'Unmarked songs stay in your catalogue.');
   const missingCategory=missingCategoryNotice(pickerCatalogue);
-  $('picker-missing-categories').textContent=missingCategory;$('picker-missing-categories').hidden=kind==='moving'||!missingCategory;
+  $('picker-missing-categories').textContent=missingCategory;$('picker-missing-categories').hidden=!missingCategory;
   const detected=categoryNamesOf(pickerCatalogue),proposal=detectedCategories(pickerCatalogue,settings),valid=!proposal.error;
   pickedCategories=proposal.names;
   $('picker-setup-categories').checked=false;$('picker-setup-categories').disabled=!valid;
   $('picker-current-categories').textContent='Current filters: '+(settings.categories?settings.categoryNames.join(' → '):'Off')+'. Detected in CSV: '+(detected.join(', ')||'none')+'.';
-  $('picker-category-help').textContent=valid?'Check this order against RF’s Categories tab; the CSV does not include its saved order. Category changes apply with NEW sashes.':proposal.error;
+  $('picker-category-help').textContent=valid?'Check this order against RF’s Categories tab; the CSV does not include its saved order. Category changes apply with your badge choices.':proposal.error;
   pickerCategories();
   $('new-picker-search').value='';
-  $('new-picker-list').innerHTML=pickerCatalogue.songs.map((s,i)=>`<label class="new-picker-row" data-search="${e((s.displayName+' '+s.name+' '+s.artist+' '+s.category).toLowerCase())}"><input type="checkbox" data-pick-new="${i}" ${pickedNew.has(s.name)?'checked':''}><span><strong>${e(s.displayName||s.name)}</strong><small>${e(s.artist)}</small><small>RF name: ${e(s.name)}</small><small class="picker-song-category">${e(s.category||'No category set')}</small></span><span class="new-picker-tag" ${pickedNew.has(s.name)?'':'hidden'}>${kind==='moving'?'Moving heads':'NEW'}</span></label>`).join('');pickerCount();$('new-picker').showModal();
+  $('new-picker-list').innerHTML=pickerCatalogue.songs.map((s,i)=>`<div class="new-picker-row" data-search="${e((s.displayName+' '+s.name+' '+s.artist+' '+s.category).toLowerCase())}"><div class="picker-song-details" id="picker-song-${i}"><strong>${e(s.displayName||s.name)}</strong>${s.artist?'<small>'+e(s.artist)+'</small>':''}<small>RF name: ${e(s.name)}</small><small class="picker-song-category">${e(s.category||'No category set')}</small></div><div class="picker-badge-choices" role="group" aria-labelledby="picker-song-${i}"><label class="picker-badge"><input type="checkbox" data-pick-new="${i}" ${pickedNew.has(s.name)?'checked':''}><span>NEW</span></label><label class="picker-badge"><input type="checkbox" data-pick-moving="${i}" ${pickedMoving.has(s.name)?'checked':''}><span>Moving heads</span></label></div></div>`).join('');pickerCount();$('new-picker').showModal();
 }
 $('picker-setup-categories').addEventListener('change',pickerCount);
 $('picker-category-list').addEventListener('click',event=>{const b=event.target.closest('button');if(!b)return;const up=b.dataset.pickerUp!==undefined,i=+(up?b.dataset.pickerUp:b.dataset.pickerDown),j=i+(up?-1:1);if(j<0||j>=pickedCategories.length)return;[pickedCategories[i],pickedCategories[j]]=[pickedCategories[j],pickedCategories[i]];$('picker-setup-categories').checked=!$('picker-setup-categories').disabled;pickerCategories();pickerCount();});
-$('clear-new').addEventListener('click',()=>{pickedNew.clear();$('new-picker-list').querySelectorAll('[data-pick-new]').forEach(el=>el.checked=false);pickerCount();});
-$('new-picker-list').addEventListener('change',event=>{const el=event.target;if(el.dataset.pickNew===undefined)return;const name=pickerCatalogue?.songs[+el.dataset.pickNew]?.name;if(name===undefined)return;if(el.checked)pickedNew.add(name);else pickedNew.delete(name);pickerCount();});
+$('clear-new').addEventListener('click',()=>{pickedNew.clear();pickedMoving.clear();$('new-picker-list').querySelectorAll('input[type=checkbox]').forEach(el=>el.checked=false);pickerCount();});
+$('new-picker-list').addEventListener('change',event=>{const el=event.target;const moving=el.dataset.pickMoving!==undefined,index=moving?el.dataset.pickMoving:el.dataset.pickNew;if(index===undefined)return;const name=pickerCatalogue?.songs[+index]?.name;if(name===undefined)return;const picked=moving?pickedMoving:pickedNew;if(el.checked)picked.add(name);else picked.delete(name);pickerCount();});
 $('new-picker-search').addEventListener('input',event=>{const q=event.target.value.toLowerCase().trim();$('new-picker-list').querySelectorAll('[data-search]').forEach(el=>el.hidden=!el.dataset.search.includes(q));});
 function closeNewPicker(){
   const target=pickerReturnFocus;
-  pendingCatalogue=null;pickerCatalogue=null;pickedNew.clear();pickedCategories=[];
+  pendingCatalogue=null;pickerCatalogue=null;pickedNew.clear();pickedMoving.clear();pickedCategories=[];
   $('new-picker').close();$('new-picker-list').replaceChildren();$('picker-category-list').replaceChildren();$('new-picker-count').textContent='';
   const focus=target?.isConnected&&target.getClientRects().length?target:$('catalogue-source');focus.focus({preventScroll:true});
 }
 for(const id of ['cancel-new','cancel-new-bottom'])$(id).addEventListener('click',closeNewPicker);
 $('new-picker').addEventListener('cancel',event=>{event.preventDefault();closeNewPicker();});
 $('apply-new').addEventListener('click',()=>{
-  if(!pickerCatalogue||pickedNew.size>200)return;
+  if(!pickerCatalogue||pickedNew.size>200||pickedMoving.size>200)return;
   const importing=!!pendingCatalogue;
-  const kind=pickerKind;settings[kind==='moving'?'movingHeadNames':'newNames']=[...pickedNew].join('\n');
-  if(kind==='new'&&$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled)applyCategories(settings,pickedCategories);
+  settings.newNames=[...pickedNew].join('\n');settings.movingHeadNames=[...pickedMoving].join('\n');
+  if($('picker-setup-categories').checked&&!$('picker-setup-categories').disabled)applyCategories(settings,pickedCategories);
   if(importing){catalogue=pendingCatalogue;catalogueSource='imported';catalogueSaved=savePrivateCatalogue(catalogue);}
-  closeNewPicker();form();changed({label:importing?'Import catalogue and choices':kind==='moving'?'Apply Moving heads badges':'Apply NEW and category choices'});
-  if(importing){clearTimeout(updateTimer);refresh();$('preview-status').textContent=catalogueSaved?'Song list imported. Your NEW and category choices are applied. Requests and votes stay in this preview.':'Song list imported for this session only; browser storage was unavailable. Keep your original CSV.';}
+  closeNewPicker();form();changed({label:importing?'Import catalogue and choices':'Apply song badges and category choices'});
+  if(importing){clearTimeout(updateTimer);refresh();$('preview-status').textContent=catalogueSaved?'Song list imported. Your badge and category choices are applied. Requests and votes stay in this preview.':'Song list imported for this session only; browser storage was unavailable. Keep your original CSV.';}
 });
 $('remove-catalogue').addEventListener('click',()=>{catalogue=null;catalogueSource='samples';catalogueSaved=savePrivateCatalogue(null);$('catalogue-error').hidden=catalogueSaved;if(!catalogueSaved)$('catalogue-error').textContent='Removed from this preview, but browser storage could not be updated.';changed({label:'Remove imported catalogue'});refresh();});
 $('detect-categories').addEventListener('click',()=>{
@@ -324,8 +320,7 @@ $('settings').addEventListener('click',event=>{
   if(el.id==='add-donation-recipient'&&settings.donationRecipients.length<4){settings.donationRecipients.push({name:'',description:'',url:'',image:'',...supportCardDefaults,home:false,info:false});form();changed();const field=$('settings').querySelector(`[data-donation="${settings.donationRecipients.length-1}"]`);if(field){field.closest('[data-recipient]').open=true;field.focus();}}
   if(el.dataset.donationRemove!==undefined){settings.donationRecipients.splice(+el.dataset.donationRemove,1);form();changed();}
   if(el.dataset.remove!==undefined&&settings.schedule.length>1){settings.schedule.splice(+el.dataset.remove,1);form();changed();}
-  if(el.id==='pick-new-music')openNewPicker();
-  if(el.id==='pick-moving-music')openNewPicker(null,'moving');
+  if(el.id==='pick-song-badges')openNewPicker();
   if(el.hasAttribute('data-import-catalogue'))$('catalogue-file').click();
   if(el.dataset.previewMessage)previewMessage(el.dataset.previewMessage,el.dataset.previewMode);
   if(el.hasAttribute('data-reset-name-colour')){settings.customNameColour=false;$('settings').querySelector('[data-key=customNameColour]').checked=false;$('settings').querySelector('[data-key=customNameColour]').focus();changed();}

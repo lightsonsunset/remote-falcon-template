@@ -64,8 +64,8 @@ button.onclick=async()=>{
   check('Bare www link visibly completes and restores export',url.value==='https://www.example.org/donate'&&!d.getElementById('download').disabled);
   url.value=urlBefore;url.dispatchEvent(new Event('input',{bubbles:true}));donations.checked=donationsBefore;donations.dispatchEvent(new Event('input',{bubbles:true}));await wait(650);
   d.querySelector('[data-editor-group="music"]').click();
-  check('Music picker shares import availability and selection count',d.getElementById('pick-new-music').disabled===d.getElementById('pick-new').disabled&&d.getElementById('new-selected-count').textContent.includes('selected'));
-  if(!d.getElementById('pick-new-music').disabled){d.getElementById('pick-new-music').click();check('Music opens the same NEW picker',d.getElementById('new-picker').open);d.getElementById('cancel-new').click();}
+  check('Music picker shares import availability and selection count',d.getElementById('pick-song-badges').disabled===d.getElementById('pick-new').disabled&&d.getElementById('song-badge-count').textContent.includes('Moving heads'));
+  if(!d.getElementById('pick-song-badges').disabled){d.getElementById('pick-song-badges').click();check('Music opens the same NEW picker',d.getElementById('new-picker').open);d.getElementById('cancel-new').click();}
   const catalogueChoice=d.getElementById('catalogue-source').value;
   d.querySelector('[data-mode="jukebox"]').click();await wait(350);
   const queueBefore=preview.contentDocument.querySelector('.jukebox-queue-container').textContent;

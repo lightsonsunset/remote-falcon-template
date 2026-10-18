@@ -32,5 +32,5 @@ for(const t of registry){
  });
 }
 test('badge assignments escape exact RF names and preserve existing NEW assignments',()=>{
- const s=populated(registry[0]);s.newNames=s.movingHeadNames.split('\n')[0];s.movingHeadNames+='\n</style><script>bad</script>';const css=songBadgeCSS(s,escapeCSS);assert.doesNotMatch(css,/<script>|<\/style>/);assert.match(css,/NEW · Moving heads/);assert.match(css,/content:none/);assert.match(css,/\\22/);assert.equal(songBadgeCSS({...s,movingHeadNames:''},escapeCSS),'');
+ const s=populated(registry[0]);s.newNames=s.movingHeadNames.split('\n')[0];s.movingHeadNames+='\n</style><script>bad</script>';const css=songBadgeCSS(s,escapeCSS);assert.doesNotMatch(css,/<script>|<\/style>/);assert.ok(css.includes('content:"Moving spotlights" / var(--los-new-moving-label,"Moving spotlights")'));assert.match(css,/--los-new-corner-art:url\("data:image\/svg\+xml,/);assert.doesNotMatch(css,/NEW · Moving|content:none/);assert.match(css,/\\22/);assert.equal(songBadgeCSS({...s,movingHeadNames:''},escapeCSS),'');
 });
