@@ -1,74 +1,35 @@
 # Changelog
 
-## Unreleased — More templates, shared editing
+## 1.7.0 — Compact console and shared editing — 18 October 2026
 
 ### Shared customiser
 
-- Make optional NEW-sash selection clear with a prominent heading directly above the song search and list. Import guidance explains that unticked songs are still imported, shared by both templates.
-
-- Explain category filters in one shared help dialog, linked from import and Music settings alongside RF’s category guide. Import review counts uncategorised songs and recommends category assignments without blocking import or changing pending choices.
-
-- Handle songs without categories consistently: retain the music-note artwork fallback, exclude them from named category filters, and preserve their Voting tallies and NEW badges. CSV category detection accepts mixed catalogues, and the local preview follows RF’s ungrouped markup.
-
-- Invite viewer-page submissions from the template chooser and Help feedback flow. A dedicated public issue form collects source code, credits and reuse permissions for consideration as future community templates, with an optional AusChristmasLighting forum contact for private discussion.
-
-- Independently show artist names in song lists and in Now Playing, Up Next and the queue. Both templates share the controls, setup drafts, backups, copying and Undo/Redo. Older designs keep artists enabled, and missing artists leave no blank artist line.
-
-- Share non-scrolling category targets so All, category and NEW filters retain the viewer position and native browser history.
-
-- Refresh both template guides, manual-editing instructions and screenshots. Verify the exact contents and offline guide links in every manual ZIP through shared packaging checks.
-- Restore the correct local-save status after loading or changing designs, including session edits that could not be saved.
-
-- Make Reset to defaults and Reset demo easier to find with warm warning-coloured pill buttons. The design-reset confirmation names the template and season being reset. Organise the shared icon picker into Christmas, Halloween, Lights & magic, Music & media and General, with category filters and search.
-
-- Use the same Welcome section and Welcome message label across templates, with shared controls for the common content.
-
-- Explain disabled Copy/Download HTML actions beside the buttons, with links straight to the fields needing attention in either template.
-
-- Choose album artwork, category icons or no artwork for the song list, with a separate Now Playing artwork switch. Both templates share the icon picker and category mappings; existing artwork settings keep their appearance. Choices are included in setup, backups, copying and Undo/Redo.
-
-- Keep editor scroll, focus, caret and preview context while editing or using Undo/Redo. Header appearance and icon choices use the same controls in setup and the editor; setup choices remain a draft until Apply.
-- Add up to five extra-information cards with optional pictures, links, reordering and removal. Existing cards keep their saved content and placement.
-- Choose on-air visitor guidance above the header, below it or below On air. Existing designs retain their previous defaults.
-- Expand the shared Font Awesome Free library with seasonal icons and seasonal search terms. Icons-only navigation uses larger, centred 24px icons.
-
-- Template previews open as a centred phone with detached On air / Off air and Close controls. Thumbnail backgrounds stay dark on hover. The editor and expanded previews share the same renderer and mouse-drag scrolling.
-- Season buttons now look consistent across templates. Start setup or go straight to the editor from the template chooser; finish setup with one Apply & open editor button and an optional Take a quick tour after setup checkbox. The checkbox starts unchecked each time and retains its choice during Back/Next navigation. The shorter shared tour includes a visual category-filter example.
-- Choose navigation, page-action and message icons from one searchable library, also used by playlists and resources. Older designs retain their default icons.
-- Tighten shared setup spacing: keep explanation text beside its related control, remove extra textarea margins, and retain comfortable checkbox tap targets. Remove the duplicate export shortcut from the temporary setup summary; Finish & export remains in the editor header.
-- Group the current design and template actions in a compact shared toolbar with a uniform border, distinguish compact undo/redo controls, align wizard schedule columns, and clarify extra-information placeholders.
-
-- Show maximum queue length above Jukebox song choices in either template, using RF’s native value and editable wording. Existing designs keep the option off. Keep the default message brief, with one concise editor explanation linking to RF’s queue settings guide.
-- Choose a template from seasonal previews and resume each saved design independently.
-- Undo and redo edits, setup, resets and applied catalogue imports during the editing session. Each design has its own history.
-- Copy selected show details between designs after review. Keep appearance and imported catalogues separate.
-- Backups, setup, validation, preview and downloads use shared template registration.
-- Update the introduction and action labels for multiple templates.
+- Added a template chooser with Christmas and Halloween previews, a centred phone preview with On air / Off air controls, and direct choices to start setup or open the editor.
+- Added Undo/Redo with a separate editing history for each design, plus Copy show details to reuse selected information between designs.
+- Simplified setup with shared header and icon choices, clearer spacing, one Apply & open editor action and an optional quick tour. Setup changes remain a draft until applied.
+- Preserved editor scroll, focus, caret and preview position during edits and Undo/Redo. Expanded previews share the same rendering and mouse-drag scrolling as the editor preview.
+- Added a searchable icon picker organised into seasonal and general categories. Navigation without labels uses larger, centred icons.
+- Added up to five extra-information cards with optional images and links, with controls to reorder and remove cards.
+- Added optional on-air visitor guidance above the header, below the header or below On air, retaining existing design defaults.
+- Added album artwork, category icons and no-artwork choices for song lists, a separate Now Playing artwork switch, and independent artist-name switches for song lists and playback/queue details. Missing artwork or artist information keeps the layout tidy.
+- Added editable queue-limit wording using RF’s queue-depth value. Clarified category filters, uncategorised songs and optional NEW-sash selection in the CSV import and Music controls.
+- Fixed category filters jumping to the top of the page. Songs without categories retain their fallback icon, voting tally and NEW sash and remain under All rather than named filters.
+- Added explanations beside unavailable HTML export buttons, clearer local-save feedback, consistent setting labels, a compact current-design toolbar and more visible reset buttons.
+- Added a viewer-template submission form and a private forum-contact option in the chooser and Help.
+- Updated the guides, screenshots and manual downloads for both templates, including an offline quick-start guide and the required credits and licences.
 
 ### Lights on Sunset
 
-- Align optional navbar artwork with the selected button when Support is hidden.
-
-- Gains the shared editor features while preserving its layout, original settings format, theme behaviour and download addresses. Existing RF HTML does not need replacing for editor-only improvements.
+- Added the shared customiser features while retaining the original layout, saved-settings format, seasonal switching and download addresses.
+- Fixed navbar artwork alignment when Support is hidden. Extra-information cards remain on Home.
 
 ### Compact console
 
-- Add seasonal navbar framing under Decorations: a fine candy-cane stripe for Christmas and a violet edge with cobweb corners for Halloween. The dark surface, selected buttons and tap areas stay consistent; decorations can be switched off.
-
-- Deepen the Fireside glow and Haunted violet page backgrounds so seasonal song cards and controls stand out more clearly. Advanced colour choices remain unchanged. Give both Compact navigation bars a darker base, accent outline and stronger shadow to separate them from the cards.
-
-- Keep a visible 12px gap between song cards in request and voting lists, including category filters and NEW results. Preserve the grid when RF supplies an inline category layout.
-
-- Keep RF-supplied Up Next and queued-song artwork hidden so the compact text rows fit narrow phones.
-
-- Edit the line above the show name in Music → Welcome → Tagline, or leave it blank to hide it. Existing designs retain “Lights · Music · Together”.
-
-- Optionally place a simple icon above the show name. Extra-information cards stay on Info; main-screen guidance is optional and off by default.
-
-- Adds a Music-first layout with separate Info and Support views, a collapsed queue directly above Request a Song, and date-and-hours tiles.
-- Includes cosy Christmas and spooky Halloween styles, colour presets, advanced colours, light strands, corner details and a hanging spider. Motion respects reduced-motion preferences.
-- Saves complete Christmas and Halloween designs separately. Backups include both seasons; HTML export includes the selected season.
-- Local previews illustrate RF states. Actual playback, requests, votes and location integration still require an RF draft check before live use.
+- Added a Music-first layout with separate Info and Support views, a collapsed request queue above the song list, and date-and-hours tiles. Extra-information cards appear on Info.
+- Added cosy Christmas and spooky Halloween styles with colour presets, advanced colours, light strands, corner details and an animated hanging spider. Motion respects reduced-motion preferences.
+- Added darker page and navigation backgrounds, visible gaps between song cards, and optional seasonal navbar borders: festive stripes for Christmas and cobweb corners for Halloween.
+- Added an editable tagline, styled show name, optional icon above the name and custom-logo choice. Main-screen visitor guidance starts off, with guidance also available on Info.
+- Saved Christmas and Halloween as separate designs, each with its own content, catalogue and history. Settings backups include both seasons; HTML exports include the selected season.
 
 ## 1.6.1 — Mobile schedule alignment
 
