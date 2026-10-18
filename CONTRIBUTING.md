@@ -62,7 +62,7 @@ Public asset URLs in `src/assets.js` must be checked after deployment. Keep the 
 
 Use a pull request for changes, run `npm run verify`, and commit rebuilt downloads. Required checks must pass before squash-merging. The Pages workflow deploys the same checked commit. Use only public, generic examples in source, screenshots, issues and commit messages; keep private notes and user data outside the repository.
 
-Tag releases as `vMAJOR.MINOR.PATCH` and attach both generated manual ZIPs. Keep published `assets/` filenames stable because installed RF viewers can reference them. For rollback, revert the faulty change through a pull request and redeploy; do not rewrite a released tag. Record user-facing changes in CHANGELOG.md.
+Before merging a release, update the product version in package.json, the release heading in CHANGELOG.md and both template edition headers, then rebuild the downloads. Tag the checked merge commit as `vMAJOR.MINOR.PATCH` and attach both generated manual ZIPs. Keep published `assets/` filenames stable because installed RF viewers can reference them. For rollback, revert the faulty change through a pull request and redeploy; do not rewrite a released tag. Record user-facing changes in CHANGELOG.md.
 
 ## Adding templates
 
@@ -70,7 +70,7 @@ Register each template in `src/template-registry.js`. A registration supplies id
 
 `src/history.js` stores session transactions; `src/design-store.js` owns isolated designs and private catalogues. `src/shared-settings.js` contains existing reusable content validation and RF substitutions; `src/template.js` preserves the original module interface. `src/compact-console.js` adds seasonal settings and tile rendering without changing the original saved schema.
 
-Use one CHANGELOG.md and product version. Group new entries under Shared customiser and the affected template names. Keep old entries intact.
+Use one CHANGELOG.md and product version. Group new entries under Shared customiser and the affected template names. Changelog entries describe delivered features and fixes only; keep plans, deferred ideas and remaining work in private planning notes. Preserve published historical entries.
 
 Run `npm run start:review` for the local review on port 4198. For another isolated port, pass it to the server script or set PORT before starting. The default remains 4188. Use disposable browser contexts for automated checks.
 
