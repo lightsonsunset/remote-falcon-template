@@ -28,7 +28,7 @@ button.onclick=async()=>{
   welcome.value=welcomeBefore+' — preview check';welcome.dispatchEvent(new Event('input',{bubbles:true}));await wait(650);
   check('Ordinary edits preserve preview page and scroll',preview.contentWindow.location.hash==='#home-panel'&&Math.abs(preview.contentDocument.getElementById('home-panel').scrollTop-top)<2);
   welcome.value=welcomeBefore;welcome.dispatchEvent(new Event('input',{bubbles:true}));await wait(650);
-  d.querySelector('[data-section="20"] [data-go-section="3"]').click();check('Home schedule shortcut opens the shared Setup field',!d.querySelector('[data-section="3"]').hidden&&d.querySelector('[data-section="3"]').open);
+  d.querySelector('[data-section="11"] [data-go-section="3"]').click();check('Home schedule shortcut opens the shared Setup field',!d.querySelector('[data-section="3"]').hidden&&d.querySelector('[data-section="3"]').open);
   const title=d.querySelector('[data-copy="LISTEN_TITLE"]'),titleBefore=title.value;
   title.value='';title.dispatchEvent(new Event('input',{bubbles:true}));await wait(650);
   d.querySelector('[data-editor-group="info"]').click();
@@ -48,7 +48,7 @@ button.onclick=async()=>{
   check('Seasonal countdown offers the current theme control',!d.querySelector('[data-section="21"]').hidden&&!!d.querySelector('[data-key="'+(d.querySelector('[data-season="halloween"]').getAttribute('aria-pressed')==='true'?'halloweenCountdown':'countdown')+'"]'));
   check('Basic Support text is not behind a nested disclosure',d.querySelector('[data-copy="SUPPORT_TITLE"]').closest('.copy-group')===null);
   check('Basic Info text is not behind a nested disclosure',d.querySelector('[data-copy="INFO_TITLE"]').closest('.copy-group')===null);
-  check('Site setup puts hours and listening before visual tweaks',[...d.querySelectorAll('[data-section]')].filter(el=>['1','2','3','4','5','14'].includes(el.dataset.section)).map(el=>el.dataset.section).join(',')==='1,2,3,4,5,14');
+  check('Site setup keeps shared details and navigation together',[...d.querySelectorAll('[data-section]')].filter(el=>['1','2','3','4','14'].includes(el.dataset.section)).map(el=>el.dataset.section).join(',')==='1,2,3,4,14');
   const faq=d.querySelector('[data-faq-row="0"]'),question=faq.querySelector('[data-part="question"]'),questionBefore=question.value;
   d.querySelector('[data-editor-group="info"]').click();await wait(350); // Finish preview navigation before testing an independent page scroll.
   d.querySelector('[data-section="10"]').open=true;faq.open=true;

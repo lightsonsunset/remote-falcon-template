@@ -16,9 +16,9 @@ Lights on Sunset offers three logo designs per theme, including pixel-light disp
 
 Choose a season and template, click a preview to explore it in a centred phone, then select **Set up my show** or **Straight to editor**. Setup asks for show details once. Finish with **Apply & open editor**. Tick **Take a quick tour after setup** for a short introduction to the shared editor; it starts unchecked each time setup opens. Existing saved designs resume in the editor.
 
-Under **Music → Queue information & votes**, optionally show the maximum queue length above the song choices. RF supplies the value; 0 means unlimited. The local preview uses an illustrative limit of 10.
+Under **Music → Player & queue**, optionally show the maximum queue length above the song choices. RF supplies the value; 0 means unlimited. The local preview uses an illustrative limit of 10.
 
-Under **Site setup → Menu & decoration** (or **Menu & seasonal details**), choose icons for navigation, links and messages. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media, Social links and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
+Choose navigation icons under **Site setup → Navigation menu**, message icons under **Request messages**, and other icons beside the feature they belong to. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media, Social links and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
 
 ## Choose a template
 
@@ -52,18 +52,22 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 
 | Area | What you can change |
 |---|---|
-| Home (Lights on Sunset) | Welcome, visitor guidance, notices, extra information, off-air video and countdown |
-| Music | Song artwork, Now Playing artwork, NEW sashes, Moving spotlights badges, categories, queue wording and counters. Compact console also keeps its welcome, notice, off-air video and countdown here. Its visitor guidance is under Info. |
+| Home (Lights on Sunset) | Welcome, visitor guidance, announcements, extra information, off-air video and countdown |
+| Music | Song artwork, Now Playing artwork, NEW sashes, Moving spotlights badges, categories, queue wording and counters. Compact console also keeps its welcome, announcement, off-air video and countdown here. Its visitor guidance is under Info. |
 | Support | Cards for charities, creators and thank-yous, with optional images and main-screen/Info links |
-| Info | Introduction, YouTube, Quick Facts, FAQs and resources. Compact console also keeps extra-information cards and playlists here; Lights on Sunset’s playlists are edited under Music. |
+| Info | Introduction, Quick Facts, FAQs, resources and a shortcut to social links and the separate YouTube button. Compact console also keeps extra-information cards and playlists here; Lights on Sunset’s playlists are edited under Music. |
 | Site setup | Show identity, dates, listening, colours, menu and optional social links |
-| Song messages | Request and voting titles and short explanations, with local preview buttons |
+| Request messages | Request and voting titles and short explanations, with local preview buttons |
 
 Under **Music → Song appearance**, choose **Category icons** to replace song covers with an icon for each category. Use the shared picker for trees, snowmen, ghosts or other icons; choose **Songs without a category** for the fallback icon. Its default is a music note, as is any category without a chosen icon. Match category names and order to RF under **Categories**. Icons work even with filter buttons hidden. **Show album artwork in Now Playing** is independent; **No artwork** makes the song list text-only. Two artist-name switches independently control the song list and Now Playing / Up Next / queue. Both start on; missing artists leave no blank artist line.
 
-Selecting a page opens it in the preview. Shared show details, colours, schedule and listening options live in **Site setup**. Start with the features you need; optional extras can stay off.
+**Edit a viewer page** contains the page buttons; selecting one opens its preview. **General settings** contains **Site setup** and **Request messages**, which keep the current preview page. Music is the starting page in Compact console.
 
-To hide Support from the visitor menu, untick **Support → Support page → Show Support in menu**. Your Support page and saved content remain available, including through existing direct links. Support teasers on the main screen and Info still open their recipient links. Choose those placements for any cards visitors should find without the Support menu button.
+Under **Site setup → Theme & style**, choose the season, colours and seasonal decorations. **Show dates & hours** also holds Lights on Sunset’s optional on-air schedule switch. **Listening** holds FM, PulseMesh and the Music reminder option. **Navigation menu** brings menu labels, icons and Support visibility together.
+
+On Music, **Song selection** holds request/voting headings and unavailable-song wording; **Player & queue** holds now-playing and queue wording, queue limits and counters; **Off-air content** holds the closed-show message and optional About link. Edit “All” under **Categories**, and “New this year” beside its switch in **Song badges**. Optional extras can stay off.
+
+To hide Support from the visitor menu, untick **Site setup → Navigation menu → Show Support in menu**. Your Support page and saved content remain available, including through existing direct links. Support teasers on the main screen and Info still open their recipient links. Choose those placements for any cards visitors should find without the Support menu button.
 
 For PulseMesh, choose **Download app only**, **Listen on PulseMesh only** or **Both buttons** under **Site setup → Listening**, or in the wizard. Listen needs your full public display link from PulseMesh. It is reused on the main screen (Home in Lights on Sunset, Music in Compact console) and in the listening FAQ. [PulseMesh explains display links and supported plans](https://pulsemesh.io/docs/topics/display-codes); the buttons do not activate the service or change its access rules.
 
@@ -77,7 +81,7 @@ Header appearance sits directly below Show name in setup and the editor. Compact
 
 ### Social links
 
-Under **Site setup → Social links**, add up to eight links with an icon and visible label, then arrange their order. Show them on the main screen, Info or both. The main screen is Home in Lights on Sunset and Music in Compact console. Heading and message are optional. Links open in a new tab; this section starts off and retains your entries when hidden. Facebook, Instagram, YouTube and TikTok icons are in **Social links** in the shared picker.
+Under **Site setup → Social links**, add up to eight links with an icon and visible label, then arrange their order. Show them on the main screen, Info or both. The main screen is Home in Lights on Sunset and Music in Compact console. Heading and message are optional. Links open in a new tab; this section starts off and retains your entries when hidden. Facebook, Instagram, YouTube and TikTok icons are in **Social links** in the shared picker. Expand **Separate YouTube button on Info** here to edit the optional labelled button below the Info introduction; it remains independent of the social row and the **Off-air video** card.
 
 ### 3. Check the preview
 

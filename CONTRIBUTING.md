@@ -33,8 +33,8 @@ Open `http://127.0.0.1:4188`. Serve over HTTP locally; browsers restrict module 
 - `src/song-artwork.js` and `src/song-artwork-form.js`: shared artwork migration, category mappings, script-free viewer CSS and editor/setup controls. Preserve the legacy artwork checkbox through inherited defaults; explicit list and Now Playing choices are independent. Category glyph metadata in `src/icons.js` must match the pinned Font Awesome 6.6 Free stylesheet.
 - `src/song-badges.js`: shared exact-sequence Moving spotlights pills, with a separate NEW corner treatment. The existing NEW selectors also drive the embedded sash background when both labels are present, leaving the artwork pseudo-element available. The shared Music → Song badges controls keep NEW and Moving heads assignments together; the latter renders as Moving spotlights. The shared catalogue picker keeps both badge lists pending until Apply; assignments never change RF categories.
 - `src/copy.js`: editable visitor text, grouped field definitions and safe linked-text substitutions.
-- `src/editor-layout.js`: page ownership, preview-message mapping and conservative HTTPS completion.
-- `src/editor-form.js`: editor-only form markup, concise help, shared shortcuts and collapsible FAQ controls.
+- `src/editor-layout.js`: shared page ownership and navigation groups, preview-message mapping and conservative HTTPS completion. Template registrations supply page placements; settings IDs and viewer renderers are independent of editor organisation.
+- `src/editor-form.js`: shared form sections, feature capabilities, contextual wording/icons, shortcuts and collapsible FAQ controls. Each saved field appears once; validation and shortcuts find its owning section.
 - `src/assets.js`, `assets/`: transparent WebP artwork and its public GitHub Pages URLs. The local preview serves the same artwork locally; exports use the public URLs.
 - `src/preview.js`: isolated, parent-controlled demo adapter. Never imported by the renderer or packaging script.
 - `src/preview-drag.js`: mouse swipe support for phone/tablet previews only.
@@ -72,10 +72,18 @@ Register each template in `src/template-registry.js`. A registration supplies id
 
 `src/history.js` stores session transactions; `src/design-store.js` owns isolated designs and private catalogues. `src/shared-settings.js` contains existing reusable content validation and RF substitutions; `src/template.js` preserves the original module interface. `src/compact-console.js` adds seasonal settings and tile rendering without changing the original saved schema.
 
-Use one CHANGELOG.md and product version. Group new entries under Shared customiser and the affected template names. Changelog entries describe delivered features and fixes only; keep plans, deferred ideas and remaining work in private planning notes. Preserve published historical entries.
+Use one CHANGELOG.md and product version. Group new entries under Shared customiser and the affected template names. Changelog entries describe delivered features and fixes only. Keep detailed plans and private discussion in private planning notes; the separately maintained public progress summary is described below. Preserve published historical entries.
 
 Run `npm run start:review` for the local review on port 4198. For another isolated port, pass it to the server script or set PORT before starting. The default remains 4188. Use disposable browser contexts for automated checks.
 
 Shared identity controls are in `src/header-identity.js`; both the editor and detached setup draft use them. `src/information-cards.js` retains the legacy first-card keys while presenting one ordered list, and `src/information-form.js` owns its shared controls. `src/visitor-guidance.js` generates placement tokens using native RF availability containers. The registry supplies supported header choices and content placement.
 
 Preview context restoration belongs to `src/preview.js` and the editor-only `src/editor-context.js`. Keep this code out of viewer renderers. When changing shared behaviour, exercise both registered templates; do not copy these services into a second preview or wizard. `tests/refinements.html` covers the shared additions with the labelled local demo.
+
+## Maintaining update information
+
+The editor-only update dialog has Released and In progress tabs. CHANGELOG.md remains the single released-history source; completed local changes may sit under Unreleased until their dated release is published. The Released tab omits that pending section. The export reminder explains that installed RF pages need fresh HTML for viewer changes, while editor-only changes do not.
+
+Edit src/update-status.js for the separate public progress summary. List only approved work, distinguish active development from planned themes, name the affected templates and update the reviewed date when checking the list. Do not promise dates that have not been agreed. Known issues should be confirmed and include affected templates, an accurate status and a workaround where one exists. An empty list means no issues are listed, not a claim that the product has no bugs.
+
+Review this summary before publication. Remove delivered items and resolved issues as they enter the changelog; keep detailed plans, raw reports and private conversations outside the repository. This module is editor-only, does not touch saved designs and is not included in viewer exports or manual template HTML. The isolated browser checks must cover tab keys, Escape/focus restoration, narrow/enlarged layouts and release-fetch failure without affecting the progress tab.

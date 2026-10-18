@@ -18,7 +18,7 @@ import {escapeHTML as e,themes,contrast,namesOf,supportCardDefaults} from './tem
 import {decorationFile} from './assets.js';
 import {copyFields} from './copy.js';
 import {listDefinitions} from './visitor-extras.js';
-import {completeWebAddress} from './editor-layout.js';
+import {completeWebAddress,editorNavigation} from './editor-layout.js';
 import {settingsForm} from './editor-form.js';
 import {readPreferences,writePreferences} from './storage.js';
 import {createTour} from './tour.js';
@@ -71,7 +71,7 @@ for(const kind of ['undo','redo'])$('history-'+kind).addEventListener('click',()
 document.addEventListener('keydown',event=>{if(!(event.ctrlKey||event.metaKey)||event.altKey||event.target.closest('input,textarea,select,[contenteditable="true"]')||document.querySelector('dialog[open]'))return;const key=event.key.toLowerCase(),kind=key==='z'?(event.shiftKey?'redo':'undo'):key==='y'?'redo':null;if(kind){event.preventDefault();restoreHistory(kind);}});
 const selectedViewports={...defaultViewports};
 let editorGroup='setup';
-function selectSettingsGroup(group,followPreview=true){if(!editorGroups[group])group=designStore.template.landing;editorGroup=group;document.querySelectorAll('[data-editor-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.editorGroup===group);b.setAttribute('aria-pressed',String(b.dataset.editorGroup===group));});$('settings').querySelectorAll('details[data-section]').forEach(d=>d.hidden=!editorGroups[group].sections.includes(+d.dataset.section)||(d.dataset.seasonOnly&&d.dataset.seasonOnly!==settings.theme));if(followPreview&&editorGroups[group].panel)preview.navigate(editorGroups[group].panel);}
+function selectSettingsGroup(group,followPreview=true){if(!editorGroups[group])group=designStore.template.landing;editorGroup=group;const help=$('editor-area-help');help.textContent=editorGroups[group].description||'';help.hidden=!help.textContent;document.querySelectorAll('[data-editor-group]').forEach(b=>{b.classList.toggle('selected',b.dataset.editorGroup===group);b.setAttribute('aria-pressed',String(b.dataset.editorGroup===group));});$('settings').querySelectorAll('details[data-section]').forEach(d=>d.hidden=!editorGroups[group].sections.includes(+d.dataset.section)||(d.dataset.seasonOnly&&d.dataset.seasonOnly!==settings.theme));if(followPreview&&editorGroups[group].panel)preview.navigate(editorGroups[group].panel);}
 function revealSection(n){const group=Object.keys(editorGroups).find(k=>editorGroups[k].sections.includes(+n));if(group)selectSettingsGroup(group);const d=$('settings').querySelector(`[data-section="${n}"]`);if(d)d.open=true;return d;}
 const preview=createPreview($('preview'),text=>{$('preview-status').textContent=text;});
 let renderedFAQs=[],renderedRecipients=[],renderedExtraLists={};
@@ -98,7 +98,7 @@ function form(){
  if(focusSeason)$('settings').querySelector('[data-season="'+focusSeason+'"]')?.focus({preventScroll:true});
  renderedRecipients=[...settings.donationRecipients];
  renderedFAQs=[...settings.faq];
- if(!$('editor-groups'))$('validation-summary').insertAdjacentHTML('beforebegin','<div class="editor-groups" id="editor-groups" role="group" aria-label="Settings categories">'+Object.entries(editorGroups).map(([key,g])=>'<button type="button" data-editor-group="'+key+'">'+g.name+'<span class="group-alert" hidden></span></button>').join('')+'</div>');
+ if(!$('editor-groups'))$('validation-summary').insertAdjacentHTML('beforebegin',editorNavigation(editorGroups));
  selectSettingsGroup(editorGroup,false);features();restoreField();restoreViewport();
 }
 function features(){
@@ -424,7 +424,7 @@ async function templateSource(t){if(!sources.has(t.id)){const response=await fet
 function designUI(){const t=designStore.template;$('active-design').textContent=t.name+' · '+themes[settings.theme].name;$('reset-dialog').querySelector('h2').textContent='Reset '+t.name+' · '+themes[settings.theme].name+' to its defaults?';$('reset-settings').textContent='Reset to defaults';$('save-settings').textContent=t.separateSeasons?'Back up both seasons':'Download settings backup';$('copy-design-details').disabled=designStore.all().length===0;$('manual-template').href='downloads/'+t.package;$('manual-template').textContent='↓ Download '+t.name+' + instructions';}
 async function switchDesign(id,season){
  const generation=++sourceGeneration;histories.endGroups();clearTimeout(updateTimer);
- const next=designStore.select(id,season);settings=next.settings;catalogue=next.catalogue;catalogueSource=catalogue?'imported':'samples';editorGroups=designStore.template.groups;editorGroup='setup';source='';$('editor-groups')?.remove();histories.seed(historyKey(),snapshot());history();form();historyUI();designUI();refresh();preview.navigate(designStore.template.landing);
+ const next=designStore.select(id,season);settings=next.settings;catalogue=next.catalogue;catalogueSource=catalogue?'imported':'samples';editorGroups=designStore.template.groups;editorGroup='setup';source='';$('editor-groups')?.remove();$('editor-area-help')?.remove();histories.seed(historyKey(),snapshot());history();form();historyUI();designUI();refresh();preview.navigate(designStore.template.landing);
  try{const loaded=await templateSource(designStore.template);if(generation!==sourceGeneration)return;source=loaded;refresh();scale();restoredSaveStatus();}catch(err){if(generation===sourceGeneration)setError(err.message);}
 }
 const chooser=$('template-dialog');let candidate=designStore.template.id,chooserSeason=settings.theme;

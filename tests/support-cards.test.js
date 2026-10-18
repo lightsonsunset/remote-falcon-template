@@ -59,7 +59,7 @@ test('hiding Support changes only its menu entry and decoration positions',()=>{
   assert.match(html,/#support-panel :target\) \.los-menu::after \{ content:none; \}/);
   assert.doesNotMatch(html,/<script\b|localhost|data-demo-/);
   const form=settingsForm(s);assert.equal(form.split('data-key="showSupportTab"').length-1,1);
-  assert.match(form,/Show or hide Support in the menu/);assert.match(form,/existing direct links to it still work/);
+  assert.match(form,/Show or hide Support in the navigation menu/);assert.match(form,/existing direct links to it still work/);
   s.showSupportTab=true;const shown=render(source,s);
   assert.doesNotMatch(shown,/\.los-menu__item\[data-tab-target="support"\] \{ display:none; \}/);
   assert.match(shown,/#info-panel :target\) \.los-menu \{ --nav-decoration-index:3; \}/);

@@ -1,9 +1,10 @@
 // One editor-only picker for template roles and individual resource/playlist rows.
 import {iconLibrary,iconRoles,defaultIcon,availableIconRoles,iconKeywords} from './icons.js';
 export function iconButton(id,attributes,label){const [name,css]=iconLibrary[id];return `<button type="button" class="icon-choice-button" ${attributes} aria-label="Choose ${label.replace(/ icon$/i,'')} icon"><i class="${css}" aria-hidden="true"></i><span>${name}</span><small>Choose icon</small></button>`;}
-export function iconSettings(s,compact){
- const roles=availableIconRoles(compact);
- return '<div class="viewer-icons"><h3>Choose your icons</h3><p class="hint">Use the shared library for navigation, links and messages. Template defaults keep the original look. Playlist and resource icons are chosen on their own cards.</p>'+['Navigation','Page details','Song messages'].map(group=>`<details class="copy-group" data-copy-group="icons-${group}"><summary>${group}</summary><div class="copy-fields icon-role-list">${roles.filter(([,r])=>r[2]===group).map(([role,[label]])=>`<div class="icon-role"><span>${label}</span>${iconButton(s.icons?.[role]||defaultIcon(role,s,compact),`data-icon-role="${role}"`,label)}<small class="hint">${s.icons?.[role]?'Custom choice':'Template default'}</small></div>`).join('')}</div></details>`).join('')+'</div>';
+export function iconSettings(s,compact,requestedRoles,title='Icons'){
+ const roles=availableIconRoles(compact).filter(([role])=>requestedRoles.includes(role));
+ if(!roles.length)return '';
+ return `<details class="copy-group viewer-icons" data-copy-group="icons-${requestedRoles.join('-')}"><summary>${title}</summary><div class="copy-fields icon-role-list">${roles.map(([role,[label]])=>`<div class="icon-role"><span>${label}</span>${iconButton(s.icons?.[role]||defaultIcon(role,s,compact),`data-icon-role="${role}"`,label)}<small class="hint">${s.icons?.[role]?'Custom choice':'Template default'}</small></div>`).join('')}</div></details>`;
 }
 // Presentation groups only: saved icon IDs and the shared allowlist stay unchanged.
 export const iconCategories=[
