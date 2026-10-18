@@ -58,7 +58,7 @@ Settings files use version `2` and template ID `festive`. Version 1 Christmas fi
 
 Run the Node checks and the relevant browser checks under `tests/` after changes. Browser harnesses use localhost and restore their saved settings. Use an RF draft for validation before activating a generated viewer. Native RF countdowns, votes, location access and actual playback need testing in RF; the isolated demo cannot validate those integrations.
 
-Public asset URLs in `src/assets.js` must be checked after deployment. Keep the original template attribution and GPL licence. Screenshots in `docs/images/` use only generic template values and the illustrative demo. Do not commit imported catalogues or personal settings backups.
+Public asset URLs in `src/assets.js` must be checked after deployment. Keep the original template attribution and GPL licence. Screenshots in `docs/images/` use only generic template values and the illustrative demo. After a visible UI change, review every screenshot referenced by README.md, including chooser, setup, Help, tour and export dialogs; refreshing only the overview is not enough. Capture the current UI in a disposable browser context, check labels and framing, then regenerate README.html and both manual packages. Do not commit imported catalogues or personal settings backups.
 
 ## Releases and maintenance
 

@@ -12,7 +12,7 @@ Choose Lights on Sunset or Compact console, explore a seasonal style and persona
 
 ![The Lights on Sunset customiser with settings on the left and a phone preview on the right](docs/images/editor-overview.jpg)
 
-Lights on Sunset offers three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
+Lights on Sunset offers three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button separates **Released** updates from **In progress** summaries and planned themes. Its export reminder explains when an installed RF page needs fresh HTML.
 
 Choose a season and template, click a preview to explore it in a centred phone, then select **Set up my show** or **Straight to editor**. Setup asks for show details once. Finish with **Apply & open editor**. Tick **Take a quick tour after setup** for a short introduction to the shared editor; it starts unchecked each time setup opens. Existing saved designs resume in the editor.
 
@@ -21,6 +21,8 @@ Under **Music → Player & queue**, optionally show the maximum queue length abo
 Choose navigation icons under **Site setup → Navigation menu**, message icons under **Request messages**, and other icons beside the feature they belong to. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media, Social links and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
 
 ## Choose a template
+
+![The current template chooser with seasonal previews, setup actions and compact contribution links](docs/images/welcome-modal.jpg)
 
 The customiser now offers **Lights on Sunset** and **Compact console**. Use **Change template** to compare seasonal previews. Existing designs resume automatically. Compact console keeps a separate Christmas and Halloween design; Lights on Sunset keeps its established theme behaviour.
 
@@ -123,7 +125,7 @@ Both music modes and availability states are included in the export. No custom J
 
 Choose the [Lights on Sunset package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) or [Compact console package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip), unzip it, and open **START-HERE.html**. Each includes that layout’s Christmas and Halloween HTML starters, fonts, instructions, credits and licences. Lights on Sunset also includes its optional WebP artwork; Compact console’s decorations are drawn in CSS. You do not need to use the customiser.
 
-The guide covers [NEW sashes](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#new), [Show notices](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#notice), [support cards](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#donations), image hosting and other optional features.
+The guide covers [NEW sashes](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#new), [Announcements](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#notice), [support cards](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#donations), image hosting and other optional features.
 
 The package also includes **README.html**: an offline, browser-readable copy of this quick start with its screenshots included in the file.
 
