@@ -11,11 +11,11 @@ run.onclick=async()=>{
  try{
   localStorage.setItem(SETTINGS_KEY,settingsFile(cloneDefaults()));localStorage.setItem(PREFS_KEY,JSON.stringify({tourSeen:true}));await reload();let d=editor.contentDocument;
   const q=s=>d.querySelector(s);q('[data-editor-group=music]').click();q('[data-section="30"]').open=true;
-  const field=q('[data-key=showAlbumArtwork]');check('Artwork option starts enabled in Music',field.checked&&visible(field));
+  const field=q('[data-key=songArtwork]');check('Album artwork starts selected in Music',field.value==='album'&&visible(field));
   check('RF setup help is a visible link',!!q('[data-section="30"] a[href$="look-up-artist--album-art"]'));
-  check('Category help distinguishes hidden buttons from removed rows',q('[data-section="18"]').textContent.includes('Keep all categories shown on your RF page')&&q('[data-section="18"]').textContent.includes('For All and Non Christmas only'));
-  field.checked=false;field.dispatchEvent(new Event('input',{bubbles:true}));await wait(450);await reload();d=editor.contentDocument;
-  check('Artwork choice restores from saved settings',!q('[data-key=showAlbumArtwork]').checked&&!parseSettings(localStorage.getItem(SETTINGS_KEY)).showAlbumArtwork);
+  check('Category help distinguishes hidden buttons from removed rows',q('[data-section="18"]').textContent.includes('Keep all categories shown on your RF page')&&!!q('[data-section="18"] [data-category-help]')&&d.querySelector('#category-help-dialog').textContent.includes('Keep rows; hide buttons'));
+  field.value='none';field.dispatchEvent(new Event('input',{bubbles:true}));await wait(450);await reload();d=editor.contentDocument;
+  check('Artwork choice restores from saved settings',q('[data-key=songArtwork]').value==='none'&&parseSettings(localStorage.getItem(SETTINGS_KEY)).songArtwork==='none');
   const source=await(await fetch('../templates/christmas.html')).text(),demo=createPreview(viewer,()=>{}),v=()=>viewer.contentDocument;
   const update=async(s,mode)=>{demo.update(render(source,s),s,{mode,air:true,reset:true});await wait(180);demo.navigate('music');await wait(50);};
   for(const theme of ['christmas','halloween'])for(const mode of ['jukebox','voting']){
@@ -26,13 +26,13 @@ run.onclick=async()=>{
    s.showAlbumArtwork=false;await update(s,mode);
    check(theme+'/'+mode+' artwork hidden without blank columns',[...v().querySelectorAll('.playing-now img,.los-song-list img')].every(el=>!visible(el))&&v().defaultView.getComputedStyle(normal()).gridTemplateColumns.split(' ').length===1);
    check(theme+'/'+mode+' ordinary cards become shorter but stay tappable',normal().getBoundingClientRect().height<originalHeight&&normal().getBoundingClientRect().height>=64);
-   const fresh=v().querySelector('[data-demo-new]');check(theme+'/'+mode+' NEW sash retained',v().defaultView.getComputedStyle(fresh,'::after').content==='"NEW"');
+   const fresh=v().querySelector('[data-key="'+s.newNames+'"]');check(theme+'/'+mode+' NEW sash retained',v().defaultView.getComputedStyle(fresh,'::after').content==='"NEW"');
    check(theme+'/'+mode+' unavailable reason retained',visible(v().querySelector('.sequence-unavailable-hint'))&&v().querySelector('.sequence-unavailable').getAttribute('aria-disabled')==='true');
    for(const width of [320,390,768,1280]){
     viewer.style.width=width+'px';v().documentElement.style.fontSize='150%';await wait(50);
     const cards=[...v().querySelectorAll('.los-song-list [role=button]')];
     check(theme+'/'+mode+' cards fit '+width+'px with enlarged text',v().documentElement.scrollWidth<=width+1&&cards.every(c=>[...c.querySelectorAll('span')].every(text=>text.scrollWidth<=text.clientWidth+1)));
-    const title=fresh.querySelector('span'),box=title.getBoundingClientRect(),card=fresh.getBoundingClientRect();check(theme+'/'+mode+' NEW title stays clear of corner at '+width+'px',card.right-box.right>=45&&box.left>=card.left);
+    const title=[...fresh.childNodes].find(n=>n.nodeType===3&&n.textContent.trim())||fresh.querySelector('span'),range=v().createRange();range.selectNodeContents(title);const box=range.getBoundingClientRect(),card=fresh.getBoundingClientRect();check(theme+'/'+mode+' long NEW title fits without a blank artwork column at '+width+'px',box.right<=card.right+1&&box.left>=card.left);
     if(mode==='voting'){const vote=fresh.parentElement.querySelector('.cell-vote').getBoundingClientRect();check(theme+' vote count stays beside text at '+width+'px',box.right<=vote.left&&vote.bottom<=card.bottom);}
    }
    viewer.style.width='390px';v().documentElement.style.fontSize='100%';normal().click();await wait(40);check(theme+'/'+mode+' confirmation still blocks taps',visible(v().querySelector('#requestSuccessful'))&&!!v().elementFromPoint(20,20)?.closest('.request-feedback'));

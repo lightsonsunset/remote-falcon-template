@@ -6,7 +6,6 @@ button.onclick=async()=>{
  button.disabled=true;results.replaceChildren();
  try{
   const d=frame.contentDocument;
-  if(d.querySelector('#tour-welcome')?.open)d.querySelector('#welcome-skip').click();
   frame.style.width='720px';await wait(100);
   check('Narrow editor has Settings / Preview tabs',visible(d.querySelector('.narrow-tabs')));
   d.querySelector('.narrow-tabs [data-view="preview"]').click();await wait(100);
@@ -51,7 +50,8 @@ button.onclick=async()=>{
   check('Basic Info text is not behind a nested disclosure',d.querySelector('[data-copy="INFO_TITLE"]').closest('.copy-group')===null);
   check('Site setup puts hours and listening before visual tweaks',[...d.querySelectorAll('[data-section]')].filter(el=>['1','2','3','4','5','14'].includes(el.dataset.section)).map(el=>el.dataset.section).join(',')==='1,2,3,4,5,14');
   const faq=d.querySelector('[data-faq-row="0"]'),question=faq.querySelector('[data-part="question"]'),questionBefore=question.value;
-  d.querySelector('[data-editor-group="info"]').click();d.querySelector('[data-section="10"]').open=true;faq.open=true;
+  d.querySelector('[data-editor-group="info"]').click();await wait(350); // Finish preview navigation before testing an independent page scroll.
+  d.querySelector('[data-section="10"]').open=true;faq.open=true;
   question.value=questionBefore+' — check';question.dispatchEvent(new Event('input',{bubbles:true}));await wait(350);
   check('FAQ summary uses the edited question',faq.querySelector('.faq-question-label').textContent===question.value);
   faq.querySelector('[data-faq-down]').click();await wait(350);
@@ -93,7 +93,8 @@ button.onclick=async()=>{
   check('Desktop editor fits its width',d.documentElement.scrollWidth<=d.documentElement.clientWidth+1);
   d.querySelector('#catalogue-options').click();check('Catalogue options open without extending the header',d.querySelector('#catalogue-dialog').open);d.querySelector('#close-catalogue').click();
   const scheme=d.documentElement.dataset.theme;d.querySelector('#theme').click();check('Editor theme toggles independently',d.documentElement.dataset.theme!==scheme);d.querySelector('#theme').click();
-  d.querySelector('[data-editor-group="info"]').click();d.querySelector('[data-section="10"]').open=true;
+  d.querySelector('[data-editor-group="info"]').click();await wait(350); // Finish preview navigation before testing an independent page scroll.
+  d.querySelector('[data-section="10"]').open=true;
   d.querySelectorAll('[data-faq-row]').forEach(el=>el.open=true);frame.contentWindow.scrollTo(0,d.querySelector('[data-section="10"]').offsetTop+300);await wait(100);
   check('Area buttons remain visible while scrolling FAQ',d.getElementById('editor-groups').getBoundingClientRect().top>=0&&d.getElementById('editor-groups').getBoundingClientRect().top<30);
   const actual=d.querySelector('.preview-pane').getBoundingClientRect();check('Desktop preview fits the available height',actual.height<=900-28);

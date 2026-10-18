@@ -1,7 +1,9 @@
 // Illustrative product demo only. This module is never used by the exporter.
 import {namesOf,themes} from './template.js';
+import {nowPlayingArtwork} from './song-artwork.js';
 import {categoryNamesOf} from './catalogue.js';
 import {assetBase} from './assets.js';
+import {captureViewport} from './editor-context.js';
 import {installPreviewDrag} from './preview-drag.js';
 const catalogue = [
   {id:'Winter Starlight',category:0,colour:'#a54550',demoNew:true},
@@ -38,7 +40,7 @@ export function holidayTime(theme,now=new Date()){
 export const christmasDays=(now=new Date())=>holidayDays('christmas',now);
 export function demoState(){return {queue:[],votes:Object.create(null),message:null};}
 export function createPreview(iframe, notify) {
-  let state=demoState(), settings, imported=null, mode='jukebox', air=true, generation=0, timer, countdownTimer, lastHash='#home-panel',dragEnabled=true;
+  let state=demoState(), settings, imported=null, mode='jukebox', air=true, generation=0, timer, countdownTimer, lastHash='#home-panel',dragEnabled=true,templateId=null,landing='home',settleRender=null,pendingContext=null;
   function updateCountdown(doc){for(const [unit,value] of Object.entries(holidayTime(settings.theme))){const el=doc.getElementById('to-'+settings.theme+'-'+unit);if(el)el.textContent=String(value);}}
   const scrollPositions=()=>{
     const d=iframe.contentDocument;if(!d)return [];
@@ -48,14 +50,14 @@ export function createPreview(iframe, notify) {
     if(!['home','music','support','info'].includes(panel))return;
     const hash='#'+panel+'-panel',d=iframe.contentDocument;
     if(d?.getElementById(lastHash.slice(1))?.closest('.content__body')?.id===panel+'-panel')return;
-    lastHash=hash;
+    lastHash=hash;if(pendingContext)pendingContext={positions:[],y:0,disclosures:[]};
     if(!d?.getElementById(panel+'-panel'))return;
-    const focused=document.activeElement;
-    iframe.contentWindow.location.hash=hash;
-    requestAnimationFrame(()=>{if(document.activeElement===iframe&&focused&&focused!==iframe&&focused.isConnected)focused.focus({preventScroll:true});});
+    const focused=document.activeElement,restoreOuter=captureViewport(iframe,focused);
+    iframe.contentWindow.location.hash=hash;restoreOuter();
+    requestAnimationFrame(()=>{restoreOuter();if(document.activeElement===iframe&&focused&&focused!==iframe&&focused.isConnected)focused.focus({preventScroll:true});});
   }
   function songs(){
-    if(imported)return imported.songs.map(s=>({id:s.name,title:s.displayName||s.name,artist:s.artist,imageUrl:s.imageUrl,category:groupNames().indexOf(s.category||'Uncategorised')}));
+    if(imported)return imported.songs.map(s=>({id:s.name,title:s.displayName||s.name,artist:s.artist,imageUrl:s.imageUrl,category:groupNames().indexOf(s.category||'')}));
     const demo=catalogue.map((s,i)=>({...s,id:themes[settings.theme].demoSongs[i],category:Math.min(s.category,settings.categoryNames.length-1)}));
     for(let i=2;i<settings.categoryNames.length;i++)demo.push({id:settings.categoryNames[i]+' · Preview example',category:i,colour:'#84629d'});
     const messages=messageExamples.filter(m=>m.modes.includes(mode)).map(m=>({id:'Demo: '+m.label,category:settings.categoryNames.length-1,colour:'#6b547d',messageId:m.id}));
@@ -64,7 +66,8 @@ export function createPreview(iframe, notify) {
   function groupNames(){
     if(!imported)return settings.categoryNames;
     const present=categoryNamesOf(imported),ordered=settings.categoryNames.filter(n=>present.includes(n));
-    return [...ordered,...present.filter(n=>!ordered.includes(n)),...(imported.songs.some(s=>!s.category)?['Uncategorised']:[])];
+    // RF leaves uncategorised songs unwrapped, before all named sections.
+    return [...(imported.songs.some(s=>!s.category)?['']:[]),...ordered,...present.filter(n=>!ordered.includes(n))];
   }
   function message(doc,id){
     clearTimeout(timer);doc.querySelectorAll('.request-feedback').forEach(el=>el.style.display='none');
@@ -77,7 +80,9 @@ export function createPreview(iframe, notify) {
     if(!container)return;
     container.replaceChildren();
     for(let category=0;category<groupNames().length;category++){
-      const group=element(doc,'div','category-section');group.append(element(doc,'div','category-label',groupNames()[category]));
+      const categoryName=groupNames()[category];
+      const group=categoryName?element(doc,'div','category-section'):doc.createDocumentFragment();
+      if(categoryName)group.append(element(doc,'div','category-label',categoryName));
       const list=songs().filter(s=>s.category===category).sort((a,b)=>mode==='voting'?(state.votes[b.id]||0)-(state.votes[a.id]||0):0);
       for(const s of list){
         const cls=mode==='jukebox'?'jukebox-list':'cell-vote-playlist';
@@ -93,7 +98,7 @@ export function createPreview(iframe, notify) {
           card.append(img);
         }
         // RF uses a text node for available titles and omits unassigned artwork.
-        card.append(s.unavailable?element(doc,'span','',s.title||s.id):doc.createTextNode(s.title||s.id),element(doc,'div',cls+'-artist',imported?s.artist:s.messageId?'Message test only · no request or vote':s.custom?'Your NEW sash preview example':'Illustrative demo song'));
+        card.append(s.unavailable?element(doc,'span','',s.title||s.id):doc.createTextNode(s.title||s.id),element(doc,'div',cls+'-artist',imported?(s.artist||'').trim():s.messageId?'Message test only · no request or vote':s.custom?'Your NEW sash preview example':'Illustrative demo song'));
         if(s.messageId)card.dataset.demoMessage=s.messageId;
         if(s.unavailable)card.append(element(doc,'span','sequence-unavailable-hint','Back next show'));
         const activate=()=>{
@@ -104,12 +109,12 @@ export function createPreview(iframe, notify) {
           populate(doc);message(doc,'requestSuccessful');
         };
         card.addEventListener('click',activate);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
-        if(mode==='voting'){const row=element(doc,'div','cell-vote-row');row.append(card,element(doc,'div','cell-vote',String(state.votes[s.id]||0)));group.append(row);}else group.append(card);
+        if(mode==='voting'){const tally=element(doc,'div','cell-vote',String(state.votes[s.id]||0));if(categoryName){const row=element(doc,'div','cell-vote-row');row.append(card,tally);group.append(row);}else group.append(card,tally);}else group.append(card);
       }
       container.append(group);
     }
     const songFor=id=>songs().find(s=>s.id===id)||{id};
-    const label=(parent,id,queue=false)=>{const s=songFor(id);parent.append(element(doc,'span',queue?'jukebox-queue-title':'',s.title||s.id),element(doc,'div',queue?'jukebox-list-artist jukebox-queue-artist':'jukebox-list-artist',s.artist||(imported?'':'Illustrative demo song')));};
+    const label=(parent,id,queue=false)=>{const s=songFor(id);parent.append(element(doc,'span',queue?'jukebox-queue-title':'',s.title||s.id),element(doc,'div',queue?'jukebox-list-artist jukebox-queue-artist':'jukebox-list-artist',(s.artist||'').trim()||(imported?'':'Illustrative demo song')));};
     // RF shows Up Next separately from the remaining request queue.
     const queue=doc.querySelector('.jukebox-queue-container');if(queue){queue.replaceChildren();for(const id of state.queue.slice(1)){const row=element(doc,'div','jukebox-queue');label(row,id,true);queue.append(row);}}
     const next=doc.querySelector('.next-playlist');if(next){next.replaceChildren();if(state.queue.length)label(next,state.queue[0]);}
@@ -126,18 +131,26 @@ export function createPreview(iframe, notify) {
       if(href?.startsWith('#')&&doc.getElementById(href.slice(1))){lastHash=href;iframe.contentWindow.location.hash=href;}
       else notify('External links are disabled in this demo. They work in your exported page.');
     });
-    iframe.contentWindow.addEventListener('hashchange',()=>{lastHash=iframe.contentWindow.location.hash||'#home-panel';});
+    iframe.contentWindow.addEventListener('hashchange',()=>{lastHash=iframe.contentWindow.location.hash||'#'+landing+'-panel';});
     populate(doc);
   }
   function update(html,s,options={}){
+    if(settleRender)settleRender(false);
+    let settled=false;const ready=new Promise(resolve=>{settleRender=value=>{if(!settled){settled=true;resolve(value);}};});const settle=settleRender;
     clearInterval(countdownTimer);
     if(imported!==(options.catalogue||null)){state=demoState();clearTimeout(timer);}imported=options.catalogue||null;
     if(settings&&settings.theme!==s.theme){state=demoState();clearTimeout(timer);}
+    const newTemplate=options.templateId&&options.templateId!==templateId;
+    landing=options.landing||'home';if(newTemplate){templateId=options.templateId;lastHash='#'+landing+'-panel';state=demoState();clearTimeout(timer);}
     settings=s;const myGeneration=++generation;
     if(options.mode&&options.mode!==mode){mode=options.mode;state=demoState();clearTimeout(timer);}
     if(options.air!==undefined)air=options.air;
     if(options.reset){state=demoState();clearTimeout(timer);}
-    const positions=scrollPositions(), y=iframe.contentWindow?.scrollY||0;
+    if(options.startAtLanding)lastHash='#'+landing+'-panel';
+    // A superseded render may already have a blank/loading document. Retain the
+    // stable view until the newest render completes, rather than snapshotting it.
+    const context=options.startAtLanding||newTemplate?{positions:[],y:0,disclosures:[]}:pendingContext||{positions:scrollPositions(),y:iframe.contentWindow?.scrollY||0,disclosures:[...(iframe.contentDocument?.querySelectorAll('details')||[])].map(el=>el.open)};
+    pendingContext=context;
     html=html.replaceAll(assetBase,new URL('../assets/',import.meta.url).href);
     const doc=new DOMParser().parseFromString(html,'text/html');
     // srcdoc otherwise inherits the editor URL, so native fragment links can
@@ -157,7 +170,7 @@ export function createPreview(iframe, notify) {
       if(imported){img.referrerPolicy='no-referrer';if(song?.imageUrl)img.src=song.imageUrl;else{img.alt='Artwork unavailable';img.classList.add('preview-artwork-placeholder');}}
       else img.src=artwork('#a54550');
       const hasImage=!imported||!!song?.imageUrl?.trim();
-      el.replaceChildren(...(hasImage?[img]:[]),element(doc,'span','',song?(song.displayName||song.name):themes[settings.theme].demoSongs[0]),element(doc,'div',mode==='voting'?'cell-vote-playlist-artist':'jukebox-list-artist',song?song.artist:'Illustrative demo song'),element(doc,'small','preview-playback-label',settings.showAlbumArtwork&&hasImage?'Artwork preview only · no live playback':'Song preview only · no live playback'));
+      el.replaceChildren(...(hasImage?[img]:[]),element(doc,'span','',song?(song.displayName||song.name):themes[settings.theme].demoSongs[0]),element(doc,'div',mode==='voting'?'cell-vote-playlist-artist':'jukebox-list-artist',song?(song.artist||'').trim():'Illustrative demo song'),element(doc,'small','preview-playback-label',nowPlayingArtwork(settings)&&hasImage?'Artwork preview only · no live playback':'Song preview only · no live playback'));
     });
     doc.querySelectorAll('.next-playlist,.jukebox-queue-container,.los-song-list,.request-feedback__location').forEach(el=>el.replaceChildren());
     updateCountdown(doc);
@@ -165,14 +178,14 @@ export function createPreview(iframe, notify) {
       doc.querySelectorAll('.category-filter-link').forEach(a=>{a.setAttribute('aria-disabled','true');a.title='Match your category list to this CSV to preview filtering.';});
       doc.querySelectorAll('.category-filter-target').forEach(el=>el.classList.remove('category-filter-target'));
       // Disarm positional rules as well as the highlight until the mapping is valid.
-      const sheet=doc.querySelector('style');sheet.textContent=sheet.textContent.replace(/body:has\(#show-options\.has-categories\):has\(#songs-category-\d+:target\)[^{]+\{[^}]*\}/g,'');
+      const sheet=doc.querySelector('style');sheet.textContent=sheet.textContent.replace(/\/\* CATEGORY ART MAPPING START \*\/[\s\S]*?\/\* CATEGORY ART MAPPING END \*\//g,'');sheet.textContent=sheet.textContent.replace(/body:has\(#show-options\.has-categories\):has\(#songs-category-\d+:target\)[^{]+\{[^}]*\}/g,'');
     }
     doc.querySelectorAll('.rf-queue-depth').forEach(el=>{el.textContent='10';el.title='Demo queue limit. RF uses your real setting.';});
     // No scripts run in the iframe. All demonstration interactions are parent-owned.
     const style=element(doc,'style','');style.textContent='.sequence-unavailable{pointer-events:none}.category-filter-link[aria-disabled="true"]{opacity:.45;cursor:not-allowed}.los-song-list [role=button]:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.preview-artwork-placeholder{font-size:10px;line-height:1.2;background:#ffffff12;color:var(--text-secondary);text-align:center}.preview-playback-label{display:block;font-size:11px;font-weight:400;line-height:1.5;color:var(--text-secondary);margin-top:8px}.preview-is-dragging,.preview-is-dragging *{user-select:none!important;cursor:grabbing!important}';doc.head.append(style);
     iframe.onload=()=>{
-      if(myGeneration!==generation)return;
-      const d=iframe.contentDocument;
+      if(myGeneration!==generation){settle(false);return;}
+      const d=iframe.contentDocument,{positions,y,disclosures}=pendingContext||context;
       if(!imported){
         // Reuse the canonical sash/filter styling, only inside the sample iframe.
         // Saved NEW names and exported HTML never receive these demo assignments.
@@ -184,23 +197,33 @@ export function createPreview(iframe, notify) {
       d.querySelectorAll('.playing-now img').forEach(img=>img.addEventListener('error',()=>{img.removeAttribute('src');img.alt='Artwork unavailable';img.classList.add('preview-artwork-placeholder');},{once:true}));
       // Capture the current editor focus immediately before restoring the frame hash.
       // An earlier render may have started before the user moved to another field.
-      const focused=document.activeElement;
+      const focused=document.activeElement,restoreOuter=captureViewport(iframe,document.activeElement);
+      d.querySelectorAll('details').forEach((el,i)=>{if(disclosures[i]!==undefined)el.open=disclosures[i];});
       const selection=focused instanceof HTMLInputElement||focused instanceof HTMLTextAreaElement?[focused.selectionStart,focused.selectionEnd]:null;
-      if(!d.getElementById(lastHash.slice(1)))lastHash=lastHash.startsWith('#songs-')?'#music-panel':'#home-panel';
-      iframe.contentWindow.location.hash=lastHash;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        iframe.contentWindow.scrollTo(0,y);for(const [id,top,left] of positions){const el=d.getElementById(id);if(el){el.scrollTop=top;el.scrollLeft=left;}}
+      if(!d.getElementById(lastHash.slice(1)))lastHash=lastHash.startsWith('#songs-')?'#music-panel':'#'+landing+'-panel';
+      // Static chooser thumbnails use the template's default landing view.
+      // Setting their fragment can scroll the surrounding selection dialog.
+      const scrollBehavior=d.documentElement.style.scrollBehavior;
+      d.documentElement.style.scrollBehavior='auto';
+      if(!options.thumbnail)iframe.contentWindow.location.hash=lastHash;
+      restoreOuter();
+      requestAnimationFrame(()=>{if(myGeneration!==generation){settle(false);return;}restoreOuter();requestAnimationFrame(()=>{
+        if(myGeneration!==generation){settle(false);return;}
+        iframe.contentWindow.scrollTo({top:y,left:0,behavior:'instant'});for(const [id,top,left] of positions){const el=d.getElementById(id);if(el)el.scrollTo({top,left,behavior:'instant'});}
+        d.documentElement.style.scrollBehavior=scrollBehavior;
         if(document.activeElement===iframe){
           if(focused&&focused!==iframe&&focused!==document.body&&focused.isConnected){focused.focus({preventScroll:true});if(selection&&selection[0]!==null)focused.setSelectionRange(...selection);}
           else if(focused===document.body||focused===iframe){d.activeElement?.blur();iframe.blur();}
         }
-      }));
+        pendingContext=null;settle(true);
+      });});
       if(options.messageId){message(d,options.messageId);}
       else if(state.message&&state.message.until>Date.now()){
         const el=d.getElementById(state.message.id);el.style.display='block';clearTimeout(timer);timer=setTimeout(()=>{el.style.display='none';state.message=null;},state.message.until-Date.now());
       }
     };
     iframe.srcdoc='<!doctype html>\n'+doc.documentElement.outerHTML;
+    return ready;
   }
   return {update,navigate,setDragScrolling:enabled=>{dragEnabled=enabled;}};
 }

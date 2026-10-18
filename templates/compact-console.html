@@ -1,0 +1,199 @@
+<!doctype html>
+<!-- COMPACT CONSOLE TEMPLATE / local development edition
+     Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
+     Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
+     No custom JavaScript. Install in a separate RF draft before going live.
+     Adapted from Dynamic Menu by Matt Orelup.
+     Further design and feature development by Lights on Sunset.
+     Modified sharing edition: 15 October 2026. No show-specific assets included.
+     Original: https://github.com/Remote-Falcon/remote-falcon-page-templates/blob/main/templates/dynamic-menu.html
+     Distributed under GNU GPL version 3; see LICENSE and CREDITS.md in this package.
+     Provided without warranty. Please retain the credit and licence when sharing. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>[[SHOW_NAME]]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+:root{--panel:[[CARD_COLOUR]];--gold:[[GOLD_COLOUR]];--text:[[TEXT_COLOUR]];--text-secondary:[[SECONDARY_COLOUR]];--accent-ink:[[ACCENT_INK]];--surface-border:#ffffff20;--section-accent:var(--gold)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:rgb([[HOME_RGB]]);color:var(--text);font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}a{color:var(--gold)}[hidden]{display:none!important}a:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+#show-options.compact-console{position:relative;min-height:100dvh;background:radial-gradient(ellipse at 20% 0,color-mix(in srgb,var(--cc-lights) 13%,transparent),transparent 60%),var(--cc-background);font-family:var(--body-font);color:var(--text);padding:0 16px calc(112px + env(safe-area-inset-bottom))}
+.compact-console .content__body{width:100%;max-width:560px;margin:0 auto;padding:25px 0;min-width:0}.compact-console h1,.compact-console h2,.compact-console h3,.compact-console p{margin:0}.compact-console h1{font:400 clamp(1.8rem,7vw,2.4rem)/1.15 var(--heading-font);letter-spacing:-.03em;overflow-wrap:anywhere}.compact-console h2{font:400 1.5rem/1.25 var(--heading-font);margin-bottom:12px}.compact-console h3{font-size:1rem;line-height:1.4;margin-bottom:8px}.compact-console p{line-height:1.55;margin:8px 0;overflow-wrap:anywhere}.compact-console .section-card{position:relative;padding:18px;margin:16px 0;background:var(--panel);border:1px solid var(--surface-border);border-radius:var(--radius);min-width:0;overflow-wrap:anywhere}
+.cc-header{position:relative;padding:36px 25px 15px;text-align:center;min-height:165px}.cc-header .cc-eyebrow{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}.cc-header p{font-size:.84rem;color:var(--text-secondary)}.cc-header .cc-brand-icon{display:block;font-size:38px;line-height:1.2;color:var(--gold);margin-bottom:12px}.cc-header .show-logo{max-width:200px;max-height:120px;object-fit:contain;margin-bottom:12px}.show-name-hidden{display:none}.cc-schedule-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;font-size:.78rem;gap:7px;text-decoration:none}
+.show-status{display:flex;flex-direction:column;gap:5px;padding:15px;border:1px solid #ffffff25;border-radius:var(--radius);background:var(--panel);text-align:center;margin:12px 0}.show-status__label{font-size:.87rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.show-status__detail{font-size:.77rem;color:var(--text-secondary)}.show-status--live{border-color:color-mix(in srgb,var(--gold) 48%,transparent)}.show-status--live .show-status__label::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;background:var(--gold);box-shadow:0 0 10px var(--gold)}.show-notice{display:flex;gap:12px;padding:15px;border:1px solid var(--gold);border-radius:var(--radius);margin:12px 0}.show-notice h2{font-size:1rem;margin:0}.show-notice p{font-size:.85rem}
+.music-options{display:flex;flex-direction:column;gap:8px}.music-option{font-size:.85rem;line-height:1.5}.radio-frequency{font-weight:800;color:var(--gold)}.other-listening,.neighbour-message,.faq-answer{white-space:pre-line}.pulsemesh-download-wrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.pulsemesh-download,.support-action{display:inline-flex;justify-content:center;align-items:center;gap:8px;background:var(--gold);color:var(--accent-ink);border-radius:9px;padding:11px 14px;min-height:44px;font-size:.85rem;font-weight:700;text-decoration:none}.pulsemesh-platforms{display:block;font-size:.75rem;color:var(--text-secondary)}.cc-listening{padding:12px 14px!important}.cc-listening h2{font:700 .75rem var(--body-font);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.music-section-heading{text-transform:uppercase;letter-spacing:.16em;color:var(--gold);font-size:.65rem;font-weight:800;margin-bottom:12px}.playing-now{display:grid;grid-template-columns:minmax(0,1fr);font-size:1.2rem;font-weight:700;gap:3px;overflow-wrap:anywhere;min-width:0}.playing-now:has(img){grid-template-columns:62px minmax(0,1fr);column-gap:13px}.playing-now img{width:62px;height:62px;border-radius:9px;object-fit:cover;grid-column:1;grid-row:1/5}.playing-now span,.playing-now .jukebox-list-artist,.playing-now .cell-vote-playlist-artist,.playing-now small{grid-column:2}.playing-now:not(:has(img))>*{grid-column:1}.playing-now .jukebox-list-artist,.playing-now .cell-vote-playlist-artist{font-size:.8rem;color:var(--text-secondary);font-weight:400}.next-playlist{margin-top:14px;border-top:1px solid var(--surface-border);padding-top:12px;font-size:.85rem}.next-playlist .sequence-image,.jukebox-queue .sequence-image{display:none}.next-playlist:empty::after{content:"[[EMPTY_NEXT_CSS]]";color:var(--text-secondary)}.playing-now:empty::after{content:"[[EMPTY_NOW_CSS]]";font-size:.9rem}.next-playlist .jukebox-list-artist{font-size:.75rem;color:var(--text-secondary)}.cc-next-label{color:var(--gold);font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;margin-top:15px}
+.music-request-card{background:transparent!important;border:none!important;padding:0!important}.request-copy{font-size:.8rem;color:var(--text-secondary)}.music-filter{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0}.music-filter a{display:flex;align-items:center;min-height:40px;border:1px solid var(--surface-border);border-radius:24px;padding:8px 13px;font-size:.73rem;text-decoration:none;color:var(--text-secondary)}.music-filter a[href="#songs-all"]{color:var(--accent-ink);background:var(--gold)}.los-song-list{display:grid;gap:12px;--los-category-display:grid}.category-section{display:grid!important;gap:12px}.category-label{font-size:.75rem;color:var(--text-secondary);padding-top:8px}.jukebox-list,.cell-vote-playlist{position:relative;display:grid;grid-template-columns:minmax(0,1fr);min-height:64px;border:1px solid var(--surface-border);border-radius:var(--radius);background:var(--panel);padding:13px 15px;color:var(--text);font-size:.9rem;font-weight:700;overflow-wrap:anywhere;min-width:0;cursor:pointer}.jukebox-list:has(img),.cell-vote-playlist:has(img){grid-template-columns:44px minmax(0,1fr);column-gap:12px}.jukebox-list img,.cell-vote-playlist img{width:44px;height:44px;border-radius:7px;object-fit:cover;grid-column:1;grid-row:1/4}.jukebox-list-artist,.cell-vote-playlist-artist{font-size:.73rem;font-weight:400;color:var(--text-secondary);margin-top:4px;grid-column:2}.jukebox-list:not(:has(img))>*,.cell-vote-playlist:not(:has(img))>*{grid-column:1}.cell-vote-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 42px;align-items:stretch;gap:5px;min-width:0}.cell-vote{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gold);font-weight:800;font-size:1rem}.cell-vote::after{content:"[[VOTES_LABEL_CSS]]";font-size:.55rem;font-weight:400}.sequence-unavailable{opacity:.66;cursor:default}.sequence-unavailable-hint{display:block;grid-column:2;font-size:.7rem;font-weight:400;color:var(--text-secondary);margin-top:5px}.sequence-unavailable-hint::before{content:"[[UNAVAILABLE_ROW_PREFIX_CSS]] ";}
+/* NEW SONG ASSIGNMENTS: use the same exact names in all FOUR :is() lists. */
+.jukebox-list:is([[NEW_SELECTORS]]),.los-song-list > .cell-vote-playlist:is([[NEW_SELECTORS]]),
+.los-song-list > .cell-vote-playlist:is([[NEW_SELECTORS]]) + .cell-vote,.cell-vote-row:has(>.cell-vote-playlist:is([[NEW_SELECTORS]])){--los-new-display:grid;--los-new-sash:"NEW"}.jukebox-list::after,.cell-vote-row::after,.los-song-list > .cell-vote-playlist::after{content:var(--los-new-sash,none);position:absolute;top:4px;right:2px;background:var(--gold);color:var(--accent-ink);font-size:.54rem;font-weight:800;padding:3px 7px;border-radius:3px;transform:rotate(12deg);pointer-events:none}
+#show-options:not(.has-new-songs) a[href="#songs-new"],#show-options:not(.has-categories) .category-filter-link{display:none}body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list .jukebox-list,body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list .cell-vote-row{display:var(--los-new-display,none)!important}body:has(#show-options.has-new-songs):has(#songs-new:target) .category-section{display:contents!important}body:has(#show-options.has-new-songs):has(#songs-new:target) .category-label{display:none!important}body:has(#songs-new:target) #show-options.has-new-songs .music-filter a[href="#songs-new"]{background:var(--gold);color:var(--accent-ink)}body:has(#songs-new:target) .music-filter a[href="#songs-all"],body:has(.category-filter-target:target) .music-filter a[href="#songs-all"]{background:transparent;color:var(--text-secondary)}
+.cc-queue summary{min-height:44px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:var(--gold);font-size:.85rem;font-weight:700}.cc-queue summary::after{content:"＋"}.cc-queue[open] summary::after{content:"−"}.cc-queue.section-card{padding:4px 15px}.jukebox-queue{padding:12px 0;border-top:1px solid var(--surface-border);font-size:.85rem}.jukebox-queue-container:empty::after{content:"[[EMPTY_QUEUE_CSS]]";display:block;font-size:.8rem;padding:10px 0;color:var(--text-secondary)}.queue-instructions,.queue-count,.votes-remaining{font-size:.75rem;color:var(--text-secondary)}
+.cc-date-row{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:15px;padding:13px 0;border-top:1px solid var(--surface-border)}.cc-date-tile{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:67px;padding:8px 3px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);border-radius:9px;text-align:center;background:color-mix(in srgb,var(--cc-background) 87%,var(--gold))}.cc-halloween .cc-date-tile{border-radius:3px;border-color:var(--cc-lights)}.cc-date-tile small{font-size:.58rem;letter-spacing:.1em;color:var(--text-secondary)}.cc-date-tile strong{font-size:1.04rem;line-height:1.3;overflow-wrap:anywhere}.cc-hours{display:block;font-size:1rem;color:var(--gold)}.cc-day{display:block;font-size:.75rem;color:var(--text-secondary);margin-top:4px}.hours-row{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--surface-border);font-size:.85rem}.cc-schedule p{font-size:.8rem;color:var(--text-secondary)}
+.cc-menu{--cc-menu-surface:color-mix(in srgb,var(--panel) 25%,#07070c);position:fixed;z-index:20;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(calc(100% - 32px),500px);padding:7px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);border-radius:20px;background:var(--cc-menu-surface);box-shadow:0 10px 32px #000b,0 0 0 3px #0003}.cc-menu a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:52px;border-radius:14px;color:var(--text-secondary);font-size:1rem;text-decoration:none}.cc-menu .los-menu__label{font-size:.65rem;font-weight:700}.cc-menu a[data-tab-target="music"]{background:var(--gold);color:var(--accent-ink)}body:has(#show-options.cc-halloween) .cc-menu,body:has(#show-options.cc-halloween) .cc-menu a{border-radius:7px}
+/* Seasonal framing belongs to Decorations; the dark surface and tap targets stay the same. */
+body:has(#show-options.cc-christmas.cc-decorated) .cc-menu{border:2px solid transparent;padding:6px;background:linear-gradient(var(--cc-menu-surface),var(--cc-menu-surface)) padding-box,repeating-linear-gradient(125deg,#a83e46 0 7px,#f0dfb5 7px 14px,#47734f 14px 21px,#f0dfb5 21px 28px) border-box}
+body:has(#show-options.cc-halloween.cc-decorated) .cc-menu{border:2px solid transparent;padding:6px;background:linear-gradient(var(--cc-menu-surface),var(--cc-menu-surface)) padding-box,linear-gradient(110deg,#baa1d4,#65477d 35%,#3e294d 60%,#baa1d4) border-box;box-shadow:0 10px 32px #000b,0 0 10px #9c75bf30}
+body:has(#show-options.cc-halloween.cc-decorated) .cc-menu::before,body:has(#show-options.cc-halloween.cc-decorated) .cc-menu::after{content:"";position:absolute;width:27px;height:27px;pointer-events:none;opacity:.8;background:repeating-radial-gradient(circle at 0 0,transparent 0 5px,#d4c9dd 5.5px 6px,transparent 6.5px 9px),repeating-conic-gradient(from 0deg at 0 0,transparent 0deg 29deg,#d4c9dd 30deg 31deg);clip-path:polygon(0 0,100% 0,70% 70%,0 100%)}
+body:has(#show-options.cc-halloween.cc-decorated) .cc-menu::before{top:-2px;left:-2px}
+body:has(#show-options.cc-halloween.cc-decorated) .cc-menu::after{bottom:-2px;right:-2px;transform:rotate(180deg)}
+#show-options:not(.has-fm) .share-fm,#show-options:not(.has-pulsemesh) .share-pulsemesh,#show-options:not(.has-listening) .cc-listening,#show-options:not(.has-donations) .share-donation,#show-options:not(.has-donations-home) #music-panel .share-donation,#show-options:not(.has-donations-info) #info-panel .share-donation{display:none}.content__subitem:empty{display:none}.support-card{display:flex;gap:16px}.support-card>div{min-width:0}.donation-image{width:80px;height:80px;object-fit:contain}.donation-image--compact{width:44px;height:44px}.donation-card{display:flex;align-items:center;gap:12px;text-decoration:none}.tap-note{display:block;font-size:.75rem}.faq-item{padding:16px 0;border-bottom:1px solid var(--surface-border);font-size:.85rem}.faq-item>strong{font-size:.95rem}.faq-pulse-option{margin:10px 0}.faq-pulse-option small{display:block}.cc-visitor-guidance:has(p:only-child:empty){display:none}.location-code-card{padding:14px;background:var(--panel);border-radius:var(--radius)}
+.request-feedback{position:fixed;inset:0;z-index:2147483000;background:#06040dbb;backdrop-filter:blur(5px);padding:24px;overflow:auto;touch-action:none;color:var(--text);font-family:Arial,sans-serif}.request-feedback>div{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(calc(100% - 40px),420px);background:var(--panel);border:1px solid var(--gold);border-radius:18px;padding:26px;text-align:center;box-shadow:0 15px 60px #0007}.status-icon{font-size:1.8rem;color:var(--gold);margin-bottom:15px}.request-feedback__title{font-size:1.3rem;font-weight:800;margin:0 0 10px}.request-feedback__message{font-size:.9rem;line-height:1.5;margin:0}.request-feedback__location{margin-top:14px}.los-voting-copy{display:none}body:has(#los-voting-live>.section-card) .los-jukebox-copy{display:none}body:has(#los-voting-live>.section-card) .los-voting-copy{display:block}
+.cc-lights,.cc-holly,.cc-web,.cc-hanger{position:absolute;pointer-events:none}.cc-lights{top:0;left:-5px;right:-5px;height:20px;border-top:1px solid var(--gold);display:flex;justify-content:space-between}.cc-lights span{width:6px;height:10px;background:var(--gold);border-radius:3px 3px 5px 5px;box-shadow:0 0 12px var(--gold);margin-top:1px}.cc-lights span:nth-child(3n){background:var(--cc-lights);box-shadow:0 0 12px var(--cc-lights)}.cc-holly{right:5px;top:32px;width:24px;height:24px}.cc-holly:before,.cc-holly:after{content:"";position:absolute;background:#587452;width:18px;height:10px;border-radius:12px 0;transform:rotate(-20deg)}.cc-holly:after{transform:rotate(-85deg);top:10px;left:5px}.cc-holly span{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--cc-lights);z-index:1;left:3px;top:5px}
+.cc-web{left:-14px;top:-25px;width:85px;height:85px;opacity:.3;background:repeating-radial-gradient(circle at 0 0,transparent 0 15px,#d4c9dd 16px 17px,transparent 18px 23px);clip-path:polygon(0 0,100% 0,75% 75%,0 100%)}.cc-web:after{content:"";position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 0 0,transparent 0deg 19deg,#d4c9dd 20deg 21deg)}.cc-hanger{left:10px;top:-18px;width:28px;height:76px;color:#d4c9dd;z-index:2}.cc-hanger:before{content:"";position:absolute;top:-60px;bottom:25px;left:13px;width:1px;background:currentColor}.cc-spider-body{position:absolute;bottom:7px;left:8px;width:11px;height:15px;border-radius:48%;background:currentColor;box-shadow:inset -3px -2px #63586c}.cc-spider-body:before{content:"";position:absolute;left:2px;top:-5px;width:7px;height:7px;border-radius:50%;background:currentColor}.cc-spider-leg{position:absolute;bottom:15px;left:-1px;width:13px;height:10px;border-top:1.4px solid currentColor;border-left:1.4px solid currentColor;border-radius:5px 0 0;transform-origin:right top;transform:rotate(var(--leg))}.cc-spider-leg:nth-child(1){--leg:58deg}.cc-spider-leg:nth-child(2){--leg:25deg}.cc-spider-leg:nth-child(3){--leg:-10deg}.cc-spider-leg:nth-child(4){--leg:-44deg}.cc-spider-right{position:absolute;inset:0;transform:scaleX(-1)}.cc-halloween.cc-decorated .cc-player:after,.cc-halloween.cc-decorated .cc-schedule:after{content:"";position:absolute;right:0;top:0;width:42px;height:42px;pointer-events:none;opacity:.2;background:repeating-radial-gradient(circle at 100% 0,transparent 0 10px,#d4c9dd 11px 12px,transparent 13px 16px)}.cc-motion .cc-hanger{animation:cc-spider-drop 9s ease-in-out infinite}.cc-motion .cc-lights span{animation:cc-twinkle 4s ease-in-out infinite}.cc-motion .cc-lights span:nth-child(even){animation-delay:-2s}@keyframes cc-spider-drop{0%,15%,100%{transform:translateY(-7px)}48%,65%{transform:translateY(28px)}}@keyframes cc-twinkle{50%{opacity:.55}}
+@supports selector(:has(*)){.compact-console .content__body{display:none}#show-options #music-panel{display:block}#show-options:has(#info-panel:target) #music-panel,#show-options:has(#info-panel :target) #music-panel,#show-options:has(#support-panel:target) #music-panel,#show-options:has(#support-panel :target) #music-panel{display:none}#show-options:has(#info-panel:target) #info-panel,#show-options:has(#info-panel :target) #info-panel,#show-options:has(#support-panel:target) #support-panel,#show-options:has(#support-panel :target) #support-panel{display:block}body:has(#info-panel:target) .cc-menu a,body:has(#info-panel :target) .cc-menu a,body:has(#support-panel:target) .cc-menu a,body:has(#support-panel :target) .cc-menu a{background:transparent;color:var(--text-secondary)}body:has(#info-panel:target) .cc-menu a[data-tab-target="info"],body:has(#info-panel :target) .cc-menu a[data-tab-target="info"],body:has(#support-panel:target) .cc-menu a[data-tab-target="support"],body:has(#support-panel :target) .cc-menu a[data-tab-target="support"]{background:var(--gold);color:var(--accent-ink)}}
+@media(max-width:350px){#show-options.compact-console{padding-left:12px;padding-right:12px}.compact-console .section-card{padding:14px}.cc-header{padding-left:28px;padding-right:28px}.cc-date-row{grid-template-columns:65px minmax(0,1fr);gap:11px}.hours-row{flex-direction:column;gap:5px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cc-motion .cc-hanger,.cc-motion .cc-lights span{animation:none}}
+@supports not selector(:has(*)){.music-filter{display:none}.compact-console .content__body{display:block}}
+[[VISITOR_EXTRAS_CSS]]
+[[CATEGORY_CSS]]
+[[VIEWER_OPTIONS_CSS]]
+[[COMPACT_CSS]]
+
+body:has(#show-options.compact-console) .cc-menu:not(:has(a[data-tab-target="support"]:not([hidden]))){grid-template-columns:repeat(2,minmax(0,1fr))}
+</style>
+</head>
+  <body>
+<div id="show-options" class="compact-console content-container [[FEATURE_CLASSES]] [[COMPACT_CLASSES]]">
+<div class="content__body" id="music-panel" data-tab-panel="music">
+<div class="music-filter-targets"><span id="songs-all"></span>[[CATEGORY_TARGETS]]<span id="songs-new"></span></div>
+[[MAIN_GUIDANCE_ABOVE]]<header class="cc-header share-brand">[[COMPACT_DECOR]][[COMPACT_TAGLINE]][[COMPACT_LOGO]]<h1 class="[[NAME_CLASS]]">[[SHOW_NAME]]</h1><p>[[WELCOME]]</p><a class="cc-schedule-link" href="#info-schedule"><i class="[[ICON:schedule:fa-regular fa-calendar]]" aria-hidden="true"></i> [[DATES_TITLE]] &amp; [[HOURS_TITLE]] ↓</a></header>[[MAIN_GUIDANCE_BELOW]]
+<aside class="show-notice" id="show-notice" [[NOTICE_HIDDEN]]><div><h2>[[NOTICE_TITLE]]</h2><p>[[NOTICE_TEXT]]</p></div></aside>
+<div class="content__subitem" {after-hours-message}><div class="show-status"><span class="show-status__label">[[OFF_AIR]]</span><span class="show-status__detail">[[OFF_AIR_HELP]]</span></div><h2>[[MUSIC_CLOSED_TITLE]]</h2><p>[[MUSIC_CLOSED_TEXT]]</p><section class="section-card cc-schedule"><h2>[[DATES_TITLE]]</h2><p>[[SHOW_DATES]]</p><h3>[[HOURS_TITLE]]</h3><div class="cc-date-list">[[SCHEDULE_ROWS]]</div></section>[[SHOW_PREVIEW]]<a class="support-action" [[ABOUT_HIDDEN]] href="#info-panel">[[ABOUT_TITLE]]</a></div>
+<div class="content__subitem" {jukebox-dynamic-container}><div class="show-status show-status--live"><span class="show-status__label">[[ON_AIR]]</span><span class="show-status__detail">[[ON_AIR_HELP]]</span></div>[[MAIN_GUIDANCE_STATUS]]<section class="section-card cc-listening"><h2>[[LISTEN_TITLE]]</h2><div class="music-options"><div class="music-option share-fm">[[FM_INTRO]] <span class="radio-frequency">[[FM_FREQUENCY]] FM</span> <a [[MUSIC_FM_HIDDEN]] href="#info-listening">[[LISTEN_WAYS]]</a></div><div class="music-option share-pulsemesh"><div class="pulsemesh-download-wrap">[[PULSE_DISPLAY_LINK]][[PULSE_DOWNLOAD_CONTENT]]</div></div>[[OTHER_LISTENING]]</div></section></div>
+<div class="content__subitem music-live-section"  {jukebox-dynamic-container}><div class="section-card cc-player"><div class="music-section-heading">[[NOW_TITLE]]</div><div class="playing-now">{NOW_PLAYING}</div><div class="cc-next-label">[[NEXT_TITLE]]</div><div class="next-playlist">{NEXT_PLAYLIST}</div></div></div>
+<div class="content__subitem music-picker-section" {jukebox-dynamic-container}><details class="section-card cc-queue"><summary>[[QUEUE_TITLE]]</summary>[[QUEUE_COUNT]][[QUEUE_HELP]]<div class="jukebox-queue-container">{JUKEBOX_QUEUE}</div></details><section class="section-card music-request-card"><h2>[[JUKEBOX_TITLE]]</h2><p class="request-copy">[[JUKEBOX_HELP]]</p>[[QUEUE_LIMIT]][[LOCATION_CODE_BLOCK]]<div class="music-filter"><a href="#songs-all">[[FILTER_ALL]]</a>[[CATEGORY_LINKS]]<a href="#songs-new">[[FILTER_NEW]]</a></div><div id="playlists_container" class="los-song-list">{PLAYLISTS}</div></section><section class="section-card cc-schedule"><h2>[[DATES_TITLE]]</h2><p>[[SHOW_DATES]]</p><h3>[[HOURS_TITLE]]</h3><div class="cc-date-list">[[SCHEDULE_ROWS]]</div></section></div>
+<div class="content__subitem" {playlist-voting-dynamic-container}><div class="show-status show-status--live"><span class="show-status__label">[[ON_AIR]]</span><span class="show-status__detail">[[ON_AIR_HELP]]</span></div>[[MAIN_GUIDANCE_STATUS]]<section class="section-card cc-listening"><h2>[[LISTEN_TITLE]]</h2><div class="music-options"><div class="music-option share-fm">[[FM_INTRO]] <span class="radio-frequency">[[FM_FREQUENCY]] FM</span> <a [[MUSIC_FM_HIDDEN]] href="#info-listening">[[LISTEN_WAYS]]</a></div><div class="music-option share-pulsemesh"><div class="pulsemesh-download-wrap">[[PULSE_DISPLAY_LINK]][[PULSE_DOWNLOAD_CONTENT]]</div></div>[[OTHER_LISTENING]]</div></section></div>
+<div class="content__subitem music-live-section" id="los-voting-live" {playlist-voting-dynamic-container}><div class="section-card cc-player"><div class="music-section-heading">[[NOW_TITLE]]</div><div class="playing-now">{NOW_PLAYING}</div></div></div>
+<div class="content__subitem music-picker-section" {playlist-voting-dynamic-container}><section class="section-card music-request-card"><h2>[[VOTING_TITLE]]</h2>[[VOTES_REMAINING]]<p class="request-copy">[[VOTING_HELP]]</p>[[LOCATION_CODE_BLOCK]]<div class="music-filter"><a href="#songs-all">[[FILTER_ALL]]</a>[[CATEGORY_LINKS]]<a href="#songs-new">[[FILTER_NEW]]</a></div><div id="voting_playlists_container" class="los-song-list">{PLAYLISTS}</div></section><section class="section-card cc-schedule"><h2>[[DATES_TITLE]]</h2><p>[[SHOW_DATES]]</p><h3>[[HOURS_TITLE]]</h3><div class="cc-date-list">[[SCHEDULE_ROWS]]</div></section></div>
+
+<a class="section-card donation-card share-donation" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer">[[DONATION_ICON]]<p><strong>[[DONATION_CALLOUT]]</strong><span class="tap-note">[[DONATE_HINT]]</span></p></a>[[EXTRA_DONATIONS_HOME]][[COUNTDOWN]]
+</div>
+      <div class="content__body tab-blue" id="support-panel" data-tab-panel="support">
+        <div class="section-card support-intro"><h2>[[SUPPORT_TITLE]]</h2><p>[[SUPPORT_TEXT]]</p></div>
+        <!-- DONATION DETAILS: hidden until has-donations is enabled. -->
+        <div class="section-card support-card share-donation">
+[[DONATION_IMAGE]]
+          <div><h3>[[CHARITY_NAME]]</h3><p>[[DONATION_DESCRIPTION]]</p>
+            <a class="support-action" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer"><i class="[[ICON:support:fa-solid fa-hand-holding-heart]]" aria-hidden="true"></i> [[DONATE_BUTTON]]</a>
+          </div>
+        </div>
+[[EXTRA_DONATIONS_SUPPORT]]
+      </div>
+      <div class="content__body tab-yellow" id="info-panel" data-tab-panel="info">
+        <div class="section-card info-intro"><h2>[[INFO_TITLE]]</h2><p>[[INFO_TEXT]]</p>[[YOUTUBE_LINK]]</div>
+        <section id="info-schedule" class="section-card cc-schedule"><h2>[[DATES_TITLE]]</h2><p>[[SHOW_DATES]]</p><div class="cc-date-list">[[SCHEDULE_ROWS]]</div></section>
+[[QUICK_FACTS]]
+[[HOME_CARD]]
+[[PLAYLIST_CARD]]
+[[INFO_GUIDANCE]]
+<!-- DONATIONS: repeated in Home (three states), Support and Info. -->
+          <a class="section-card compact donation-card compact-live share-donation" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer" aria-label="[[DONATE_BUTTON]]">
+[[DONATION_ICON]]
+            <p><strong>[[DONATION_CALLOUT]]</strong><span class="tap-note">[[DONATE_HINT]]</span></p>
+          </a>[[EXTRA_DONATIONS_INFO]]
+[[FAQ_SECTION]]
+[[RESOURCES]]
+      </div>
+
+</div>
+    <!-- Keep RF messages outside panel stacking contexts so they cover all page controls. -->
+        <div class="request-feedback request-feedback--success" id="requestSuccessful" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="innerRequestSuccessful">
+            <i class="[[ICON:success:fa-solid [[SUCCESS_ICON]]]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[SUCCESS_TITLE]]</p>
+              <p class="request-feedback__message los-jukebox-copy">[[SUCCESS_JUKEBOX]]</p>
+              <p class="request-feedback__message los-voting-copy">[[SUCCESS_VOTING]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback request-feedback--error" id="requestFailed" style="display: none" role="alert" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:failed:fa-solid fa-triangle-exclamation]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[FAILED_TITLE]]</p>
+              <p class="request-feedback__message los-jukebox-copy">[[FAILED_JUKEBOX]]</p>
+              <p class="request-feedback__message los-voting-copy">[[FAILED_VOTING]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="requestPlaying" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:playing:fa-solid fa-music]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[PLAYING_TITLE]]</p>
+              <p class="request-feedback__message los-jukebox-copy">[[PLAYING_JUKEBOX]]</p>
+              <p class="request-feedback__message los-voting-copy">[[PLAYING_VOTING]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="queueFull" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:queueFull:fa-solid fa-list-check]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[FULL_TITLE]]</p>
+              <p class="request-feedback__message">[[FULL_MESSAGE]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback request-feedback--error" id="invalidLocation" style="display: none" role="alert" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:location:fa-solid fa-location-dot]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[INVALID_LOCATION_TITLE]]</p>
+              <p class="request-feedback__message">[[LOCATION_MESSAGE]]</p>
+            </div>
+            <div class="request-feedback__location">{RETRY_LOCATION_INLINE}</div>
+          </div>
+        </div>
+        <div class="request-feedback request-feedback--error" id="invalidLocationCode" style="display: none" role="alert" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:code:fa-solid fa-key]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[CODE_TITLE]]</p>
+              <p class="request-feedback__message">[[CODE_MESSAGE]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="alreadyVoted" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:voted:fa-solid fa-check-double]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[VOTED_TITLE]]</p>
+              <p class="request-feedback__message">[[VOTED_MESSAGE]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="alreadyRequested" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:unavailable:fa-solid fa-hourglass-half]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[REQUESTED_TITLE]]</p>
+              <p class="request-feedback__message">[[REQUESTED_MESSAGE]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="sequenceUnavailable" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:requested:fa-solid fa-clock]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[UNAVAILABLE_TITLE]]</p>
+              <p class="request-feedback__message">[[UNAVAILABLE_MESSAGE]]</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="dailyVoteLimitReached" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="[[ICON:voteLimit:fa-solid fa-check-to-slot]] status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">[[VOTE_LIMIT_TITLE]]</p>
+              <p class="request-feedback__message">[[VOTE_LIMIT_MESSAGE]]</p>
+            </div>
+          </div>
+        </div>
+
+
+<nav class="los-menu cc-menu" aria-label="Main navigation"><a class="los-menu__item" href="#music-panel" data-tab-target="music" aria-label="[[NAV_MUSIC]]"><i class="[[ICON:navMusic:fa-solid fa-music]]" aria-hidden="true"></i><span class="los-menu__label">[[NAV_MUSIC]]</span></a><a class="los-menu__item" href="#info-panel" data-tab-target="info" aria-label="[[NAV_INFO]]"><i class="[[ICON:navInfo:fa-solid fa-circle-info]]" aria-hidden="true"></i><span class="los-menu__label">[[NAV_INFO]]</span></a><a class="los-menu__item" href="#support-panel" data-tab-target="support" aria-label="[[NAV_SUPPORT]]"><i class="[[ICON:navSupport:fa-solid fa-heart]]" aria-hidden="true"></i><span class="los-menu__label">[[NAV_SUPPORT]]</span></a></nav>
+</body></html>

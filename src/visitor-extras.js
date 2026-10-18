@@ -1,5 +1,6 @@
 // Optional visitor content. Shared by the canonical renderer and editor, never demo data.
-export const linkIcons={spotify:['Spotify','fa-brands fa-spotify'],apple:['Apple Music','fa-brands fa-apple'],youtube:['YouTube','fa-brands fa-youtube'],music:['Music','fa-solid fa-music'],link:['Website','fa-solid fa-link'],radio:['Remote / radio','fa-solid fa-radio'],community:['Community','fa-solid fa-users'],lights:['Lights','fa-solid fa-lightbulb'],player:['Show player','fa-solid fa-play'],headphones:['Listening','fa-solid fa-headphones']};
+export {iconLibrary as linkIcons} from './icons.js';
+import {iconLibrary as linkIcons} from './icons.js';
 export const listDefinitions={
  playlists:{label:'Playlist',max:12,fields:{icon:'music',title:'',description:'',url:''}},
  facts:{label:'Fact',max:6,fields:{value:'',label:''}},
@@ -67,8 +68,8 @@ export function renderExtras(s,e,isHTTPS,c){
  return {
   PLAYLIST_CARD:s.playlistMusic&&s.playlists.length?`<section class="section-card visitor-playlists"><h2>${e(s.playlistTitle)}</h2>${s.playlistText?`<p>${e(s.playlistText)}</p>`:''}${playlistLinks}</section>`:'',
   PLAYLIST_FAQ:s.playlistInfo&&s.playlists.length?`<div class="faq-item playlist-faq"><strong>${e(s.playlistQuestion)}</strong>${s.playlistFAQText?`<p>${e(s.playlistFAQText)}</p>`:''}${playlistLinks}</div>`:'',
-  SHOW_PREVIEW:s.showPreview?`<section class="section-card compact show-preview"><h2>${e(s.showPreviewTitle)}</h2><p>${e(s.showPreviewText)}</p>${external(s.showPreviewUrl,'support-action',icon('youtube')+' '+e(s.showPreviewButton))}</section>`:'',
-  YOUTUBE_LINK:s.youtube?external(s.youtubeUrl,'info-pill youtube-link',icon('youtube')+' '+e(s.youtubeLabel)):'',
+  SHOW_PREVIEW:s.showPreview?`<section class="section-card compact show-preview"><h2>${e(s.showPreviewTitle)}</h2><p>${e(s.showPreviewText)}</p>${external(s.showPreviewUrl,'support-action','<i class="[[ICON:showVideo:fa-brands fa-youtube]]" aria-hidden="true"></i> '+e(s.showPreviewButton))}</section>`:'',
+  YOUTUBE_LINK:s.youtube?external(s.youtubeUrl,'info-pill youtube-link','<i class="[[ICON:youtube:fa-brands fa-youtube]]" aria-hidden="true"></i> '+e(s.youtubeLabel)):'',
   QUICK_FACTS:s.quickFacts&&s.facts.length?`<section class="section-card info-card quick-facts"><h2>${e(s.factsTitle)}</h2><div class="visitor-facts">${s.facts.map(f=>`<div><strong>${e(f.value||'—')}</strong><span>${e(f.label)}</span></div>`).join('')}</div></section>`:'',
   RESOURCES:s.resourcesEnabled&&s.resources.length?`<section class="section-card info-card visitor-resources"><h2>${e(s.resourcesTitle)}</h2>${s.resourcesText?`<p>${e(s.resourcesText)}</p>`:''}${links(s.resources)}</section>`:'',
   ABOUT_HIDDEN:s.musicAbout?'':'hidden',

@@ -11,27 +11,18 @@ run.onclick=async()=>{
   localStorage.setItem(SETTINGS_KEY,settingsFile(cloneDefaults()));localStorage.removeItem(PREFS_KEY);await load();
   let d=frame.contentDocument,q=s=>d.querySelector(s),v=()=>q('#preview').contentDocument;
   const click=async s=>{q(s).click();await wait(150);};
-  check('Named template and exact username are clear',d.title==='Lights on Sunset Template Customiser'&&q('.brand-author').textContent==='by christmasdave'&&q('.intro').textContent.includes('Start with the Lights on Sunset template'));
-  check('First visit opens welcome, with setup focused and tour optional',q('#tour-welcome').open&&!q('#quick-tour').open&&d.activeElement===q('#welcome-setup'));
-  check('Welcome blocks background interaction and explains features',q('#tour-welcome').matches(':modal')&&d.body.style.overflow==='hidden'&&q('.welcome-features').textContent.includes('category filters'));
+  check('Template choices and exact username are clear',d.title==='Lights on Sunset Template Customiser'&&q('.brand-author').textContent==='by christmasdave'&&q('.intro').textContent.includes('Compact console'));
+  check('Existing saved design resumes directly',!q('#template-dialog').open&&!q('#quick-tour').open);
   const initialSettings=localStorage.getItem(SETTINGS_KEY);
-  await click('#welcome-skip');check('Start editing remembers dismissal without changing settings',!q('#tour-welcome').open&&JSON.parse(localStorage.getItem(PREFS_KEY)).tourSeen===true&&localStorage.getItem(SETTINGS_KEY)===initialSettings&&d.body.style.overflow==='');
+  const finishSetup=async(takeTour=false)=>{await click('#start-setup');for(let i=0;i<3;i++)await click('#setup-next');check('Tour choice starts unchecked on every opening',!q('#setup-take-tour').checked);if(takeTour)await click('#setup-take-tour');await click('#setup-next');};
+  for(let repeat=0;repeat<2;repeat++){
+   await finishSetup();check('Unchecked finish skips the tour on visit '+(repeat+1),!q('#quick-tour').open&&!q('#setup-wizard').open&&d.body.style.overflow==='');
+   await finishSetup(true);check('Checked finish starts step one explicitly on visit '+(repeat+1),q('#quick-tour').matches(':modal')&&q('#tour-progress').textContent==='1 of 6'&&JSON.parse(localStorage.getItem(PREFS_KEY)).tourSeen===true);
+   check('Tour introduces changing an existing theme',q('#tour-text').textContent.includes('Change your theme'));
+   await click('#tour-skip');check('Tour skip restores scrolling and keeps applied settings',d.body.style.overflow===''&&localStorage.getItem(SETTINGS_KEY)===initialSettings);
+  }
   await click('#theme');await load();d=frame.contentDocument;
-  check('Theme preference and welcome dismissal survive reload',d.documentElement.dataset.theme==='dark'&&!q('#tour-welcome').open);
-  for(const action of ['close','escape','tour']){
-   localStorage.setItem(PREFS_KEY,JSON.stringify({theme:'dark'}));await load();d=frame.contentDocument;
-   if(action==='escape'){q('#tour-welcome').dispatchEvent(new Event('cancel',{cancelable:true}));await wait(100);}
-   else await click(action==='close'?'#welcome-close':'#welcome-tour');
-   check('Welcome '+action+' remembers choice and closes welcome',!q('#tour-welcome').open&&JSON.parse(localStorage.getItem(PREFS_KEY)).tourSeen===true);
-   if(action==='tour'){check('Welcome transitions directly into step one',q('#quick-tour').open&&q('#tour-progress').textContent==='1 of 6');await click('#tour-skip');}
-   check('Welcome '+action+' restores scrolling and keeps settings',d.body.style.overflow===''&&localStorage.getItem(SETTINGS_KEY)===initialSettings);
-   await load();d=frame.contentDocument;check('Welcome '+action+' stays dismissed on reload',!q('#tour-welcome').open);
-  }
-  for(const [width,height] of [[320,568],[390,844],[1280,900]]){
-   frame.style.width=width+'px';frame.style.height=height+'px';localStorage.setItem(PREFS_KEY,JSON.stringify({theme:'light'}));await load();d=frame.contentDocument;
-   const box=q('#tour-welcome').getBoundingClientRect();check('Welcome fits '+width+' × '+height,box.left>=0&&box.right<=width+1&&box.top>=0&&box.bottom<=height+1&&d.documentElement.scrollWidth<=width+1);
-   await click('#welcome-skip');
-  }
+  check('Editor preference survives reload without onboarding',d.documentElement.dataset.theme==='dark'&&!q('#quick-tour').open&&!q('#template-dialog').open);
   await click('[data-editor-group="music"]');await click('[data-device="tablet"]');await click('[data-mode="voting"]');await wait(300);
   const row=v().querySelector('[role="button"]:not(.sequence-unavailable)');row?.click();await wait(100);
   frame.contentWindow.scrollTo(0,200);await wait(100);
@@ -40,6 +31,7 @@ run.onclick=async()=>{
   for(let i=0;i<6;i++){
    const box=q('#tour-card').getBoundingClientRect(),spot=q('#tour-highlight').getBoundingClientRect();
    check('Tour step '+(i+1)+' fits and highlights a control',box.x>=0&&box.y>=0&&box.right<=frame.clientWidth+1&&box.bottom<=frame.clientHeight+1&&spot.width>0&&spot.height>0);
+   if(i===3)check('Category step uses a compact filter illustration',!q('#tour-visual').hidden&&q('#tour-text').textContent.split(/\s+/).length<40&&q('#tour-visual').textContent.includes('order'));
    if(i<5)await click('#tour-next');
   }
   await click('#tour-back');check('Back returns to the previous explanation',q('#tour-progress').textContent==='5 of 6');await click('#tour-next');await click('#tour-next');
@@ -52,7 +44,8 @@ run.onclick=async()=>{
    frame.style.width=width+'px';await wait(150);await click('#open-help');await click('#start-tour');
    for(let i=0;i<6;i++){
     const c=q('#tour-card').getBoundingClientRect();check(`Tour ${i+1} fits ${width}px`,c.left>=0&&c.right<=width+1&&c.top>=0&&c.bottom<=frame.clientHeight+1);
-    if(i<5)await click('#tour-next');
+    if(i===3)check('Category step uses a compact filter illustration',!q('#tour-visual').hidden&&q('#tour-text').textContent.split(/\s+/).length<40&&q('#tour-visual').textContent.includes('order'));
+   if(i<5)await click('#tour-next');
    }
    await click('#tour-skip');check('Skip closes and restores narrow view '+width,!q('#quick-tour').open&&q('.workspace').dataset.view==='settings'&&d.documentElement.scrollWidth<=width+1);
   }

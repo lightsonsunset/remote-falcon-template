@@ -10,7 +10,7 @@ export const pageCopyGroups=[
  ]],
  ['Music',[
  ['JUKEBOX_TITLE','Request heading / Home button','Request a Song'],['JUKEBOX_HELP','Request instructions','Tap a song to add it to the queue.',true],['VOTING_TITLE','Voting heading / Home button','Vote for the Next Song'],['VOTING_HELP','Voting instructions','Tap your favourite. The song with the most votes plays next.',true],
- ['QUEUE_COUNT_LABEL','Queue count label','Songs waiting (including Up Next)'],['ACCESS_CODE_TITLE','Access code heading','Display access code'],['ACCESS_CODE_HELP','Access code instructions','Enter the code shown at the display, then choose a song.',true],
+ ['QUEUE_LIMIT_TEXT','Queue limit wording','Request queue limit: {QUEUE_DEPTH} songs.',true],['QUEUE_COUNT_LABEL','Queue count label','Songs waiting (including Up Next)'],['ACCESS_CODE_TITLE','Access code heading','Display access code'],['ACCESS_CODE_HELP','Access code instructions','Enter the code shown at the display, then choose a song.',true],
  ['NOW_TITLE','Now Playing heading','Now Playing'],['NEXT_TITLE','Next song heading','Up Next'],['QUEUE_TITLE','Queue heading','Request Queue'],['QUEUE_HELP','Queue instructions (optional)','',true],['MUSIC_CLOSED_TITLE','Music closed heading','Choose the Music During Show Hours'],['MUSIC_CLOSED_TEXT','Music closed explanation','The lights are taking a break. Come back during show hours to choose a favourite.',true],['ABOUT_TITLE','Info link heading','About the Show'],['ABOUT_HELP','Info link explanation','Find show times and ways to listen.',true],['FILTER_ALL','All filter','All'],['FILTER_NEW','NEW filter','New this year'],['VOTES_LABEL','Vote count label','votes']
  ]],
  ['Support & Info',[

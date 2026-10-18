@@ -1,5 +1,5 @@
 name: Suggest an improvement
-description: Suggest an improvement to this specific template.
+description: Suggest an improvement to the supplied templates or shared customiser.
 title: "[Idea] "
 body:
   - type: textarea
@@ -11,4 +11,4 @@ body:
       required: true
   - type: markdown
     attributes:
-      value: "This customiser personalises the Lights on Sunset layout. Please keep private settings and account details out of your suggestion."
+      value: "This customiser personalises supplied Remote Falcon templates. Please keep private settings and account details out of your suggestion."

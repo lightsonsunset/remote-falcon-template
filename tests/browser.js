@@ -12,7 +12,7 @@ document.getElementById('run').onclick=async()=>{
  for(const theme of Object.keys(themes)){
  const starter=cloneDefaults(theme),starterHTML=render(source,starter);
  for(const mode of ['jukebox','voting']){
-  adapter.update(starterHTML,starter,{mode,air:true});await wait(350);
+  await adapter.update(starterHTML,starter,{mode,air:true});
   adapter.navigate('music');await wait(30);
   const d=frame.contentDocument,rows=[...d.querySelectorAll('.los-song-list [role=button]')];
   check(theme+' '+mode+': two sample sashes with no user NEW assignments',rows.filter(r=>getComputedStyle(r,'::after').content==='"NEW"').length===2&&starter.newNames==='');
@@ -25,7 +25,7 @@ document.getElementById('run').onclick=async()=>{
  for(const {width,height} of Object.values(viewports).flat()){
   frame.style.width=width+'px';frame.style.height=height+'px';
   for(const mode of ['jukebox','voting'])for(const air of [true,false]){
-   adapter.update(html,s,{mode,air,reset:true});await wait(350);
+   await adapter.update(html,s,{mode,air,reset:true});
    const d=frame.contentDocument;
    for(const panel of ['home','music','support','info']){
     d.querySelector(`.los-menu a[href="#${panel}-panel"]`).click();await wait(30);
@@ -54,13 +54,13 @@ document.getElementById('run').onclick=async()=>{
    const box=message.firstElementChild.getBoundingClientRect();check(`${width}px ${mode}: confirmation remains a compact centred card`,box.height<Math.min(500,height-32)&&Math.abs(box.y+box.height/2-height/2)<2);
    check(`${theme} ${width}px ${mode}: demo interaction updates queue/vote`,mode==='jukebox'?(d.querySelector('.next-playlist').textContent.includes(themes[theme].demoSongs[1]) && !d.querySelector('.jukebox-queue-container').textContent.trim()):d.querySelector(`[data-key="${themes[theme].demoSongs[1]}"]`).nextElementSibling.textContent==='1');
    d.getElementById('music-panel').scrollTop=230;const before=d.getElementById('music-panel').scrollTop;
-   adapter.update(render(source,{...s,welcome:'Edited welcome'}),s,{mode,air});await wait(350);
+   await adapter.update(render(source,{...s,welcome:'Edited welcome'}),s,{mode,air});
    check(`${width}px ${mode}: ordinary edits retain panel and scroll`,frame.contentWindow.location.hash==='#songs-all'&&Math.abs(frame.contentDocument.getElementById('music-panel').scrollTop-before)<=1);
   }
  }
  frame.style.width='320px';frame.style.height='844px';const long={...s,name:'A very long Christmas show name shared with our neighbourhood & friends',newNames:'An extraordinarily long sequence name with many words and unusual characters "雪" & sparkle'.repeat(2)};
  long.copy={...s.copy,NAV_HOME:'Welcome & lights',NAV_MUSIC:'Choose the music',NAV_SUPPORT:'Support our show',NAV_INFO:'Show information'};
- adapter.update(render(source,long),long,{air:true,mode:'voting',reset:true});await wait(350);
+ await adapter.update(render(source,long),long,{air:true,mode:'voting',reset:true});
  const d=frame.contentDocument;const large=d.createElement('style');large.textContent='html{font-size:150%!important}';d.head.append(large);
  for(const panel of ['home','music','support','info']){d.querySelector(`a[href="#${panel}-panel"]`).click();await wait(30);const el=d.getElementById(panel+'-panel');check(`320px enlarged text / long content: ${panel}`,el.scrollWidth<=el.clientWidth+1);}
  check(`${theme}: customised listening title appears in both RF mode blocks`,html.split('Listen to our seasonal magic').length===3);
@@ -68,19 +68,19 @@ document.getElementById('run').onclick=async()=>{
  const detached=new DOMParser().parseFromString(html,'text/html');check('Export contains no preview songs, executable content or event attributes',!detached.querySelector('script')&&![...detached.querySelectorAll('*')].some(el=>[...el.attributes].some(a=>/^on/i.test(a.name)))&&!html.includes(themes[theme].demoSongs[0]));
  const custom={...s,categoryNames:['Family & friends','Spooky classics','A very long third category name','Dance'],donationImage:'',donationUrl:'www.example.org'};
  for(const mode of ['jukebox','voting']){
-   const draft=renderDraft(source,custom);adapter.update(draft.html,draft.settings,{air:true,mode,reset:true});await wait(350);
+   const draft=renderDraft(source,custom);await adapter.update(draft.html,draft.settings,{air:true,mode,reset:true});
    const d=frame.contentDocument;
    for(let i=1;i<=4;i++){d.querySelector(`a[href="#songs-category-${i}"]`).click();await wait(30);const groups=[...d.querySelectorAll('.category-section')].filter(visible);check(`${theme} ${mode} category ${i}: matches its ordered section`,groups.length===1&&groups[0].querySelector('.category-label').textContent===custom.categoryNames[i-1]);}
    d.querySelector('a[href="#support-panel"]').click();await wait(30);check(`${theme} ${mode}: unfinished donation URL still renders donation details`,visible(d.querySelector('.support-card.share-donation')));
-   adapter.update(draft.html,draft.settings,{air:false,mode});await wait(350);check(`${theme} ${mode}: unfinished donation URL does not freeze availability`,!frame.contentDocument.querySelector('.los-song-list'));
+   await adapter.update(draft.html,draft.settings,{air:false,mode});check(`${theme} ${mode}: unfinished donation URL does not freeze availability`,!frame.contentDocument.querySelector('.los-song-list'));
    for(const example of messageExamples.filter(m=>m.modes.includes(mode))){
-     adapter.update(html,s,{air:true,mode,reset:true});await wait(350);const d=frame.contentDocument;d.querySelector('a[href="#songs-all"]').click();await wait(30);
+     await adapter.update(html,s,{air:true,mode,reset:true});const d=frame.contentDocument;d.querySelector('a[href="#songs-all"]').click();await wait(30);
      d.querySelector(`[data-demo-message="${example.id}"]`).click();await wait(30);const message=d.getElementById(example.id);
      check(`${theme} ${mode}: ${example.id} is visible and blocks underlying taps`,visible(message)&&!!d.elementFromPoint(160,800)?.closest('.request-feedback'));
    }
  }
  for(const home of [true,false])for(const info of [true,false]){
-   const placement={...s,donationHome:home,donationInfo:info};adapter.update(render(source,placement),placement,{air:true,mode:'jukebox',reset:true});await wait(350);const d=frame.contentDocument;
+   const placement={...s,donationHome:home,donationInfo:info};await adapter.update(render(source,placement),placement,{air:true,mode:'jukebox',reset:true});const d=frame.contentDocument;
    for(const [panel,show] of [['home',home],['support',true],['info',info]]){d.querySelector(`a[href="#${panel}-panel"]`).click();await wait(30);check(`${theme}: donation ${panel} ${show}`, [...d.querySelectorAll(`#${panel}-panel .share-donation`)].some(visible)===show);}
  }
  }

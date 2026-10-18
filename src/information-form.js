@@ -1,0 +1,9 @@
+import {informationCards,informationKey} from './information-cards.js';
+export function informationForm(s,{e,field}){
+ const rows=informationCards(s);
+ return rows.map((row,i)=>`<details class="copy-group" data-information-row="${i}" ${i===0?'open':''}><summary><span class="information-title">${e(row.title||'Extra information '+(i+1))}</span></summary><div class="copy-fields">${Object.entries({title:'Heading',text:'Message',image:'Image link',link:'Button link',linkLabel:'Button text'}).map(([part,label])=>{
+  if(i===0)return field(informationKey(i,part),label,part==='image'?'Optional picture beside the text.':part==='link'?'Leave blank for a text-only card.':'',part==='text'?'textarea':['image','link'].includes(part)?'url':'text',['image','link'].includes(part));
+  const attrs=`data-information="${i}" data-part="${part}" maxlength="20000"`,control=part==='text'?`<textarea ${attrs} rows="3">${e(row[part])}</textarea>`:`<input ${attrs} type="${['image','link'].includes(part)?'url':'text'}" value="${e(row[part])}">`;
+  return `<label class="field"><span class="field-label">${label}${['image','link'].includes(part)?'<small>Optional</small>':''}</span>${control}<span class="error" data-error="${informationKey(i,part)}"></span><span class="url-completion hint" role="status"></span></label>`;
+ }).join('')}<div class="small-actions">${['up','down','remove'].map(action=>`<button type="button" data-information-action="${action}" data-row="${i}" aria-label="${action==='remove'?'Remove':'Move '+action} extra information card ${i+1}" ${(action==='up'&&i===0)||(action==='down'&&i===rows.length-1)?'disabled':''}>${action==='remove'?'Remove':'Move '+action}</button>`).join('')}</div></div></details>`).join('')+`<button type="button" data-information-action="add" ${rows.length===5?'disabled':''}>+ Add extra information card</button><p class="hint">Up to five cards. Images sit beside the text.</p>`;
+}

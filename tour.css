@@ -1,11 +1,5 @@
 /* Customiser branding and orientation only; never part of RF exports. */
 .brand{min-width:0}.brand img{flex-shrink:0}.brand-kind{font-weight:550}.brand-author{font-weight:700}.app-header nav{flex-wrap:wrap;justify-content:flex-end;gap:16px}.app-header #start-tour{font-size:12px;color:var(--ink);font-weight:650;white-space:nowrap}
-#tour-welcome{width:min(520px,calc(100% - 28px));max-height:calc(100dvh - 28px);overflow:auto;padding:32px;border-radius:20px}
-#tour-welcome::backdrop{background:#0b201a9c;backdrop-filter:blur(5px)}
-#welcome-close{position:absolute;right:12px;top:10px;width:38px;height:38px;padding:0;border:0;background:transparent;font-size:25px;color:var(--muted)}
-#welcome-title{font-size:25px;line-height:1.35;letter-spacing:-.6px;margin:10px 22px 12px 0}#welcome-title span{color:var(--green)}
-#welcome-intro{font-size:14px;line-height:1.7;margin:0 0 20px}.welcome-features{list-style:none;padding:0;margin:0 0 24px;display:grid;gap:12px}.welcome-features li{position:relative;padding:0 0 0 26px;font-size:13px;line-height:1.6}.welcome-features li::before{content:'✦';position:absolute;left:0;top:0;color:var(--green);font-size:18px}
-.welcome-actions{display:flex;gap:10px;flex-wrap:wrap}.welcome-actions button{min-height:44px;font-size:13px}#tour-welcome .welcome-credit{font-size:11px;margin:20px 0 0;color:var(--muted)}
 #quick-tour{position:fixed;inset:0;margin:0;width:100%;max-width:none;height:100%;max-height:none;border:0;border-radius:0;padding:0;background:transparent;box-shadow:none;overflow:hidden}
 #quick-tour::backdrop{background:transparent;backdrop-filter:none}
 #tour-highlight{position:fixed;border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 9999px #071c16ad;pointer-events:none}
@@ -14,4 +8,5 @@
 #tour-title{font-size:19px;line-height:1.35}#tour-text{font-size:13px;line-height:1.7;margin:12px 0 18px;color:var(--muted)}.tour-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center}.tour-bottom button{min-height:38px}#tour-dots{display:flex;gap:5px}#tour-dots span{width:6px;height:6px;border-radius:50%;background:var(--border)}#tour-dots .current{background:var(--green)}
 @media(max-width:1150px){.app-header{flex-wrap:wrap}.app-header nav{justify-content:flex-start}.brand small{display:block}.brand-kind{display:inline}}
 @media(max-width:760px){.brand strong{font-size:17px;line-height:1.4}.brand-kind{display:block}.brand small{font-size:10px;line-height:1.5}.app-header nav{gap:10px}.app-header #start-tour{font-size:11px;padding:8px 3px}#tour-card{padding:16px}}
-@media(max-width:420px){#tour-welcome{padding:24px}#welcome-title{font-size:22px}.welcome-actions{flex-direction:column;align-items:stretch}}
+
+#tour-visual{margin:0 0 18px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--soft)}#tour-visual[hidden]{display:none}#tour-visual figcaption{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}.tour-filter-example{display:flex;gap:6px;flex-wrap:wrap}.tour-filter-example span{padding:5px 9px;border-radius:20px;border:1px solid var(--border);font-size:11px;background:var(--surface)}.tour-filter-example .active{background:var(--green);color:var(--surface)}#tour-visual p{font-size:11px;line-height:1.6;color:var(--muted);margin:10px 0 0}
