@@ -1,5 +1,18 @@
 # Verification and compatibility
 
+## 1.9.0 release preparation — 18 October 2026
+
+The combined editor/menu and update-dialog changes passed 126 Node tests, package/privacy verification and the allowlisted site build. The release-dialog matrix was rerun for both templates in light/dark modes at 320px, 390px and desktop widths, including doubled text, keyboard navigation, focus restoration, unchanged saved designs and local history-fetch recovery. Released history identifies 1.9.0; completed menu work is absent from In progress while approved themes remain planned. Both canonical templates and all four manual starters carry matching version/date headers; viewer changes are limited to that metadata. The existing seven menu-related browser suites and compact-invitation checks are recorded below. These remain local checks, with no new hosted RF or physical-device rehearsal.
+
+## Shared editor menu organisation — local verification, 18 October 2026
+
+- Seven affected browser suites passed, totalling 1,120 assertions: shared menu organisation (404), editor (56), setup (56), tour (63), extras (93), listening (374) and release readiness (74). The new menu suite covers both templates and seasons, page/general navigation, every shortcut, moved control ownership, validation reveal/focus, icons, typing/scroll/caret, Undo/Redo, reload and 320/390/1280px layouts.
+- Corrected older assertions that expected the previous section locations. The icon check now waits for the debounced preview to finish rendering. No browser JavaScript errors were reported. Browsing sections leaves saved designs untouched; HTML exports still match the canonical renderer for the saved settings.
+- Inspected the desktop and phone editor layouts. Updated quick-start/detailed-guide directions and three generic screenshots for the shared menu names and groupings. Existing settings keys, backup formats, template renderers and canonical starter appearance are unchanged.
+- All 126 Node tests and the package/privacy audit passed. Both manual ZIPs contain the current guides and exact canonical starters (40 files for Lights on Sunset, 27 for Compact console), with verified CRCs and offline links. No preview scripts or demo catalogue enter the exported HTML.
+
+These are local customiser and authorised illustrative-preview checks. No hosted RF/FPP page, setting, mode, request, vote or schedule was changed; no physical-device or live integration claim is made.
+
 ## Song badges and social links — local verification, 18 October 2026
 
 - All 124 Node tests passed, including older-backup defaults, independent seasonal settings, shared copy groups, Undo/Redo, safe links and CSS escaping for exact sequence names.
@@ -222,3 +235,12 @@ The shared icon picker groups all 59 existing IDs exactly once across Christmas,
 - Opening and closing help with Escape, Close or Got it retained pending NEW selections, category order and the import checkbox. Cancel import discarded those pending changes; the existing catalogue and settings remained intact. Focus returned to the help trigger.
 - Checked desktop, 390px and 320px layouts. The dialog fits without horizontal overflow and scrolls at narrow heights. Checked shared settings access in Lights on Sunset and Compact console, plus nested detected-category help. No console errors were reported.
 - Existing 115 Node checks passed; both manual ZIPs and generated offline README were rebuilt and verified (40 original-template entries, 27 Compact entries; 182 source files). No viewer renderer or saved-setting changes; no RF or hosted-customiser publication.
+
+## Local update-dialog checks — 18 October 2026
+
+The Released / In progress dialog passed isolated local checks in both templates, light/dark appearances and 320px, 390px and desktop widths, including doubled text size, keyboard tab selection, Escape and close-button focus restoration. Opening, switching and closing preserved stored designs. The release-history fetch failure was tested against the local documentation endpoint; the progress tab remained available and a retry recovered. This is an editor-only check, not a hosted RF, playback or physical-device test.
+
+The local Node suite passed 126 tests. Both manual packages passed canonical starter, exact ZIP-content and offline-guide-link checks; the allowlisted site build passed. Pending changes remain under Unreleased and are excluded from the Released tab. The progress summary must be reviewed again before publication.
+
+The template chooser invitation also passed local light/dark checks at 320px, 390px and desktop widths, including doubled text size, keyboard access and unchanged saved designs after closing. Its separate idea and viewer-submission links match the repository forms, open a new tab and retain the existing public-submission and permission guidance. The card uses a uniform border with no side accent.
+The chooser invitation was subsequently compacted into text links with a collapsed submission/contact disclosure, preserving both GitHub destinations and the forum contact. Checked 320px, 390px and desktop widths in light/dark modes at normal and doubled text sizes; collapsed and expanded content fits, links retain 44px tap height, keyboard activation and Escape work, and browsing leaves stored designs unchanged.

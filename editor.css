@@ -112,7 +112,15 @@
 .icon-empty{padding:12px 0}
 @media(max-width:420px){.icon-picker{padding:18px}.icon-picker h2{font-size:19px}.icon-categories button{padding:8px 10px}}
 
-.template-contribute{margin:20px 0 0;padding-top:16px;border-top:1px solid var(--border);line-height:1.6}.template-contribute span{display:block;margin-top:4px;font-size:11px}
+.template-contribute{margin:16px 0 0;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font-size:.85rem;line-height:1.5;overflow-wrap:anywhere}.template-contribute-row{display:flex;flex-wrap:wrap;align-items:center;gap:0 16px}.template-contribute h3{margin:0;font-size:inherit;font-weight:600;color:var(--muted)}.template-contribute-actions{display:flex;flex-wrap:wrap;gap:0 16px}.template-contribute-actions a{display:inline-flex;align-items:center;min-height:44px;max-width:100%;font-size:inherit;font-weight:550;text-underline-offset:3px}.template-contribute-details{border:0;margin:0}.template-contribute-details>summary{min-height:36px;padding:6px 0;justify-content:flex-start;gap:8px;color:var(--muted);font-size:inherit;font-weight:400}.template-contribute-details>summary::after{margin-left:0;font-size:15px}.template-contribute-details p{font-size:inherit;margin:6px 0 10px}.template-contribute-details p:last-child{margin-bottom:4px}
 
 /* Shared category guidance, including nested CSV review help. */
 .category-help-links{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;margin:0 0 14px;font-size:12px;line-height:1.6}.category-help-links .inline-link,.category-help-links a{min-height:36px;display:inline-flex;align-items:center;text-align:left}.category-import-note{padding:12px 14px;background:var(--soft);border:1px solid var(--border);border-radius:10px}#category-help-dialog{max-height:calc(100dvh - 30px);overflow:auto}#category-help-dialog h2{line-height:1.4}.category-help-steps{padding-left:22px}.category-help-steps li+li{margin-top:8px}#category-help-dialog .small-actions{justify-content:flex-end}
+
+/* Separate page navigation from shared tools without another navigation level. */
+.editor-groups{display:flex;flex-direction:column;gap:10px}
+.editor-group-label{display:block;font-size:10px;font-weight:650;color:var(--muted);margin-bottom:5px}
+.editor-group-buttons{display:grid;grid-template-columns:repeat(var(--group-columns),minmax(0,1fr));gap:4px}
+.editor-groups .editor-group-buttons button{grid-column:auto;min-height:44px;overflow-wrap:anywhere}
+.editor-area-help{padding:12px 20px 0;margin:0 0 12px!important}
+.settings-pane [data-section],.settings-pane input,.settings-pane textarea{scroll-margin-top:190px}

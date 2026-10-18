@@ -1,14 +1,32 @@
 import {copyFields,messageCopyGroups} from './copy.js';
 
 // Editor organisation only: saved field names and RF markup remain independent.
-export const editorGroups={
- home:{name:'Home',sections:[11,19,13,20,7,8,26,21],panel:'home'},
- music:{name:'Music',sections:[30,6,18,22,23,24,25,15],panel:'music'},
- support:{name:'Support',sections:[16,9],panel:'support'},
- info:{name:'Info',sections:[17,27,28,10,29],panel:'info'},
- setup:{name:'Site setup',sections:[1,2,3,4,5,31,14]},
- messages:{name:'Song messages',sections:[12]}
-};
+// Shared section ownership; templates specify their page placements.
+export function createEditorGroups({landing='home',extraInformationPage='Home',guidanceInfo=false,playlistPage='music'}={}){
+ const main=[11,13,7,26,21],music=[30,6,18,15,23,24,33],info=[17,28,10,29];
+ if(extraInformationPage==='Info')info.splice(1,0,8);else main.splice(3,0,8);
+ if(guidanceInfo)info.splice(2,0,19);else main.splice(1,0,19);
+ if(playlistPage==='info')info.splice(3,0,25);else music.splice(-1,0,25);
+ const groups=landing==='music'?{
+  music:{name:'Music',panel:'music',sections:[...main,...music],description:'Music is your starting page in this template.'},
+  info:{name:'Info',panel:'info',sections:info},
+  support:{name:'Support',panel:'support',sections:[16,9]}
+ }:{
+  home:{name:'Home',panel:'home',sections:main},
+  music:{name:'Music',panel:'music',sections:music},
+  support:{name:'Support',panel:'support',sections:[16,9]},
+  info:{name:'Info',panel:'info',sections:info}
+ };
+ return {...groups,setup:{name:'Site setup',sections:[1,2,3,4,14,31]},messages:{name:'Request messages',sections:[12],description:'Messages visitors see when requesting a song or voting.'}};
+}
+export const editorGroups=createEditorGroups();
+export function editorNavigation(groups){
+ const row=(page,title)=>{
+  const items=Object.entries(groups).filter(([,g])=>!!g.panel===page);
+  return `<div class="editor-group-row" role="group" aria-label="${title}"><span class="editor-group-label">${title}</span><div class="editor-group-buttons" style="--group-columns:${items.length}">${items.map(([key,g])=>`<button type="button" data-editor-group="${key}" aria-pressed="false">${g.name}<span class="group-alert" hidden></span></button>`).join('')}</div></div>`;
+ };
+ return '<div class="editor-groups" id="editor-groups">'+row(true,'Edit a viewer page')+row(false,'General settings')+'</div><p class="editor-area-help hint" id="editor-area-help" hidden></p>';
+}
 const fields=(...keys)=>keys.map(key=>{
  const field=copyFields.find(f=>f[0]===key);if(!field)throw Error('Unknown text field '+key);return field;
 });
@@ -19,7 +37,11 @@ export const editorCopy={
  home:[['Link to Music on Home',fields('HOME_JUKEBOX_HELP','HOME_VOTING_HELP')],['Seasonal countdown',fields('COUNTDOWN_TITLE','COUNTDOWN_DAYS')]],
  countdownUnits:[['Full countdown labels',fields('COUNTDOWN_DAY_UNIT','COUNTDOWN_HOURS','COUNTDOWN_MINUTES','COUNTDOWN_SECONDS')]],
  status:[['On air / Off air',fields('ON_AIR','ON_AIR_HELP','OFF_AIR','OFF_AIR_HELP')]],
- music:[['Requests & voting',fields('JUKEBOX_TITLE','JUKEBOX_HELP','VOTING_TITLE','VOTING_HELP','VOTES_LABEL')],['Now Playing & queue',fields('NOW_TITLE','NEXT_TITLE','QUEUE_TITLE','QUEUE_HELP','EMPTY_NOW','EMPTY_NEXT','EMPTY_QUEUE')],['Filters & unavailable songs',fields('FILTER_ALL','FILTER_NEW','UNAVAILABLE_ROW_PREFIX')],['When the show is off',fields('MUSIC_CLOSED_TITLE','MUSIC_CLOSED_TEXT','ABOUT_TITLE','ABOUT_HELP')]],
+ songSelection:[['Request headings & instructions',fields('JUKEBOX_TITLE','JUKEBOX_HELP')],['Voting headings & instructions',fields('VOTING_TITLE','VOTING_HELP','VOTES_LABEL')],['Unavailable songs',fields('UNAVAILABLE_ROW_PREFIX')]],
+ player:[['Now playing & Up next',fields('NOW_TITLE','NEXT_TITLE','EMPTY_NOW','EMPTY_NEXT')],['Request queue',fields('QUEUE_TITLE','QUEUE_HELP','EMPTY_QUEUE')]],
+ filters:[['Filter wording',fields('FILTER_ALL')]],
+ newFilter:[['New-song filter wording',fields('FILTER_NEW')]],
+ offAir:[['Off-air message',fields('MUSIC_CLOSED_TITLE','MUSIC_CLOSED_TEXT')],['About the show link',fields('ABOUT_TITLE','ABOUT_HELP')]],
  queueLimit:[['Queue limit wording',fields('QUEUE_LIMIT_TEXT')]],
  counters:[['Queue count wording',fields('QUEUE_COUNT_LABEL')]],
  access:[['Display access code',fields('ACCESS_CODE_TITLE','ACCESS_CODE_HELP')]],

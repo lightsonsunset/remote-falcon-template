@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.9.0 — Clearer editing and updates — 18 October 2026
+
+### Shared customiser
+
+- Separated **Edit a viewer page** from **General settings** and renamed Song messages to **Request messages**.
+- Grouped season, colours and decorations under **Theme & style**; grouped navigation labels, icons and Support visibility under **Navigation menu**.
+- Moved the on-air schedule and Music FM reminder options beside their shared dates and listening details. **Social links** now also contains the independent YouTube button settings.
+- Put song-selection wording, player/queue wording, off-air content and filter labels beside their related controls. Renamed notices to **Announcement** and Show preview to **Off-air video**.
+- Added **Released** and **In progress** tabs to What’s new, with keyboard navigation, focus restoration, an RF export reminder and separate progress, planned-theme and known-issue summaries.
+- Added a compact invitation in the template chooser, with separate idea and viewer-submission links and expandable submission/contact details, keeping the setup actions prominent.
+- Updated the guides, screenshots and both manual download packages to match the reorganised editor.
+- Preserved saved designs, backups, settings keys and viewer appearance. These changes are customiser-only; existing RF pages do not need fresh HTML for this release.
+
 ## 1.8.0 — Song badges and social links — 18 October 2026
 
 ### Shared customiser

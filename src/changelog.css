@@ -1,0 +1,32 @@
+/* What’s new is editor-only and shared by every template. */
+#changelog-dialog{width:min(650px,calc(100% - 24px));max-height:calc(100dvh - 32px);padding:22px;overflow:auto;scrollbar-gutter:stable}
+#changelog-dialog .dialog-heading{position:static;padding:0 0 16px;gap:12px}
+#changelog-dialog .dialog-heading h2{font-size:1.25rem}
+#changelog-dialog .dialog-heading button{min-width:44px;min-height:44px;flex-shrink:0}
+#changelog-dialog .updates-tabs{display:flex;gap:5px;padding:4px;margin-bottom:18px;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+#changelog-dialog [role=tab]{flex:1;min-width:0;min-height:44px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:.95rem;white-space:normal}
+#changelog-dialog [role=tab][aria-selected=true]{background:var(--green);color:var(--surface);border-color:var(--green)}
+#changelog-dialog [role=tabpanel]:focus-visible{outline:3px solid #b78b32;outline-offset:4px}
+#changelog-dialog .updates-reminder{padding:16px;border:1px solid var(--green);border-radius:12px;background:var(--soft)}
+#changelog-dialog .updates-reminder h3{font-size:1rem;margin:0}
+#changelog-dialog p{margin:8px 0;font-size:.93rem;line-height:1.65}
+#changelog-dialog .updates-small,#changelog-dialog .updates-reviewed{font-size:.82rem;color:var(--muted)}
+#changelog-dialog .updates-intro{margin-top:0}
+#changelog-dialog .updates-reviewed{margin-bottom:20px}
+#changelog-dialog .updates-section{padding:18px 0;border-top:1px solid var(--border)}
+#changelog-dialog .updates-section h3{font-size:1rem;margin:0 0 10px}
+#changelog-dialog .updates-item{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--soft);margin-top:10px}
+#changelog-dialog .updates-item h4{font-size:.95rem;margin:0}
+#changelog-dialog .updates-scope{color:var(--green);font-size:.82rem}
+#changelog-dialog .updates-themes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;list-style:none;padding:0;margin:12px 0}
+#changelog-dialog .updates-themes li{padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--soft);font-size:.9rem;color:var(--ink);overflow-wrap:anywhere}
+#changelog-dialog .updates-release{padding-top:8px}
+#changelog-dialog .updates-release+article{margin-top:22px;border-top:1px solid var(--border)}
+#changelog-content .updates-release h3{font-size:1rem;line-height:1.5}
+#changelog-content .updates-release h4{font-size:.92rem;margin:16px 0 5px}
+#changelog-content li{font-size:.93rem;line-height:1.65}
+#changelog-dialog a{color:var(--green);font-weight:600;overflow-wrap:anywhere}
+@media(max-width:420px){#changelog-dialog{padding:16px}#changelog-dialog .updates-reminder{padding:12px}#changelog-dialog .updates-themes{grid-template-columns:1fr}}
+
+#changelog-dialog .updates-header{position:sticky;top:-22px;padding-top:22px;margin-top:-22px;background:var(--surface);z-index:2}
+@media(max-width:420px){#changelog-dialog .updates-header{top:-16px;padding-top:16px;margin-top:-16px}}
