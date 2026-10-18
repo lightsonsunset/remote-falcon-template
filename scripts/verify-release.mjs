@@ -1,11 +1,12 @@
-import {fontPackageFiles} from '../src/name-style.js';
+import {manualFiles} from './package-files.mjs';
+import {registry} from '../src/template-registry.js';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
-import {join} from 'node:path';
+import {join,posix} from 'node:path';
 import {inflateRawSync} from 'node:zlib';
 import {root,releaseFiles,sourceRootFiles,sourceDirectories} from './release-files.mjs';
 import {render,cloneDefaults} from '../src/template.js';
-import {assetBase,artwork,allArtworkFiles} from '../src/assets.js';
+import {assetBase,artwork} from '../src/assets.js';
 const files=await releaseFiles();
 for(const e of await readdir(root)){
  if(![...sourceRootFiles,...sourceDirectories,'.git','_site','node_modules'].includes(e))throw Error('Unreviewed file at repository root: '+e);
@@ -31,17 +32,46 @@ for(const theme of ['christmas','halloween']){
  for(const file of Object.values(artwork[theme]))assert(decorated.includes(assetBase+file),'Hosted artwork URL missing');
 }
 function crc32(data){let c=0xffffffff;for(const b of data){c^=b;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return(c^0xffffffff)>>>0;}
-const zip=await readFile(join(root,'downloads/Festive-RF-Template.zip'));
-const allowed=new Set(['Festive RF Template.html','Halloween RF Template.html','START-HERE.html','editor.css','README.md','README.html','CONTRIBUTING.md','CREDITS.md','LICENSE','CHANGELOG.md','docs/images/editor-overview.jpg','docs/images/quick-tour.jpg','docs/images/export-to-rf.jpg','docs/images/category-tour.jpg','docs/images/welcome-modal.jpg','docs/images/setup-wizard.jpg','docs/images/friendly-help.jpg','assets/README.md',...[...allArtworkFiles,...fontPackageFiles].map(n=>'assets/'+n)]);
-const expectedEntries=allowed.size;let offset=0,count=0;
-while(zip.readUInt32LE(offset)===0x04034b50){
- const nameLen=zip.readUInt16LE(offset+26),extraLen=zip.readUInt16LE(offset+28),size=zip.readUInt32LE(offset+18);
- const name=zip.subarray(offset+30,offset+30+nameLen).toString();assert(allowed.delete(name),'Unexpected or duplicate ZIP entry: '+name);
- const start=offset+30+nameLen+extraLen,data=inflateRawSync(zip.subarray(start,start+size));
- assert.equal(crc32(data),zip.readUInt32LE(offset+14),'ZIP CRC failed: '+name);
- const actual=await readFile(join(root,/^(Festive|Halloween) RF Template\.html$/.test(name)?'downloads/'+name:name));
- assert(data.equals(actual),'ZIP differs from source: '+name);
- offset=start+size;count++;
+
+let totalEntries=0;
+for(const template of registry){
+ const source=await readFile(join(root,template.source),'utf8');
+ for(const [season,name] of Object.entries(template.downloads)){
+  const html=template.render(source,template.cloneDefaults(season));
+  assert.equal(await readFile(join(root,'downloads',name),'utf8'),html,'Stale manual starter: '+name);
+  assert(!/<script\b|\son\w+\s*=|Demo:|Winter Starlight|Moonlit Mischief|localhost|127\.0\.0\.1|SETUP_|@@|\[\[/i.test(html),'Unsafe or demo content: '+name);
+  assert(html.includes('Dynamic Menu by Matt Orelup')&&html.includes('GPL'),'Attribution missing: '+name);
+ }
+ const expected=new Set([...Object.values(template.downloads),...manualFiles,'assets/README.md',...template.assets.map(n=>'assets/'+n)]);
+ const entryCount=expected.size,zip=await readFile(join(root,'downloads',template.package)),entries=new Map();let offset=0;
+ while(zip.readUInt32LE(offset)===0x04034b50){
+  const nameLen=zip.readUInt16LE(offset+26),extraLen=zip.readUInt16LE(offset+28),size=zip.readUInt32LE(offset+18);
+  const name=zip.subarray(offset+30,offset+30+nameLen).toString('utf8');
+  assert(expected.delete(name),'Unexpected or duplicate entry in '+template.package+': '+name);
+  assert.equal(zip.readUInt16LE(offset+8),8,'Unsupported ZIP compression');
+  const start=offset+30+nameLen+extraLen,data=inflateRawSync(zip.subarray(start,start+size));
+  assert.equal(data.length,zip.readUInt32LE(offset+22),'ZIP length failed: '+name);
+  assert.equal(crc32(data),zip.readUInt32LE(offset+14),'ZIP CRC failed: '+name);
+  const sourceName=Object.values(template.downloads).includes(name)?'downloads/'+name:name;
+  assert(data.equals(await readFile(join(root,sourceName))),'ZIP differs from source: '+name);
+  entries.set(name,data);offset=start+size;
+ }
+ assert.equal(expected.size,0,'Missing entries: '+[...expected].join(', '));
+ assert.equal(entries.size,entryCount);
+ assert.equal(zip.readUInt32LE(offset),0x02014b50,'Missing ZIP central directory');
+ assert.equal(zip.readUInt32LE(zip.length-22),0x06054b50,'Missing ZIP end record');
+ assert.equal(zip.readUInt16LE(zip.length-12),entryCount,'ZIP directory entry count differs');
+ // Offline guide dependencies must exist in each independently extracted package.
+ for(const name of ['README.html','START-HERE.html']){
+  const html=entries.get(name).toString('utf8');
+  for(const tag of html.match(/<[a-z][^>]*>/gi)||[])for(const [,raw] of tag.matchAll(/(?:href|src)="([^"]+)"/g)){
+   if(/^(?:https?:|data:|mailto:)/i.test(raw))continue;
+   const [target,fragment]=raw.split('#');const resolved=target?posix.normalize(posix.join(posix.dirname(name),decodeURIComponent(target))):name;
+   assert(entries.has(resolved),'Missing offline guide target: '+name+' → '+raw);
+   if(fragment&&resolved.endsWith('.html'))assert(entries.get(resolved).toString('utf8').includes('id="'+fragment+'"'),'Missing guide anchor: '+raw);
+  }
+ }
+ totalEntries+=entryCount;
+ console.log(template.name+': 2 canonical starters; '+entryCount+' exact ZIP entries, CRCs and offline guide links verified.');
 }
-assert.equal(allowed.size,0,'ZIP entries missing');assert.equal(count,expectedEntries);
-console.log('Release audit passed: '+files.length+' source files; both exports; '+count+' ZIP entries and CRCs.');
+console.log('Release audit passed: '+files.length+' allowlisted source files; '+totalEntries+' packaged entries across '+registry.length+' templates.');

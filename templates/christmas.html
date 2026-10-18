@@ -936,22 +936,6 @@
         margin-right: auto;
       }
 
-      .music-filter-targets {
-        position: static;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-      }
-
-      .music-filter-targets span {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-      }
-
       .music-filter {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1119,11 +1103,13 @@
         min-height: var(--los-new-vote-height, 64px);
       }
 
-      /* NEW SONG ASSIGNMENTS: edit the sequence names in BOTH selectors.
-         Add more [data-key="Exact RF sequence name"] entries to BOTH :is() lists.
+      /* NEW SONG ASSIGNMENTS: edit the sequence names in all FOUR selectors.
+         Add more [data-key="Exact RF sequence name"] entries to all FOUR :is() lists.
          These assignments drive the sash AND the New this year filter.
          Use the RF sequence name, not its display title or FPP index. */
       .jukebox-list:is([[NEW_SELECTORS]]),
+      .los-song-list > .cell-vote-playlist:is([[NEW_SELECTORS]]),
+.los-song-list > .cell-vote-playlist:is([[NEW_SELECTORS]]) + .cell-vote,
       .cell-vote-row:has(> .cell-vote-playlist:is([[NEW_SELECTORS]])) {
         --los-new-display: grid;
         --los-new-sash: "NEW";
@@ -1841,15 +1827,17 @@
         <p class="browser-compat-note">You’re viewing a simple version of this page. Use the menu or scroll to explore. Update your browser for page tabs and song filters.</p>
         <!-- SHOW BRANDING: text works without uploading any images.
              Optional: replace the icon and h1 with your own hosted logo image. -->
+[[MAIN_GUIDANCE_ABOVE]]
         <div class="content__subitem logo-stage share-brand [[BRAND_CLASS]]">
           [[LOGO]]
           <h1 class="[[NAME_CLASS]]">[[SHOW_NAME]]</h1>
           <p>[[WELCOME]]</p>
         </div>
+[[MAIN_GUIDANCE_BELOW]]
         <!-- HOME NOTICE: edit the title and message, then remove hidden.
              Restore hidden when finished. This does not change show status. -->
         <aside class="show-notice" id="show-notice" [[NOTICE_HIDDEN]] aria-labelledby="show-notice-title">
-          <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
+          <i class="[[ICON:notice:fa-solid fa-bullhorn]]" aria-hidden="true"></i>
           <div><h2 id="show-notice-title">[[NOTICE_TITLE]]</h2><p>[[NOTICE_TEXT]]</p></div>
         </aside>
         <div class="content__subitem" {after-hours-message}>
@@ -1867,7 +1855,7 @@
         </div>
         <div class="content__subitem" {jukebox-dynamic-container}>
           <div class="section-card compact feature"><div class="show-status show-status--live"><span class="show-status__label">[[ON_AIR]]</span><span class="show-status__detail">[[ON_AIR_HELP]]</span></div>
-            [[NEIGHBOUR]]
+            [[MAIN_GUIDANCE_STATUS]]
           </div>
           [[LIVE_SCHEDULE]]
           <div class="section-card">
@@ -1883,7 +1871,7 @@
               </div>
             </div>
           </div>
-          <a class="section-card compact music-tab-callout music-tab-button primary-cta" [[HOME_MUSIC_HIDDEN]] href="#music-panel" aria-label="[[JUKEBOX_TITLE]]"><i class="fa-solid fa-music" aria-hidden="true"></i><span><strong>[[JUKEBOX_TITLE]]</strong>[[HOME_JUKEBOX_HELP]]</span></a>
+          <a class="section-card compact music-tab-callout music-tab-button primary-cta" [[HOME_MUSIC_HIDDEN]] href="#music-panel" aria-label="[[JUKEBOX_TITLE]]"><i class="[[ICON:musicLink:fa-solid fa-music]]" aria-hidden="true"></i><span><strong>[[JUKEBOX_TITLE]]</strong>[[HOME_JUKEBOX_HELP]]</span></a>
           <!-- DONATIONS: repeated in Home (three states), Support and Info. -->
           <a class="section-card compact donation-card compact-live share-donation" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer" aria-label="[[DONATE_BUTTON]]">
             [[DONATION_ICON]]
@@ -1892,7 +1880,7 @@
         </div>
         <div class="content__subitem" {playlist-voting-dynamic-container}>
           <div class="section-card compact feature"><div class="show-status show-status--live"><span class="show-status__label">[[ON_AIR]]</span><span class="show-status__detail">[[ON_AIR_HELP]]</span></div>
-            [[NEIGHBOUR]]
+            [[MAIN_GUIDANCE_STATUS]]
           </div>
           [[LIVE_SCHEDULE]]
           <div class="section-card">
@@ -1908,7 +1896,7 @@
               </div>
             </div>
           </div>
-          <a class="section-card compact music-tab-callout music-tab-button primary-cta" [[HOME_MUSIC_HIDDEN]] href="#music-panel" aria-label="[[VOTING_TITLE]]"><i class="fa-solid fa-music" aria-hidden="true"></i><span><strong>[[VOTING_TITLE]]</strong>[[HOME_VOTING_HELP]]</span></a>
+          <a class="section-card compact music-tab-callout music-tab-button primary-cta" [[HOME_MUSIC_HIDDEN]] href="#music-panel" aria-label="[[VOTING_TITLE]]"><i class="[[ICON:musicLink:fa-solid fa-music]]" aria-hidden="true"></i><span><strong>[[VOTING_TITLE]]</strong>[[HOME_VOTING_HELP]]</span></a>
           <!-- DONATIONS: repeated in Home (three states), Support and Info. -->
           <a class="section-card compact donation-card compact-live share-donation" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer" aria-label="[[DONATE_BUTTON]]">
             [[DONATION_ICON]]
@@ -1929,11 +1917,11 @@
             <h3>[[HOURS_TITLE]]</h3>
             <div class="show-hours"><div class="hours-list">[[SCHEDULE_ROWS]]</div></div></div>
           [[PLAYLIST_CARD]]
-          <a class="section-card compact info-tab-callout info-tab-button" [[ABOUT_HIDDEN]] href="#info-panel" aria-label="[[ABOUT_TITLE]]"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span><strong>[[ABOUT_TITLE]]</strong>[[ABOUT_HELP]]</span></a>
+          <a class="section-card compact info-tab-callout info-tab-button" [[ABOUT_HIDDEN]] href="#info-panel" aria-label="[[ABOUT_TITLE]]"><i class="[[ICON:infoLink:fa-solid fa-circle-info]]" aria-hidden="true"></i><span><strong>[[ABOUT_TITLE]]</strong>[[ABOUT_HELP]]</span></a>
         </div>
         <div class="content__subitem music-live-section" {jukebox-dynamic-container}>
 <a class="music-listen-reminder share-fm" [[MUSIC_FM_HIDDEN]] href="#info-listening" aria-label="[[TUNE_SHORT]] [[FM_FREQUENCY]] FM. [[LISTEN_WAYS]]">
-            <span><i class="fa-solid fa-radio" aria-hidden="true"></i>&nbsp; [[TUNE_SHORT]] <strong>[[FM_FREQUENCY]] FM</strong></span>
+            <span><i class="[[ICON:fm:fa-solid fa-radio]]" aria-hidden="true"></i>&nbsp; [[TUNE_SHORT]] <strong>[[FM_FREQUENCY]] FM</strong></span>
             <span class="music-listen-reminder__help">[[LISTEN_WAYS]]</span>
           </a>
           <div class="music-section-heading">[[NOW_TITLE]]</div><div class="playing-now">{NOW_PLAYING}</div>
@@ -1941,7 +1929,7 @@
           <div class="music-section-heading compact">[[QUEUE_TITLE]]</div>[[QUEUE_COUNT]][[QUEUE_HELP]]<div class="jukebox-queue-container">{JUKEBOX_QUEUE}</div>
         </div>
         <div class="content__subitem music-picker-section" {jukebox-dynamic-container}>
-          <div class="section-card music-request-card"><h2>[[JUKEBOX_TITLE]]</h2><p class="request-copy">[[JUKEBOX_HELP]]</p>
+          <div class="section-card music-request-card"><h2>[[JUKEBOX_TITLE]]</h2><p class="request-copy">[[JUKEBOX_HELP]]</p>[[QUEUE_LIMIT]]
 [[LOCATION_CODE_BLOCK]]
           <div class="music-filter">
               <a href="#songs-all">[[FILTER_ALL]]</a>[[CATEGORY_LINKS]]<a href="#songs-new">[[FILTER_NEW]]</a>
@@ -1949,7 +1937,7 @@
         </div>
         <div class="content__subitem music-live-section" id="los-voting-live" {playlist-voting-dynamic-container}>
 <a class="music-listen-reminder share-fm" [[MUSIC_FM_HIDDEN]] href="#info-listening" aria-label="[[TUNE_SHORT]] [[FM_FREQUENCY]] FM. [[LISTEN_WAYS]]">
-            <span><i class="fa-solid fa-radio" aria-hidden="true"></i>&nbsp; [[TUNE_SHORT]] <strong>[[FM_FREQUENCY]] FM</strong></span>
+            <span><i class="[[ICON:fm:fa-solid fa-radio]]" aria-hidden="true"></i>&nbsp; [[TUNE_SHORT]] <strong>[[FM_FREQUENCY]] FM</strong></span>
             <span class="music-listen-reminder__help">[[LISTEN_WAYS]]</span>
           </a><div class="music-section-heading">[[NOW_TITLE]]</div><div class="playing-now">{NOW_PLAYING}</div>
         </div>
@@ -1967,7 +1955,7 @@
         <div class="section-card support-card share-donation">
           [[DONATION_IMAGE]]
           <div><h3>[[CHARITY_NAME]]</h3><p>[[DONATION_DESCRIPTION]]</p>
-            <a class="support-action" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> [[DONATE_BUTTON]]</a>
+            <a class="support-action" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer"><i class="[[ICON:support:fa-solid fa-hand-holding-heart]]" aria-hidden="true"></i> [[DONATE_BUTTON]]</a>
           </div>
         </div>
         [[EXTRA_DONATIONS_SUPPORT]]
@@ -1987,7 +1975,7 @@
     <!-- Keep RF messages outside panel stacking contexts so they cover all page controls. -->
         <div class="request-feedback request-feedback--success" id="requestSuccessful" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="innerRequestSuccessful">
-            <i class="fa-solid [[SUCCESS_ICON]] status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:success:fa-solid [[SUCCESS_ICON]]]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[SUCCESS_TITLE]]</p>
               <p class="request-feedback__message los-jukebox-copy">[[SUCCESS_JUKEBOX]]</p>
@@ -1997,7 +1985,7 @@
         </div>
         <div class="request-feedback request-feedback--error" id="requestFailed" style="display: none" role="alert" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-triangle-exclamation status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:failed:fa-solid fa-triangle-exclamation]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[FAILED_TITLE]]</p>
               <p class="request-feedback__message los-jukebox-copy">[[FAILED_JUKEBOX]]</p>
@@ -2007,7 +1995,7 @@
         </div>
         <div class="request-feedback" id="requestPlaying" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-music status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:playing:fa-solid fa-music]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[PLAYING_TITLE]]</p>
               <p class="request-feedback__message los-jukebox-copy">[[PLAYING_JUKEBOX]]</p>
@@ -2017,7 +2005,7 @@
         </div>
         <div class="request-feedback" id="queueFull" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-list-check status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:queueFull:fa-solid fa-list-check]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[FULL_TITLE]]</p>
               <p class="request-feedback__message">[[FULL_MESSAGE]]</p>
@@ -2026,7 +2014,7 @@
         </div>
         <div class="request-feedback request-feedback--error" id="invalidLocation" style="display: none" role="alert" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-location-dot status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:location:fa-solid fa-location-dot]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[INVALID_LOCATION_TITLE]]</p>
               <p class="request-feedback__message">[[LOCATION_MESSAGE]]</p>
@@ -2036,7 +2024,7 @@
         </div>
         <div class="request-feedback request-feedback--error" id="invalidLocationCode" style="display: none" role="alert" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-key status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:code:fa-solid fa-key]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[CODE_TITLE]]</p>
               <p class="request-feedback__message">[[CODE_MESSAGE]]</p>
@@ -2045,7 +2033,7 @@
         </div>
         <div class="request-feedback" id="alreadyVoted" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-check-double status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:voted:fa-solid fa-check-double]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[VOTED_TITLE]]</p>
               <p class="request-feedback__message">[[VOTED_MESSAGE]]</p>
@@ -2054,7 +2042,7 @@
         </div>
         <div class="request-feedback" id="alreadyRequested" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-hourglass-half status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:unavailable:fa-solid fa-hourglass-half]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[REQUESTED_TITLE]]</p>
               <p class="request-feedback__message">[[REQUESTED_MESSAGE]]</p>
@@ -2063,7 +2051,7 @@
         </div>
         <div class="request-feedback" id="sequenceUnavailable" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-clock status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:requested:fa-solid fa-clock]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[UNAVAILABLE_TITLE]]</p>
               <p class="request-feedback__message">[[UNAVAILABLE_MESSAGE]]</p>
@@ -2072,7 +2060,7 @@
         </div>
         <div class="request-feedback" id="dailyVoteLimitReached" style="display: none" role="status" aria-live="polite" aria-atomic="true">
           <div class="failed_Info_Box">
-            <i class="fa-solid fa-check-to-slot status-icon" aria-hidden="true"></i>
+            <i class="[[ICON:voteLimit:fa-solid fa-check-to-slot]] status-icon" aria-hidden="true"></i>
             <div>
               <p class="request-feedback__title">[[VOTE_LIMIT_TITLE]]</p>
               <p class="request-feedback__message">[[VOTE_LIMIT_MESSAGE]]</p>
@@ -2083,19 +2071,19 @@
 
     <nav class="los-menu" aria-label="Main navigation">
       <a class="los-menu__item tab-red" aria-label="[[NAV_HOME]]" data-tab-target="home" href="#home-panel">
-        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        <i class="[[ICON:navHome:fa-solid fa-house]]" aria-hidden="true"></i>
         <span class="los-menu__label">[[NAV_HOME]]</span>
       </a>
       <a class="los-menu__item tab-green" aria-label="[[NAV_MUSIC]]" data-tab-target="music" href="#music-panel">
-        <i class="fa-solid fa-music" aria-hidden="true"></i>
+        <i class="[[ICON:navMusic:fa-solid fa-music]]" aria-hidden="true"></i>
         <span class="los-menu__label">[[NAV_MUSIC]]</span>
       </a>
       <a class="los-menu__item tab-blue" aria-label="[[NAV_SUPPORT]]" data-tab-target="support" href="#support-panel">
-        <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+        <i class="[[ICON:navSupport:fa-solid fa-hand-holding-heart]]" aria-hidden="true"></i>
         <span class="los-menu__label">[[NAV_SUPPORT]]</span>
       </a>
       <a class="los-menu__item tab-yellow" aria-label="[[NAV_INFO]]" data-tab-target="info" href="#info-panel">
-        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <i class="[[ICON:navInfo:fa-solid fa-circle-info]]" aria-hidden="true"></i>
         <span class="los-menu__label">[[NAV_INFO]]</span>
       </a>
     </nav>

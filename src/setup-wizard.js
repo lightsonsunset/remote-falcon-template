@@ -1,39 +1,46 @@
+import {songArtworkForm,updateSongArtworkForm} from './song-artwork-form.js';
+import {artworkChoices,songArtworkMode,nowPlayingArtwork} from './song-artwork.js';
+import {headerIdentity,headerChoices,updateHeaderIdentity} from './header-identity.js';
+import {createIconPicker,iconButton} from './icon-picker.js';
+import {defaultIcon} from './icons.js';
 import {nameStyleForm,updateNameStyleForm} from './name-style-form.js';
 // Optional editor-only setup. No RF connection and no changes until Apply.
 import {createSetupDraft,setupSteps} from './setup-model.js';
 import {themes,escapeHTML as e} from './template.js';
-import {logoChoices,logoFile} from './assets.js';
 import {completeWebAddress} from './editor-layout.js';
 
-export function createSetupWizard({getSettings,applySettings}){
+export function createSetupWizard({getSettings,applySettings,getTemplate=()=>null}){
  const $=id=>document.getElementById(id),dialog=$('setup-wizard'),content=$('setup-content');
  let draft,step=0,returnFocus,scrollStyle='',attempted=false;
  const field=(key,label,{hint='',type='text',max=200,optional=false,placeholder='https://example.org/logo.png'}={})=>`<label class="field"><span class="field-label">${label}${optional?'<span class="optional">Optional</span>':''}</span>${type==='textarea'?`<textarea id="setup-${key}" data-setup-key="${key}" rows="3" maxlength="${max}" aria-describedby="setup-hint-${key} setup-error-${key}">${e(draft.value[key])}</textarea>`:`<input id="setup-${key}" data-setup-key="${key}" type="${type}" maxlength="${max}" value="${e(draft.value[key])}" aria-describedby="setup-hint-${key} setup-error-${key}" ${type==='url'?`placeholder="${e(placeholder)}"`:''}>`}<span class="hint" id="setup-hint-${key}">${hint}</span><span class="error" id="setup-error-${key}" data-setup-error="${key}"></span></label>`;
+ const setupIcons=createIconPicker((target,id)=>{if(!draft)return;if(id)draft.value.icons.brand=id;else delete draft.value.icons.brand;const container=content.querySelector('[data-header-icon]');container.innerHTML=iconButton(draft.value.icons.brand||defaultIcon('brand',draft.value),'data-setup-icon="brand"','show');container.querySelector('button').focus({preventScroll:true});},{id:'setup-icon-picker'});
  const toggle=(key,label)=>`<label class="toggle"><input type="checkbox" data-setup-key="${key}" ${draft.value[key]?'checked':''}>${label}</label>`;
  function render(){
   const s=draft.value;
   $('setup-title').textContent=setupSteps[step];$('setup-progress').textContent=`Step ${step+1} of 4`;
-  $('setup-steps').innerHTML=setupSteps.map((label,i)=>`<span ${i===step?'aria-current="step"':''}>${i+1}. ${label}</span>`).join('');
-  $('setup-back').disabled=step===0;$('setup-next').textContent=step===3?'Apply & open editor':'Next';
+  $('setup-steps').innerHTML=setupSteps.map((label,i)=>`<span ${i===step?'aria-current="step"':''}><b aria-hidden="true">${i+1}</b> ${label}</span>`).join('');
+  $('setup-back').disabled=step===0;$('setup-next').textContent=step===3?'Apply & open editor':'Next';$('setup-tour-choice').hidden=step!==3;dialog.dataset.step=String(step);
   $('setup-skip').hidden=step===3;$('setup-skip').textContent=step===1?'I’ll add these later':'Skip this step';
   $('setup-error-summary').hidden=true;attempted=false;
   if(step===0){
-   content.innerHTML='<p class="hint">Start with your show’s look and name. Everything can be edited later.</p><div class="season-options">'+Object.entries(themes).map(([key,t])=>`<button type="button" class="season-card ${s.theme===key?'selected':''}" data-setup-theme="${key}" aria-pressed="${s.theme===key}"><span>${key==='christmas'?'✦':'☾'}</span><strong>${t.name}</strong><small>${t.description}</small></button>`).join('')+'</div>'+field('name','Show name',{max:150})+toggle('showNameOnHome','Show name on Home')+'<p class="hint">Untick if your own logo already includes the name. The page title still uses it.</p>'+nameStyleForm(s,true)+field('welcome','Welcome message',{type:'textarea',optional:true,max:2000})+`<label class="field"><span class="field-label">Logo or seasonal picture</span><select id="setup-logoMode" data-setup-key="logoMode"><option value="icon" ${s.logoMode==='icon'?'selected':''}>Simple seasonal icon</option><option value="seasonal" ${s.logoMode==='seasonal'?'selected':''}>Included ${themes[s.theme].name} picture</option><option value="custom" ${s.logoMode==='custom'?'selected':''}>My own logo</option></select></label><div id="setup-included-logo"><label class="field"><span class="field-label">Included logo design</span><select data-setup-key="logoStyle">${logoChoices[s.theme].map(c=>`<option value="${c.id}" ${s.logoStyle===c.id?'selected':''}>${c.label}</option>`).join('')}</select></label>${toggle('combineLogoName','Combine artwork with editable show name')}<img id="setup-artwork" class="setup-artwork" src="assets/${logoFile(s)}" alt="Included ${themes[s.theme].name} illustration"></div><div id="setup-logo-fields">`+field('logo','Logo image link',{type:'url',max:4000,hint:'Use a public HTTPS link directly to your image. A www. address is completed when you leave the field.'})+'<p class="hint">Recommended: 600 × 400 px, or a square 600 × 600 px logo. Images fit without cropping. <a href="https://docs.remotefalcon.com/docs/docs/control-panel/account/image-hosting" target="_blank" rel="noopener">Host an image in RF ↗</a></p></div>';
+   content.innerHTML='<p class="hint">Start with your show’s look and name. Everything can be edited later.</p>'+field('name','Show name',{max:150})+headerIdentity(s,{features:getTemplate()?.features,setup:true})+toggle('showNameOnHome','Show name in the header')+'<p class="hint">Untick if your own logo already includes the name. The page title still uses it.</p>'+nameStyleForm(s,true)+field('welcome','Welcome message',{type:'textarea',optional:true,max:2000});
   }else if(step===1){
    content.innerHTML='<p class="hint">These details appear on Home, off-air Music and the show-times FAQ. They do not change your FPP schedule.</p>'+field('dates','Show dates',{hint:s.theme==='christmas'?'For example: 5–25 December 2026. “To be announced” is fine.':'For example: 24–31 October 2026. “To be announced” is fine.'})+'<div class="row-labels"><span>Days / holiday</span><span>Hours</span></div>'+s.schedule.map((r,i)=>`<div class="schedule-row">${['day','hours'].map(k=>`<label><input data-setup-row="${i}" data-part="${k}" aria-label="${k==='day'?'Days':'Hours'} for row ${i+1}" aria-describedby="setup-row-error-${i}-${k}" maxlength="200" value="${e(r[k])}"><span class="error" id="setup-row-error-${i}-${k}" data-setup-error="schedule.${i}.${k}"></span></label>`).join('')}<button type="button" data-setup-remove="${i}" aria-label="Remove schedule row ${i+1}" ${s.schedule.length===1?'disabled':''}>×</button></div>`).join('')+`<button type="button" id="setup-add-row" ${s.schedule.length===12?'disabled':''}>+ Add hours or holiday</button><p class="hint">Use a separate row for holiday exceptions. Skip leaves your existing dates and hours unchanged.</p>`;
   }else if(step===2){
-   content.innerHTML='<p class="hint">Choose how visitors can hear your show. You can offer FM and PulseMesh together.</p>'+toggle('fm','Show an FM frequency')+'<div id="setup-fm-fields">'+field('frequency','FM frequency',{max:20,hint:'For example: 88.7 — FM is added for you.'})+'</div>'+toggle('pulsemesh','Offer PulseMesh listening')+'<p class="hint">For shows already set up with PulseMesh. These buttons do not activate the service. <a href="https://pulsemesh.io/docs/setup" target="_blank" rel="noopener">Setup guide ↗</a></p><div id="setup-pulsemesh-fields">'+`<label class="field"><span class="field-label">Buttons to show</span><select id="setup-pulsemeshButtons" data-setup-key="pulsemeshButtons">${[['download','Download app only'],['listen','Listen on PulseMesh only'],['both','Both buttons']].map(([value,label])=>`<option value="${value}" ${s.pulsemeshButtons===value?'selected':''}>${label}</option>`).join('')}</select></label>`+'<div id="setup-pulsemesh-link">'+field('pulsemeshUrl','Your PulseMesh display link',{type:'url',max:4000,placeholder:'https://psm.sh/…',hint:'Used on Home and in the listening FAQ. Paste the full public link from your PulseMesh dashboard.'})+'<details class="more-help"><summary>Where to find your PulseMesh link</summary><p>Copy the full public display link from your PulseMesh dashboard. Web Player links open in the browser; Smart links can open the installed app. Display-code links require a supported PulseMesh plan. <a href="https://pulsemesh.io/docs/topics/display-codes" target="_blank" rel="noopener">Display links &amp; codes ↗</a></p></details></div></div>'+field('listening','Other listening instructions',{type:'textarea',optional:true,max:3000,hint:'Shown on Home and in the listening FAQ.'})+'<h3>Song appearance</h3>'+toggle('showAlbumArtwork','Show album artwork')+'<p class="hint">Uses artwork assigned to your songs in Remote Falcon. Songs without artwork display as text-only cards. <a href="https://docs.remotefalcon.com/docs/docs/control-panel/show/sequences#look-up-artist--album-art" target="_blank" rel="noopener">How to add artwork ↗</a></p>';
+   content.innerHTML='<p class="hint">Choose how visitors can hear your show. You can offer FM and PulseMesh together.</p>'+toggle('fm','Show an FM frequency')+'<div id="setup-fm-fields">'+field('frequency','FM frequency',{max:20,hint:'For example: 88.7 — FM is added for you.'})+'</div>'+toggle('pulsemesh','Offer PulseMesh listening')+'<p class="hint">For shows already set up with PulseMesh. These buttons do not activate the service. <a href="https://pulsemesh.io/docs/setup" target="_blank" rel="noopener">Setup guide ↗</a></p><div id="setup-pulsemesh-fields">'+`<label class="field"><span class="field-label">Buttons to show</span><select id="setup-pulsemeshButtons" data-setup-key="pulsemeshButtons">${[['download','Download app only'],['listen','Listen on PulseMesh only'],['both','Both buttons']].map(([value,label])=>`<option value="${value}" ${s.pulsemeshButtons===value?'selected':''}>${label}</option>`).join('')}</select></label>`+'<div id="setup-pulsemesh-link">'+field('pulsemeshUrl','Your PulseMesh display link',{type:'url',max:4000,placeholder:'https://psm.sh/…',hint:'Used on Home and in the listening FAQ. Paste the full public link from your PulseMesh dashboard.'})+'<details class="more-help"><summary>Where to find your PulseMesh link</summary><p>Copy the full public display link from your PulseMesh dashboard. Web Player links open in the browser; Smart links can open the installed app. Display-code links require a supported PulseMesh plan. <a href="https://pulsemesh.io/docs/topics/display-codes" target="_blank" rel="noopener">Display links &amp; codes ↗</a></p></details></div></div>'+field('listening','Other listening instructions',{type:'textarea',optional:true,max:3000,hint:'Shown on Home and in the listening FAQ.'})+'<h3>Song appearance</h3>'+songArtworkForm(s,{setup:true});
   }else{
    const listen=[s.fm?`${s.frequency} FM`:'',s.pulsemesh&&s.pulsemeshButtons!=='listen'?'Download PulseMesh button':'',s.pulsemesh&&s.pulsemeshButtons!=='download'?'Listen on PulseMesh: '+s.pulsemeshUrl:'',s.listening].filter(Boolean);
-   content.innerHTML='<p class="hint">Check your choices, then apply them to the editor. Saved in this browser only, not synced between devices. Download a settings backup to keep your work.</p><dl class="setup-review"><div><dt>Your show</dt><dd>'+e(s.name)+'</dd><dd>'+e(themes[s.theme].name)+' · '+({icon:'Simple seasonal icon',seasonal:'Included seasonal picture',custom:'Your own logo'}[s.logoMode])+'</dd>'+(s.welcome?'<dd>'+e(s.welcome)+'</dd>':'')+(s.logoMode==='custom'?'<dd class="setup-url">'+e(s.logo)+'</dd>':'')+'</div><div><dt>Dates & hours</dt><dd>'+e(s.dates)+'</dd>'+s.schedule.map(r=>'<dd>'+e(r.day)+' · '+e(r.hours)+'</dd>').join('')+'</div><div><dt>Music &amp; listening</dt>'+ (listen.length?listen.map(v=>'<dd class="setup-url">'+e(v)+'</dd>').join(''):'<dd>No listening options selected. You can add them later.</dd>')+'<dd>Album artwork: '+(s.showAlbumArtwork?'shown where available':'hidden — text-only cards')+'</dd></div></dl><p class="setup-next-note"><strong>Next, make it yours.</strong> Import your RF song CSV beside the preview to set up category filters and NEW sashes. Add support cards, FAQs and other extras in the page tabs.</p>';
+   content.innerHTML='<p class="hint">Check your details, then start editing or take a quick tour. Your design is saved in this browser; download a settings backup to keep a portable copy.</p><dl class="setup-review"><div><dt>Your show</dt><dd>'+e(s.name)+'</dd><dd>'+e(themes[s.theme].name)+' · '+(headerChoices(s,getTemplate()?.features).find(([id])=>id===s.logoMode)?.[1]||'Your own logo')+'</dd>'+(s.welcome?'<dd>'+e(s.welcome)+'</dd>':'')+(s.logoMode==='custom'?'<dd class="setup-url">'+e(s.logo)+'</dd>':'')+'</div><div><dt>Dates & hours</dt><dd>'+e(s.dates)+'</dd>'+s.schedule.map(r=>'<dd>'+e(r.day)+' · '+e(r.hours)+'</dd>').join('')+'</div><div><dt>Music &amp; listening</dt>'+ (listen.length?listen.map(v=>'<dd class="setup-url">'+e(v)+'</dd>').join(''):'<dd>No listening options selected. You can add them later.</dd>')+'<dd>Song list: '+artworkChoices.find(([id])=>id===songArtworkMode(s))[1]+'</dd><dd>Now Playing artwork: '+(nowPlayingArtwork(s)?'shown where available':'hidden')+'</dd><dd>Artist names: '+(s.showSongArtists&&s.showQueueArtists?'song list and queue':s.showSongArtists?'song list only':s.showQueueArtists?'Now Playing, Up Next and queue only':'hidden')+'</dd></div></dl><p class="setup-next-note"><strong>Next, make it yours.</strong> Import your RF song CSV beside the preview to set up category filters and NEW sashes. Add support cards, FAQs and other extras in the page tabs.</p>';
+  }
+  if(getTemplate()?.separateSeasons){
+   const walker=document.createTreeWalker(content,NodeFilter.SHOW_TEXT);while(walker.nextNode())walker.currentNode.textContent=walker.currentNode.textContent.replace(/\bHome\b/g,'Music');
   }
   visibility();dialog.scrollTop=0;$('setup-title').focus({preventScroll:true});
  }
  function visibility(){
-  updateNameStyleForm(content,draft.value);
-  if($('setup-logo-fields'))$('setup-logo-fields').hidden=draft.value.logoMode!=='custom';
-  if($('setup-included-logo'))$('setup-included-logo').hidden=draft.value.logoMode!=='seasonal';
-  if($('setup-artwork'))$('setup-artwork').src='assets/'+logoFile(draft.value);
+  updateSongArtworkForm(content,draft.value);
+  updateHeaderIdentity(content,draft.value,getTemplate()?.features);
+  updateNameStyleForm(content,draft.value,getTemplate()?.namePreview?.(draft.value));
   if($('setup-fm-fields'))$('setup-fm-fields').hidden=!draft.value.fm;
   if($('setup-pulsemesh-fields'))$('setup-pulsemesh-fields').hidden=!draft.value.pulsemesh;
   if($('setup-pulsemesh-link'))$('setup-pulsemesh-link').hidden=draft.value.pulsemeshButtons==='download';
@@ -54,7 +61,8 @@ export function createSetupWizard({getSettings,applySettings}){
  }
  function start(event){
   if(dialog.open)return;
-  returnFocus=event?.currentTarget||document.activeElement;draft=createSetupDraft(getSettings());scrollStyle=document.body.style.overflow;document.body.style.overflow='hidden';dialog.showModal();show(0);
+  $('setup-take-tour').checked=false;
+  returnFocus=event?.currentTarget||document.activeElement;draft=createSetupDraft(getSettings(),getTemplate()||undefined);scrollStyle=document.body.style.overflow;document.body.style.overflow='hidden';dialog.showModal();show(0);
  }
  content.addEventListener('input',event=>{
   const el=event.target;
@@ -68,17 +76,21 @@ export function createSetupWizard({getSettings,applySettings}){
  });
  content.addEventListener('click',event=>{
   const el=event.target.closest('button');if(!el)return;
+  if(el.dataset.setupIcon){setupIcons.open({role:'brand'},draft.value.icons.brand||defaultIcon('brand',draft.value),el);return;}
   if(el.hasAttribute('data-reset-name-colour')){draft.value.customNameColour=false;const input=content.querySelector('[data-setup-key=customNameColour]');input.checked=false;input.focus();visibility();}
-  if(el.dataset.setupTheme){draft.theme(el.dataset.setupTheme);render();content.querySelector('[data-setup-theme="'+el.dataset.setupTheme+'"]')?.focus();}
   if(el.id==='setup-add-row'&&draft.value.schedule.length<12){draft.value.schedule.push({day:'',hours:''});render();content.querySelector('[data-setup-row="'+(draft.value.schedule.length-1)+'"]')?.focus();}
   if(el.dataset.setupRemove!==undefined&&draft.value.schedule.length>1){draft.value.schedule.splice(+el.dataset.setupRemove,1);render();$('setup-add-row').focus();}
  });
+ function apply(){
+  if(step!==3||!draft)return;
+  // Validate the whole draft before committing it once; the tour is editor-only.
+  for(let i=0;i<3;i++)if(Object.keys(draft.errors(i)).length){show(i);attempted=true;errors(true);return;}
+  const next=draft.finish(),takeTour=$('setup-take-tour').checked;close();applySettings(next,{takeTour});
+ }
  $('setup-next').addEventListener('click',()=>{
   attempted=true;
   if(step<3){if(errors(true))show(step+1);return;}
-  // Recheck every setup step in case a previously edited step was left via Back.
-  for(let i=0;i<3;i++)if(Object.keys(draft.errors(i)).length){show(i);attempted=true;errors(true);return;}
-  const next=draft.finish();close();applySettings(next);
+  apply();
  });
  $('setup-back').addEventListener('click',()=>{if(step>0)show(step-1);});
  $('setup-skip').addEventListener('click',()=>{draft.skip();show(step+1);});

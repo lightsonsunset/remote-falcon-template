@@ -936,22 +936,6 @@
         margin-right: auto;
       }
 
-      .music-filter-targets {
-        position: static;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-      }
-
-      .music-filter-targets span {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-      }
-
       .music-filter {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -989,12 +973,24 @@
       body:has(#show-options.has-new-songs #songs-new:target) .music-filter a[href="#songs-new"] {
         background:var(--gold); color:var(--accent-ink); box-shadow:0 4px 12px #0004;
       }
-      body:has(#show-options.has-categories):has(#songs-category-1:target) .music-filter a[href="#songs-category-1"] { background:var(--gold);color:var(--accent-ink); }
-body:has(#show-options.has-categories):has(#songs-category-1:target) .los-song-list > .category-section { display:none !important; }
-body:has(#show-options.has-categories):has(#songs-category-1:target) .los-song-list > .category-section:nth-child(1 of .category-section) { display:block !important; }
+      .music-filter-targets { position:static;width:0;height:0;overflow:hidden; }
+.music-filter-targets span { position:fixed;top:0;left:0;width:1px;height:1px;overflow:hidden; }
+#music-panel { overflow-anchor:none; }
+/* RF emits uncategorised Voting cards and tallies as adjacent siblings,
+   without a category-section or cell-vote-row wrapper. Keep each pair aligned. */
+.content__body .los-song-list:has(> .cell-vote-playlist) { display:grid;grid-template-columns:minmax(0,1fr) 3.1rem;gap:12px 6px;align-items:stretch; }
+.content__body .los-song-list:has(> .cell-vote-playlist) > .category-section,
+.content__body .los-song-list:has(> .cell-vote-playlist) .cell-vote-row { grid-column:1 / -1; }
+.content__body .los-song-list > .cell-vote-playlist { grid-column:1;margin-bottom:0;min-width:0;align-content:var(--los-new-vote-align,normal);padding-right:calc(.78em + var(--los-new-text-gutter,0px)); }
+.content__body .los-song-list > .cell-vote-playlist + .cell-vote { grid-column:2;display:flex;flex-direction:column;align-items:center;justify-content:center;align-self:stretch;margin:0;padding:4px;min-width:0;border:1px solid color-mix(in srgb,var(--gold) 24%,transparent);border-radius:9px;color:var(--gold);font-weight:750;pointer-events:none; }
+/* NEW applies to the unwrapped card and its own tally as well as grouped rows. */
+body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list > :is(.cell-vote-playlist,.cell-vote) { display:var(--los-new-display,none)!important; }
+body:has(#show-options.has-categories):has(#songs-category-1:target) .music-filter a[href="#songs-category-1"] { background:var(--gold);color:var(--accent-ink); }
+body:has(#show-options.has-categories):has(#songs-category-1:target) .los-song-list > :is(.category-section,.jukebox-list,.cell-vote-playlist,.cell-vote,.cell-vote-row) { display:none !important; }
+body:has(#show-options.has-categories):has(#songs-category-1:target) .los-song-list > .category-section:nth-child(1 of .category-section) { display:var(--los-category-display,block) !important; }
 body:has(#show-options.has-categories):has(#songs-category-2:target) .music-filter a[href="#songs-category-2"] { background:var(--gold);color:var(--accent-ink); }
-body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-list > .category-section { display:none !important; }
-body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-list > .category-section:nth-child(2 of .category-section) { display:block !important; }
+body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-list > :is(.category-section,.jukebox-list,.cell-vote-playlist,.cell-vote,.cell-vote-row) { display:none !important; }
+body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-list > .category-section:nth-child(2 of .category-section) { display:var(--los-category-display,block) !important; }
 
       /* Use the NEW assignment below without changing RF categories or order.
          Flatten category wrappers so empty categories leave no gaps/headings. */
@@ -1124,11 +1120,13 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
         min-height: var(--los-new-vote-height, 64px);
       }
 
-      /* NEW SONG ASSIGNMENTS: edit the sequence names in BOTH selectors.
-         Add more [data-key="Exact RF sequence name"] entries to BOTH :is() lists.
+      /* NEW SONG ASSIGNMENTS: edit the sequence names in all FOUR selectors.
+         Add more [data-key="Exact RF sequence name"] entries to all FOUR :is() lists.
          These assignments drive the sash AND the New this year filter.
          Use the RF sequence name, not its display title or FPP index. */
       .jukebox-list:is(:not(*)),
+      .los-song-list > .cell-vote-playlist:is(:not(*)),
+.los-song-list > .cell-vote-playlist:is(:not(*)) + .cell-vote,
       .cell-vote-row:has(> .cell-vote-playlist:is(:not(*))) {
         --los-new-display: grid;
         --los-new-sash: "NEW";
@@ -1818,6 +1816,16 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
 
       
 
+/* ARTIST VISIBILITY: independent song-list and playback/queue choices.
+   Empty RF artist elements take no space; missing elements need no placeholder. */
+.content__body :is(.jukebox-list-artist,.cell-vote-playlist-artist,.jukebox-queue-artist):empty,
+body:has(#show-options.hide-song-artists) .los-song-list :is(.jukebox-list-artist,.cell-vote-playlist-artist),
+body:has(#show-options.hide-queue-artists) :is(.playing-now,.next-playlist,.jukebox-queue) :is(.jukebox-list-artist,.cell-vote-playlist-artist,.jukebox-queue-artist) { display:none; }
+/* Do not reserve an artwork grid row for an absent or hidden artist. */
+.content__body :is(.jukebox-list,.cell-vote-playlist,.playing-now):not(:has(> :is(.jukebox-list-artist,.cell-vote-playlist-artist):not(:empty))) > img,
+body:has(#show-options.hide-song-artists) .los-song-list :is(.jukebox-list,.cell-vote-playlist) > img,
+body:has(#show-options.hide-queue-artists) .playing-now > img { grid-row:1; }
+
       .neighbour-message,.request-feedback__message { white-space:pre-line; }
       .los-menu__label { white-space:normal;overflow-wrap:anywhere;max-width:100%; }
       #show-options:not(.has-donations-home) #home-panel .share-donation,
@@ -1889,11 +1897,13 @@ a.visitor-link:hover{border-color:var(--section-accent)}a.visitor-link:focus-vis
         <p class="browser-compat-note">You’re viewing a simple version of this page. Use the menu or scroll to explore. Update your browser for page tabs and song filters.</p>
         <!-- SHOW BRANDING: text works without uploading any images.
              Optional: replace the icon and h1 with your own hosted logo image. -->
+
         <div class="content__subitem logo-stage share-brand ">
           <i class="fa-solid fa-ghost" aria-hidden="true"></i>
           <h1 class="">Your Halloween Show</h1>
           <p>A little spooky magic, shared with you.</p>
         </div>
+
         <!-- HOME NOTICE: edit the title and message, then remove hidden.
              Restore hidden when finished. This does not change show status. -->
         <aside class="show-notice" id="show-notice" hidden aria-labelledby="show-notice-title">

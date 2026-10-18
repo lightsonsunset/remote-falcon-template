@@ -10,9 +10,9 @@ The original Dynamic Menu template was the starting point for the Lights on Suns
 
 ## Sharing edition
 
-Template customiser edition 1.6, modified 17 October 2026. The generic template and setup guide were prepared from the customised Lights on Sunset page. Personal show assets and links were removed. The visual builder adds validated settings, an isolated illustrative preview, local backups and generated HTML. FM, donations, PulseMesh and category/NEW filter buttons are optional. The manual package and builder share one canonical source and renderer.
+The customiser now offers the original Lights on Sunset layout and Compact console, with shared editing services. The generic template and setup guide were prepared from the customised Lights on Sunset page. Personal show assets and links were removed. The visual builder adds validated settings, an isolated illustrative preview, local backups and generated HTML. FM, donations, PulseMesh and category/NEW filter buttons are optional. Each template’s manual package and customiser export share its canonical renderer.
 
-The sharing template is distributed under GNU GPL version 3. A verbatim copy of the upstream licence is included in [LICENSE](LICENSE). The complete editable HTML/CSS source is supplied as `Festive RF Template.html`. Please keep the attribution, modification notice and licence with redistributed copies. The software is provided without warranty; the licence sets out the full terms.
+The sharing template is distributed under GNU GPL version 3. A verbatim copy of the upstream licence is included in [LICENSE](LICENSE). Each ZIP supplies its complete editable HTML/CSS in Christmas and Halloween starters. Lights on Sunset uses `Festive RF Template.html` and `Halloween RF Template.html`; Compact console uses `Compact Console Christmas.html` and `Compact Console Halloween.html`. Please keep the attribution, modification notice and licence with redistributed copies. The software is provided without warranty; the licence sets out the full terms.
 
 ## Other components
 
@@ -24,4 +24,4 @@ This is a community adaptation. The changes are not presented as the work of, or
 
 ## Optional show-name fonts
 
-Nunito (Rounded), Playfair Display (Elegant), Berkshire Swash (Festive) and Creepster (Spooky) are bundled unmodified from [Google Fonts](https://github.com/google/fonts/tree/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl). They are distributed under the SIL Open Font License 1.1, separately from the template GPL licence. Each font’s copyright and licence notice is included beside it in `assets/fonts/`. Only the selected heading font loads; Default uses the existing system font.
+Nunito (Rounded), Playfair Display (Elegant), Berkshire Swash (Festive) and Creepster (Spooky) are bundled unmodified from [Google Fonts](https://github.com/google/fonts/tree/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl). They are distributed under the SIL Open Font License 1.1, separately from the template GPL licence. Each font’s copyright and licence notice is included beside it in `assets/fonts/`. Lights on Sunset loads the selected optional heading font; its Default retains the system font. Compact console uses Nunito for body text and Playfair Display or Creepster for its seasonal headings, with optional heading overrides.

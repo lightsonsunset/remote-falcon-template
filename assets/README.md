@@ -1,6 +1,6 @@
 # Seasonal artwork
 
-Transparent WebP illustrations are included for both themes:
+The Lights on Sunset package includes these transparent WebP illustrations for both themes:
 
 - Christmas logos: Santa & friends, Pixel trees & light arches, Starlight garland.
 - Halloween logos: Halloween friends, Haunted light show, Moonlight & pumpkins.
@@ -10,3 +10,5 @@ Transparent WebP illustrations are included for both themes:
 Logos are 840 × 280 px; navbar artwork is 160 × 160 px. Artwork fits without cropping. The logo name remains editable HTML text and is not part of the image.
 
 These generic illustrations were generated for this project using OpenAI image generation and converted to WebP with transparency preserved. They are distributed with this project under GPL-3.0. They contain no third-party show logos. Imported catalogue artwork is not bundled.
+
+Both template packages include the show-name fonts and their original licences under `fonts/`. Compact console uses CSS seasonal decorations instead of these WebP illustrations, so its ZIP includes the fonts only.

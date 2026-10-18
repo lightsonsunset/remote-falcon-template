@@ -51,7 +51,9 @@ run.onclick=async()=>{
    const song=v().querySelector(mode==='jukebox'?'.jukebox-list:not(.sequence-unavailable)':'.cell-vote-playlist:not(.sequence-unavailable)');song.click();await wait(50);check(`Counter updates after local choice: ${mode}`,counter.textContent===(mode==='jukebox'?'1':'4 of 5 votes left this show'));
    const feedback=v().querySelector('#requestSuccessful'),box=viewer.getBoundingClientRect(),hit=v().elementFromPoint(20,20);check(`Confirmation blocks background taps: ${mode}`,visible(feedback)&&!!hit?.closest('.request-feedback'));
    await update({mode,air:true,categoriesMismatch:true,reset:true});await hash('#songs-category-3');check(`Mismatch disarms positional filtering: ${mode}`,groups().length===3&&v().querySelector('.category-filter-link').getAttribute('aria-disabled')==='true');
-   await hash('#songs-new');check(`NEW works during mismatch: ${mode}`,!!v().querySelector('.los-song-list')&&[...v().querySelectorAll(mode==='jukebox'?'.jukebox-list':'.cell-vote-row')].filter(visible).length===1);
+   await hash('#songs-new');
+   const newRows=[...v().querySelectorAll('.los-song-list [role=button]')].filter(visible);
+   check(`NEW works during mismatch: ${mode}`,newRows.some(row=>row.dataset.key===s.newNames)&&newRows.length===3&&newRows.every(row=>row.dataset.key===s.newNames||row.hasAttribute('data-demo-new')));
    for(const air of [true,false]){await update({mode,air});await hash('#home-panel');check(`Seasonal card visible: ${mode}/${air}`,visible(v().querySelector('.halloween-countdown')));check(`Home shortcut stays hidden: ${mode}/${air}`,!visible(v().querySelector('.music-tab-button')));}
   }
   s.hiddenCategories=[...s.categoryNames];s.newFilter=false;await update({mode:'jukebox',air:true,locationMode:'code'});await hash('#music-panel');check('No enabled filters hides bar',!visible(v().querySelector('.music-filter')));

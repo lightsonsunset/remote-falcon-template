@@ -1,0 +1,32 @@
+import {registry,templateById,designKey,parseBackup} from './template-registry.js';
+import {restoreCatalogue,saveCatalogue} from './catalogue.js';
+import {readPreferences,writePreferences} from './storage.js';
+const clone=x=>structuredClone(x);
+export function createDesignStore(storage){
+ const designs=new Map(),existing=new Set(),savedDesigns=new Set(),errors=[],pref=readPreferences(storage);
+ const catalogueStorage=(t,season)=>({getItem:()=>storage?.getItem(t.separateSeasons?t.catalogueKey+':'+season:t.catalogueKey),setItem:(_,v)=>{if(!storage)throw Error('Storage unavailable');storage.setItem(t.separateSeasons?t.catalogueKey+':'+season:t.catalogueKey,v);},removeItem:()=>{if(!storage)throw Error('Storage unavailable');storage.removeItem(t.separateSeasons?t.catalogueKey+':'+season:t.catalogueKey);}});
+ for(const t of registry){
+  let loaded=null;try{const raw=storage?.getItem(t.storageKey);if(raw)loaded=t.parseSettings(raw,true);}catch(error){errors.push(t.name+': '+error.message);}
+  for(const season of t.separateSeasons?Object.keys(t.themes):['christmas']){
+   const settings=loaded?(t.separateSeasons?loaded[season]:loaded):t.cloneDefaults(!t.separateSeasons&&pref.activeTemplate===t.id&&Object.hasOwn(t.themes,pref.activeSeason)?pref.activeSeason:season),key=designKey(t,season),catalogue=restoreCatalogue(catalogueStorage(t,season));
+   designs.set(key,{settings,catalogue:catalogue.catalogue});if(loaded){existing.add(key);savedDesigns.add(key);}if(catalogue.error)errors.push(catalogue.error);
+  }
+ }
+ let active=registry.find(t=>t.id===pref.activeTemplate)||registry[0];let season=active.separateSeasons&&Object.hasOwn(active.themes,pref.activeSeason)?pref.activeSeason:designs.get(designKey(active,'christmas')).settings.theme;
+ function read(){return clone(designs.get(designKey(active,season)));}
+ function persistTemplate(t){try{if(!storage)return false;const value=t.separateSeasons?Object.fromEntries(Object.keys(t.themes).map(season=>[season,designs.get(designKey(t,season)).settings])):designs.get(t.id).settings;storage.setItem(t.storageKey,t.settingsFile(value));for(const theme of Object.keys(t.themes))savedDesigns.add(designKey(t,theme));return true;}catch{return false;}}
+ return {
+  errors,firstVisit:!pref.activeTemplate&&!existing.size,
+  get template(){return active;},get season(){return season;},get key(){return designKey(active,season);},
+  read,isSaved(id,theme){return savedDesigns.has(designKey(templateById(id),theme));},has(id,theme){return existing.has(designKey(templateById(id),theme));},
+  select(id,theme){active=templateById(id);if(!active.separateSeasons&&!existing.has(active.id)&&theme&&Object.hasOwn(active.themes,theme)){const value=designs.get(active.id);value.settings=active.cloneDefaults(theme);}
+   season=active.separateSeasons?theme:designs.get(active.id).settings.theme;if(!Object.hasOwn(active.themes,season))throw Error('Unknown season.');writePreferences(storage,{activeTemplate:active.id,activeSeason:season});return read();},
+  save(value){designs.set(designKey(active,season),clone(value));existing.add(designKey(active,season));savedDesigns.delete(designKey(active,season));const ok=persistTemplate(active),cat=saveCatalogue(catalogueStorage(active,season),value.catalogue);writePreferences(storage,{activeTemplate:active.id,activeSeason:value.settings.theme});return {settings:ok,catalogue:cat};},
+  saveCatalogue(value){const state=read();state.catalogue=clone(value);designs.set(designKey(active,season),state);return saveCatalogue(catalogueStorage(active,season),value);},
+  backup(){const values=active.separateSeasons?Object.fromEntries(Object.keys(active.themes).map(season=>[season,designs.get(designKey(active,season)).settings])):read().settings;return active.settingsFile(values);},
+  all(){return registry.flatMap(t=>(t.separateSeasons?Object.keys(t.themes):['christmas']).filter(season=>existing.has(designKey(t,season))).map(season=>({template:t.id,season:designs.get(designKey(t,season)).settings.theme,name:t.name,settings:clone(designs.get(designKey(t,season)).settings)})));},
+  import(text,onChange){const backup=parseBackup(text),t=templateById(backup.template);for(const [slot,settings] of Object.entries(backup.designs)){const key=designKey(t,slot),before=clone(designs.get(key)),after={...before,settings};onChange(key,before,after);designs.set(key,clone(after));existing.add(key);savedDesigns.delete(key);}const saved=persistTemplate(t);return {template:t.id,season:Object.values(backup.designs)[0].theme,saved};}
+ };
+}
+export const copyGroups={identity:['name','welcome','logo','logoMode','showNameOnHome'],listening:['fm','frequency','pulsemesh','pulsemeshButtons','pulsemeshUrl','listening'],schedule:['dates','schedule'],music:['showAlbumArtwork','songArtwork','showNowPlayingArtwork','showSongArtists','showQueueArtists','categoryIcons','newNames','newFilter','categories','categoryNames','hiddenCategories','musicFM','queueCount','showQueueLimit','votesRemaining'],info:['showMainGuidance','guidancePosition','homeCardImage','extraInfoCards','faq','neighbourTitle','neighbourText','homeCard','homeCardTitle','homeCardText','homeCardLink','homeCardLinkLabel','playlists','playlistMusic','playlistInfo','playlistTitle','playlistText','playlistQuestion','playlistFAQText','showPreview','showPreviewTitle','showPreviewText','showPreviewUrl','showPreviewButton','youtube','youtubeLabel','youtubeUrl','quickFacts','factsTitle','facts','resourcesEnabled','resourcesTitle','resourcesText','resources'],support:['donations','charity','donationText','donationUrl','donationImage','donationHome','donationInfo','donationRecipients','showSupportTab']};
+export function copyDetails(source,destination,groups,template){const next=clone(destination);for(const group of groups)for(const key of copyGroups[group]||[])next[key]=clone(source[key]);if(groups.includes('support')){for(const key of ['DONATE_BUTTON','DONATION_CALLOUT','DONATE_HINT','SUPPORT_TITLE','SUPPORT_TEXT']){if(Object.hasOwn(source.copy,key))next.copy[key]=source.copy[key];else delete next.copy[key];}}if(groups.includes('identity')){if(template.features.headerTagline&&Object.hasOwn(source,'headerTagline'))next.headerTagline=source.headerTagline;if(source.icons?.brand)next.icons.brand=source.icons.brand;else delete next.icons.brand;if(source.logoMode==='symbol'&&template.features.headerIconMode==='icon')next.logoMode='icon';}if(!template.features.includedArtwork&&next.logoMode==='seasonal')next.logoMode='icon';return template.checkedSettings(next);}

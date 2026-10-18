@@ -1,34 +1,48 @@
-# Lights on Sunset template
+# Lights on Sunset Template Customiser
 
 **Make your Remote Falcon page your own.**
 
-Start with the Lights on Sunset template, choose your theme and personalise it for your show. No coding required. Prefer to edit the HTML yourself? The ready-made download includes both themes and instructions.
+Choose Lights on Sunset or Compact console, explore a seasonal style and personalise it for your show. No coding required. Each ready-made download includes both seasonal starters and instructions.
 
-**By christmasdave · Lights on Sunset.** The customiser is specifically for this template and its existing layout.
+**By christmasdave · Lights on Sunset.** The customiser personalises supplied layouts; each template retains its own visual identity.
 
-[Open the template customiser](https://lightsonsunset.github.io/remote-falcon-template/) · [Download template + instructions](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) · [Full setup guide](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html)
+[Open the template customiser](https://lightsonsunset.github.io/remote-falcon-template/) · [Download Lights on Sunset](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) · [Download Compact console](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip) · [Full setup guide](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html)
 
 **New to Remote Falcon?** [Remote Falcon](https://remotefalcon.com/) lets visitors request or vote for songs at your light show. Use this customiser to personalise the page they see. Visit the [official documentation](https://docs.remotefalcon.com/) to learn how to set up and connect your show.
 
 ![The Lights on Sunset customiser with settings on the left and a phone preview on the right](docs/images/editor-overview.jpg)
 
-Choose from three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
+Lights on Sunset offers three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button shows recent updates.
+
+Choose a season and template, click a preview to explore it in a centred phone, then select **Set up my show** or **Straight to editor**. Setup asks for show details once. Finish with **Apply & open editor**. Tick **Take a quick tour after setup** for a short introduction to the shared editor; it starts unchecked each time setup opens. Existing saved designs resume in the editor.
+
+Under **Music → Queue information & votes**, optionally show the maximum queue length above the song choices. RF supplies the value; 0 means unlimited. The local preview uses an illustrative limit of 10.
+
+Under **Site setup → Menu & decoration** (or **Menu & seasonal details**), choose icons for navigation, links and messages. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
+
+## Choose a template
+
+The customiser now offers **Lights on Sunset** and **Compact console**. Use **Choose template** to compare seasonal previews. Existing designs resume automatically. Compact console keeps a separate Christmas and Halloween design; Lights on Sunset keeps its established theme behaviour.
+
+**Undo / Redo** works across templates, with separate history for each design during the current session. Typing in a text field keeps native text undo. Reloading clears editor history, but keeps saved settings. **Copy show details** reviews selected content groups before applying them to another design.
+
+Compact console places music first, with Info and optional Support views. Its seasonal decorations, gentle motion, colour presets and date tiles can be adjusted in Site setup. Edit the small line above the show name under **Music → Welcome → Tagline**, or leave it blank to hide it. Both seasons are included in its settings backup; only the selected season is exported as RF HTML.
+
+![Compact console with its shared controls and music-first phone preview](docs/images/compact-overview.jpg)
 
 ## Get started in six steps
 
 ### 1. Add your show details
 
-Choose **Set up my show** on the welcome screen for a short wizard: Your show, Dates & hours, Music & listening, then Review & finish. Pick a theme, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Choose whether to show song artwork; songs without an assigned image still display neatly as text. Everything remains editable afterwards. You can also enter these details directly under **Site setup**.
+Choose **Set up my show** on the template selection screen for a short wizard: Your show, Dates & hours, Music & listening, then Review & finish. Using the season already selected, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Choose album artwork, category icons or no artwork for song lists, and control Now Playing artwork separately. Set individual category icons in Music after setup. Everything remains editable afterwards. You can also enter these details directly under **Site setup**.
 
-The welcome also offers **Open the editor** and **Take a quick tour**. Closing it or pressing Escape starts editing. Your choice is remembered.
+Choose **Straight to editor** to skip setup. On the final review step, optionally tick **Take a quick tour after setup** before applying. Returning users resume their saved design directly.
 
 Reopen **Setup wizard** from the header at any time. It starts with your current settings and only saves when you choose **Apply & open editor**. Back keeps your answers; Skip keeps that step’s previous settings; Cancel changes nothing. Website dates and listening text do not change FPP or activate PulseMesh.
 
 Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**, or **Detailed setup help**. The tour returns you to where you started without changing your settings. The downloaded quick-start guide works offline, with screenshots included.
 
 ![Help offers the quick-start guide, tour and detailed setup help](docs/images/friendly-help.jpg)
-
-![The first-visit welcome with setup, editor and quick-tour choices](docs/images/welcome-modal.jpg)
 
 ![The optional four-step setup wizard](docs/images/setup-wizard.jpg)
 
@@ -38,27 +52,41 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 
 | Area | What you can change |
 |---|---|
-| Home | Welcome, visitor guidance, notices, extra information, video link and countdown |
-| Music | Album artwork, NEW sashes, category filters, queue wording, optional counters and playlists |
-| Support | Separate cards for charities, creators and thank-yous, with optional images and Home/Info links |
-| Info | Introduction, YouTube, Quick Facts, FAQs and useful resources |
+| Home (Lights on Sunset) | Welcome, visitor guidance, notices, extra information, off-air video and countdown |
+| Music | Song artwork, Now Playing artwork, NEW sashes, categories, queue wording and counters. Compact console also keeps its welcome, notice, off-air video and countdown here. Its visitor guidance is under Info. |
+| Support | Cards for charities, creators and thank-yous, with optional images and main-screen/Info links |
+| Info | Introduction, YouTube, Quick Facts, FAQs and resources. Compact console also keeps extra-information cards and playlists here; Lights on Sunset’s playlists are edited under Music. |
 | Song messages | Request and voting titles and short explanations, with local preview buttons |
+
+Under **Music → Song appearance**, choose **Category icons** to replace song covers with an icon for each category. Use the shared picker for trees, snowmen, ghosts or other icons; songs without a category and unchosen categories use a music note. Match category names and order to RF under **Categories**. Icons work even with filter buttons hidden. **Show album artwork in Now Playing** is independent; **No artwork** makes the song list text-only. Two artist-name switches independently control the song list and Now Playing / Up Next / queue. Both start on; missing artists leave no blank artist line.
 
 Selecting a page opens it in the preview. Shared show details, colours, schedule and listening options live in **Site setup**. Start with the features you need; optional extras can stay off.
 
-To use a three-button visitor menu, untick **Support → Support page → Show Support in menu**. Your Support page and saved content remain available, including through existing direct links. Home and Info support cards still open their recipient links. Choose those placements for any cards visitors should find without the Support menu button.
+To hide Support from the visitor menu, untick **Support → Support page → Show Support in menu**. Your Support page and saved content remain available, including through existing direct links. Support teasers on the main screen and Info still open their recipient links. Choose those placements for any cards visitors should find without the Support menu button.
 
-For PulseMesh, choose **Download app only**, **Listen on PulseMesh only** or **Both buttons** under **Site setup → Listening**, or in the wizard. Listen needs your full public display link from PulseMesh. It is reused on Home and in the listening FAQ. [PulseMesh explains display links and supported plans](https://pulsemesh.io/docs/topics/display-codes); the buttons do not activate the service or change its access rules.
+For PulseMesh, choose **Download app only**, **Listen on PulseMesh only** or **Both buttons** under **Site setup → Listening**, or in the wizard. Listen needs your full public display link from PulseMesh. It is reused on the main screen (Home in Lights on Sunset, Music in Compact console) and in the listening FAQ. [PulseMesh explains display links and supported plans](https://pulsemesh.io/docs/topics/display-codes); the buttons do not activate the service or change its access rules.
+
+### Extra cards and visitor guidance
+
+Extra information supports up to five cards, each with a heading, message, optional image and optional link. Expand a card to edit it, reorder it or remove it. Find these cards on Home for Lights on Sunset and Info for Compact console.
+
+Visitor guidance can appear above the header, below the header or below On air. Main-screen guidance appears only while on air. Compact console also keeps the same message on Info, including off air. Christmas and Halloween have separate saved Compact console designs; use Copy show details to reuse information.
+
+Header appearance sits directly below Show name in setup and the editor. Compact console can use a styled name, an icon above the name or your own logo. Setup icon choices are saved only when you apply setup.
 
 ### 3. Check the preview
 
 Try **Mobile, Tablet or Desktop**, then **On air / Off air** and **Jukebox / Voting**. The viewport choices check layout, not a particular phone's operating system. Mouse dragging scrolls phone/tablet previews; the wheel also works.
 
+**Reset demo** clears sample requests, votes and feedback. **Reset to defaults**, in the settings controls, resets the current design after confirmation; its dialog names the affected template and season. These are separate actions.
+
 The preview is a labelled demonstration with **no connection to your show**. Trying songs or messages does not send requests or votes to RF. Its mode switches are preview-only; RF controls the real viewer.
 
 ### 4. Bring your song list (optional)
 
-Use **Import RF song CSV** to choose a file and review its songs before importing. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Category rows select RF categories by position: row 1 selects RF’s first category, row 2 its second, and so on. Renaming a button does not change its songs. Match RF’s names and order; this does not change categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All.
+Use **Import RF song CSV** to choose a file and review its songs before importing. Tick songs under **Select songs to mark as NEW** to add NEW sashes. All songs are imported, whether ticked or not. Select **Import & apply choices** when ready; **Cancel import**, the X or Escape keeps your previous catalogue and settings. **Detect categories** sets up filter buttons so visitors can browse groups of songs. Category rows select RF categories by position: row 1 selects RF’s first category, row 2 its second, and so on. Renaming a button does not change its songs. Match RF’s names and order; this does not change categories saved in RF. **Set NEW sashes** lets you choose new songs without typing their exact sequence names. Manual entry is also available under Music. Keep every category row in RF order and untick **Show button** for any filter you do not want; its songs stay under All. Songs without a category also appear under All (and New this year when marked NEW), but not under named category filters. They do not need an extra category row.
+
+**How category filters work** opens a short guide from the import window or **Music → Categories**, with a link to RF’s category documentation. Import review counts songs without a category and recommends assigning every song one; you can still import and review them.
 
 Your CSV stays in this browser. The export uses RF's live catalogue, and your settings backup does not contain the imported CSV. Keep the original file. [Import and category instructions](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#catalogue).
 
@@ -66,11 +94,11 @@ Your CSV stays in this browser. The export uses RF's live catalogue, and your se
 
 ### 5. Keep a settings backup
 
-The customiser saves your edits locally in this browser. Use **Download settings backup** to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
+The customiser saves your edits locally in this browser. Use **Download settings backup** (**Back up both seasons** in Compact console) to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
 
 ### 6. Copy your page into RF
 
-Choose **Finish & export** above the settings (or after the wizard). It takes you to any fields needing attention, or to **Copy HTML** and **Download my HTML**. Downloaded HTML is named after your show and theme. In RF, create a separate draft under **Viewer Page → New Page**, replace its HTML with the complete document, then save and check RF's validator and preview. Test your own show before choosing **Set as Live**.
+Choose **Finish & export** above the settings. It takes you to any fields needing attention, or to **Copy HTML** and **Download my HTML**. If Copy/Download HTML are disabled, the explanation and links to the fields needing attention appear beside those buttons. Downloaded HTML is named after your show and theme. In RF, create a separate draft under **Viewer Page → New Page**, replace its HTML with the complete document, then save and check RF's validator and preview. Test your own show before choosing **Set as Live**.
 
 ![Export instructions for installing the complete HTML in an RF draft](docs/images/export-to-rf.jpg)
 
@@ -80,15 +108,19 @@ Both music modes and availability states are included in the export. No custom J
 
 ## Prefer to edit the HTML yourself?
 
-[Download the ready-made package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip), unzip it, and open **START-HERE.html**. It includes editable Christmas and Halloween HTML files, images, instructions, credits and the licence. You do not need to use the customiser.
+Choose the [Lights on Sunset package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) or [Compact console package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip), unzip it, and open **START-HERE.html**. Each includes that layout’s Christmas and Halloween HTML starters, fonts, instructions, credits and licences. Lights on Sunset also includes its optional WebP artwork; Compact console’s decorations are drawn in CSS. You do not need to use the customiser.
 
-The guide covers [NEW sashes](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#new), [Home notices](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#notice), [support cards](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#donations), image hosting and other optional features.
+The guide covers [NEW sashes](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#new), [Show notices](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#notice), [support cards](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#donations), image hosting and other optional features.
 
 The package also includes **README.html**: an offline, browser-readable copy of this quick start with its screenshots included in the file.
 
 ## Help and feedback
 
 Choose **Help → Feedback & questions** for short forms to report a problem, share feedback, suggest an improvement or ask a question. A free GitHub account is needed. Read the setup guide first, then use [GitHub Issues](https://github.com/lightsonsunset/remote-falcon-template/issues) for bugs and suggestions. Share generic examples rather than private settings or catalogues. [Report security issues privately](https://github.com/lightsonsunset/remote-falcon-template/security/advisories/new).
+
+Have a viewer page you love? [Share it for consideration as a community template](https://github.com/lightsonsunset/remote-falcon-template/issues/new?template=viewer-template.yml). Include the HTML code, original author and licence or permission to reuse it. Only submit pages you have permission to share and adapt, not purchased templates. Remove private information before posting; issues and attachments are public. Submissions are reviewed for suitability and RF compatibility, and inclusion is not guaranteed.
+
+Prefer to discuss your viewer page privately? Message [christmasdave on AusChristmasLighting](https://auschristmaslighting.com/members/christmasdave.33949/). The same permission requirements apply.
 
 ## Credits and licence
 

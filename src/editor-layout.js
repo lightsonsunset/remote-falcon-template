@@ -20,6 +20,7 @@ export const editorCopy={
  countdownUnits:[['Full countdown labels',fields('COUNTDOWN_DAY_UNIT','COUNTDOWN_HOURS','COUNTDOWN_MINUTES','COUNTDOWN_SECONDS')]],
  status:[['On air / Off air',fields('ON_AIR','ON_AIR_HELP','OFF_AIR','OFF_AIR_HELP')]],
  music:[['Requests & voting',fields('JUKEBOX_TITLE','JUKEBOX_HELP','VOTING_TITLE','VOTING_HELP','VOTES_LABEL')],['Now Playing & queue',fields('NOW_TITLE','NEXT_TITLE','QUEUE_TITLE','QUEUE_HELP','EMPTY_NOW','EMPTY_NEXT','EMPTY_QUEUE')],['Filters & unavailable songs',fields('FILTER_ALL','FILTER_NEW','UNAVAILABLE_ROW_PREFIX')],['When the show is off',fields('MUSIC_CLOSED_TITLE','MUSIC_CLOSED_TEXT','ABOUT_TITLE','ABOUT_HELP')]],
+ queueLimit:[['Queue limit wording',fields('QUEUE_LIMIT_TEXT')]],
  counters:[['Queue count wording',fields('QUEUE_COUNT_LABEL')]],
  access:[['Display access code',fields('ACCESS_CODE_TITLE','ACCESS_CODE_HELP')]],
  support:[['Support introduction',fields('SUPPORT_TITLE','SUPPORT_TEXT')]],

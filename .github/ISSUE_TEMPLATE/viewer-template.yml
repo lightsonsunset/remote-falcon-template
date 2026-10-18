@@ -1,0 +1,58 @@
+name: Share a viewer template
+description: Offer a viewer page for consideration as a community template.
+title: "[Viewer template] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a viewer page you love? Share it for consideration as a community template.
+
+        Prefer to discuss your viewer page privately? Message [christmasdave on AusChristmasLighting](https://auschristmaslighting.com/members/christmasdave.33949/).
+
+        **This submission and its attachments will be public.** Remove credentials, private settings, full catalogues, private links and personal information first. Keep original credits and licence notices.
+
+        Only submit pages you have permission to share and adapt, **not purchased templates**. We review suitability, reuse permissions and Remote Falcon compatibility; inclusion is not guaranteed. This is not an automatic HTML import.
+  - type: input
+    id: name
+    attributes:
+      label: Viewer page name
+      placeholder: A short name for the layout
+    validations:
+      required: true
+  - type: textarea
+    id: highlights
+    attributes:
+      label: What do you love about it?
+      description: Describe the layout, distinctive features and anything that needs work.
+    validations:
+      required: true
+  - type: textarea
+    id: credits
+    attributes:
+      label: Original author, credits and reuse permissions
+      description: Tell us who created the page and what you changed. Link its original source and licence or permission to share and adapt it. List any images, fonts or other assets that need separate permission or replacement. A free download alone does not establish permission to reuse it.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Viewer HTML source
+      description: Attach a cleaned copy as a .txt or .zip file, or link to a public source repository. Please provide source code, not just a live viewer URL. Leave out private settings and catalogues; preserve credits and licence notices.
+    validations:
+      required: true
+  - type: textarea
+    id: preview
+    attributes:
+      label: Screenshots or public preview (optional)
+      description: Add a screenshot or public viewer link you are happy to share. Remove personal details from screenshots. Never include an admin or account link.
+  - type: checkboxes
+    id: sharing
+    attributes:
+      label: Before submitting
+      options:
+        - label: I created this page or have permission to share and adapt its code and included assets. This is not a purchased template.
+          required: true
+        - label: I have removed private information and understand that this submission and its attachments are public.
+          required: true
+        - label: I am happy for eligible contributions to be adapted and shared with attribution in this GPL-3.0 community project, subject to review.
+          required: true

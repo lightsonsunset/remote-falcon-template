@@ -1,20 +1,19 @@
 // Editor-only orientation. Does not read or change show settings or demo interactions.
-import {readPreferences,writePreferences} from './storage.js';
+import {writePreferences} from './storage.js';
 
 export const tourSteps=[
- {title:'Start with your show',area:'setup',view:'settings',target:'[data-section="1"]',open:1,text:'Choose Christmas or Halloween, then add your show name, dates and listening details in Site setup. You are personalising one ready-made layout.'},
- {title:'Find each page’s settings',area:'home',view:'settings',target:'#editor-groups',text:'Home welcomes visitors. Music holds song options and playlists. Support has your charities and thank-yous. Info holds FAQs, facts and useful links. Outside this tour, selecting a page also opens it in the preview.'},
- {title:'Try the preview',view:'preview',target:'.preview-controls-main',text:'Check phone, tablet and desktop sizes. Try On air / Off air and Jukebox / Voting. The preview is a demo: it never connects to your show or changes your RF settings.'},
- {title:'Bring your songs and add filters',view:'preview',target:'#catalogue-tools',text:'Import your RF song CSV to preview your titles and artwork. Detect categories sets up filter buttons, so visitors can browse groups of songs. Category rows match RF’s positions: row 1 selects its first category, row 2 its second. Renaming a button does not move songs. Match RF’s order and untick Show button to hide a filter. Set NEW sashes marks your new songs. Your imported catalogue stays in this browser.'},
+ {title:'Make changes at any time',area:'setup',view:'settings',target:'[data-section="1"]',open:1,text:'Change your theme or edit your show name, dates and listening details in Site setup. Undo and redo are available above the page tabs.'},
+ {title:'Find each page’s settings',area:'home',view:'settings',target:'#editor-groups',text:'Home welcomes visitors. Music holds song options and playlists. Support has your charities and thank-yous. Info holds FAQs, facts and useful links.'},
+ {title:'Try the preview',view:'preview',target:'.preview-controls-main',text:'Compare phone, tablet and desktop sizes, or expand a phone preview. Try On air / Off air and Jukebox / Voting. These are demo switches; they never change your show.'},
+ {title:'Bring your songs and add filters',view:'preview',target:'#catalogue-tools',text:'Import your RF song CSV for titles and artwork. Detect categories adds filter buttons; Set NEW sashes marks new songs. Your catalogue stays in this browser.'},
  {title:'Make the messages yours',area:'messages',view:'settings',target:'[data-section="12"] > summary',open:12,text:'Song messages holds request and voting feedback. Edit the short title and explanation, then use its preview button to see how it looks. RF still decides when each message appears.'},
  {title:'Keep your work and use it in RF',view:'settings',target:'#save-export',text:'Download a settings backup so you can edit again later. Copy HTML or download your finished page, then paste it into a separate RF draft. Save, validate and test there before making it live. Open Help for the illustrated quick-start guide and detailed setup instructions.'}
 ];
 
-export function createTour({storage,captureContext,showArea,showView,restoreContext,startSetup}){
- const $=id=>document.getElementById(id),welcome=$('tour-welcome'),dialog=$('quick-tour'),card=$('tour-card'),spot=$('tour-highlight');
- let step=0,context=null,returnFocus=null,scrollStyle='',welcomeScrollStyle='',frame=0;
- const remember=()=>{writePreferences(storage,{tourSeen:true});if(welcome.open){welcome.close();document.body.style.overflow=welcomeScrollStyle;}};
- const dismissWelcome=()=>{remember();$('open-help').focus({preventScroll:true});};
+export function createTour({storage,captureContext,showArea,showView,restoreContext,getTemplate=()=>null}){
+ const $=id=>document.getElementById(id),dialog=$('quick-tour'),card=$('tour-card'),spot=$('tour-highlight');
+ let step=0,context=null,returnFocus=null,scrollStyle='',frame=0;
+ const remember=()=>writePreferences(storage,{tourSeen:true});
  const focusable=()=>[...card.querySelectorAll('button')].filter(b=>!b.disabled&&!b.hidden);
  function position(){
   if(!dialog.open)return;
@@ -33,10 +32,10 @@ export function createTour({storage,captureContext,showArea,showView,restoreCont
  }
  function schedulePosition(){cancelAnimationFrame(frame);frame=requestAnimationFrame(position);}
  function show(index){
-  step=index;const s=tourSteps[step];
+  step=index;const s={...tourSteps[step]};if(getTemplate()?.landing==='music'&&step===1){s.area='music';s.text='Music is the visitor landing view. Info holds schedules, listening help, FAQs and useful links. Support holds optional cards.';}
   if(s.area)showArea(s.area);showView(s.view);
   if(s.open)document.querySelector(`[data-section="${s.open}"]`).open=true;
-  $('tour-progress').textContent=`${step+1} of ${tourSteps.length}`;$('tour-title').textContent=s.title;$('tour-text').textContent=s.text;
+  $('tour-progress').textContent=`${step+1} of ${tourSteps.length}`;$('tour-title').textContent=s.title;$('tour-text').textContent=s.text;$('tour-visual').hidden=step!==3;
   $('tour-back').disabled=step===0;$('tour-next').textContent=step===tourSteps.length-1?'Finish tour':'Next';
   $('tour-dots').replaceChildren(...tourSteps.map((_,i)=>{const dot=document.createElement('span');dot.classList.toggle('current',i===step);return dot;}));
   document.querySelector(s.target)?.scrollIntoView({block:'center',behavior:'instant'});
@@ -53,15 +52,6 @@ export function createTour({storage,captureContext,showArea,showView,restoreCont
   restoreContext(context);const focus=returnFocus?.isConnected&&returnFocus.getClientRects().length?returnFocus:$('open-help');focus.focus({preventScroll:true});
   context=null;
  }
- $('welcome-tour').addEventListener('click',start);
- $('welcome-setup').addEventListener('click',()=>{remember();startSetup();});
- $('welcome-skip').addEventListener('click',dismissWelcome);$('welcome-close').addEventListener('click',dismissWelcome);
- welcome.addEventListener('cancel',event=>{event.preventDefault();dismissWelcome();});
- welcome.addEventListener('keydown',event=>{
-  if(event.key!=='Tab')return;
-  if(event.shiftKey&&document.activeElement===$('welcome-close')){event.preventDefault();$('welcome-tour').focus();}
-  else if(!event.shiftKey&&document.activeElement===$('welcome-tour')){event.preventDefault();$('welcome-close').focus();}
- });
  $('tour-next').addEventListener('click',()=>step===tourSteps.length-1?finish():show(step+1));
  $('tour-back').addEventListener('click',()=>show(Math.max(0,step-1)));$('tour-skip').addEventListener('click',finish);
  dialog.addEventListener('cancel',event=>{event.preventDefault();finish();});
@@ -71,6 +61,5 @@ export function createTour({storage,captureContext,showArea,showView,restoreCont
   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
  });
  window.addEventListener('resize',schedulePosition);window.addEventListener('scroll',schedulePosition,{passive:true});
- if(readPreferences(storage).tourSeen!==true){welcomeScrollStyle=document.body.style.overflow;document.body.style.overflow='hidden';welcome.showModal();}
  return {start};
 }
