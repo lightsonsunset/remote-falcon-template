@@ -1,4 +1,5 @@
 import {createCategoryHelp,missingCategoryNotice} from './category-help.js';
+import {createRFExportHelp} from './rf-export-help.js';
 import {categoryIcon,songArtworkMode,renameCategoryArtwork} from './song-artwork.js';
 import {updateSongArtworkForm} from './song-artwork-form.js';
 import {informationCards,setInformationCards,newInformationCard,informationKey} from './information-cards.js';
@@ -30,6 +31,7 @@ import {detectedCategories,applyCategories,catalogueMatches} from './category-se
 const $=id=>document.getElementById(id);
 createChangelog();
 createCategoryHelp();
+createRFExportHelp();
 let storage;try{storage=window.localStorage;}catch{storage=null;}
 const designStore=createDesignStore(storage),initial=designStore.read();
 let settings=initial.settings,catalogue=initial.catalogue,catalogueSource=catalogue?'imported':'samples',catalogueSaved=true;
@@ -154,16 +156,16 @@ function categoriesMatch(){
 function catalogueUI(){
   $('catalogue-source').querySelector('[value="imported"]').disabled=!catalogue;
   $('pick-new').disabled=!catalogue;
-  $('pick-new-music').disabled=!catalogue;
-  $('new-selected-count').textContent=namesOf(settings).length+' selected';
-  $('new-music-help').innerHTML=catalogue?'Choices add NEW sashes to your exported RF page.':'Import your RF song CSV in Preview catalogue, or enter names below. <button type="button" class="inline-link" data-import-catalogue>Import song CSV</button>';
-  $('pick-new-help').textContent=catalogue?'Choices add NEW sashes to your exported RF page.':'Import your song list to detect categories and choose NEW sashes. Manual entry is under Music.';
+  $('pick-song-badges').disabled=!catalogue;
+  $('song-badge-count').textContent=namesOf(settings).length+' NEW · '+namesOf(settings,'movingHeadNames').length+' Moving heads';
+  $('song-badges-help').innerHTML=catalogue?'Choose which songs to mark as NEW or Moving heads.':'Import your RF song CSV in Preview catalogue, or enter names below. <button type="button" class="inline-link" data-import-catalogue>Import song CSV</button>';
+  $('pick-new-help').textContent=catalogue?'Choose NEW sashes and Moving spotlights badges for your song cards.':'Import your song list to detect categories and choose song badges. Manual entry is under Music → Song badges.';
   $('detect-categories').disabled=!catalogue;
   $('catalogue-source').value=catalogueSource;$('remove-catalogue').hidden=!catalogue;
   $('catalogue-summary').textContent=catalogue&&catalogueSource==='imported'?`${catalogue.songs.length} imported songs`:'Sample songs';
   const names=catalogue?categoryNamesOf(catalogue):[];
   const mismatch=!!catalogue&&(settings.categories||songArtworkMode(settings)==='category')&&!categoriesMatch();
-  for(const id of ['category-warning','catalogue-warning']){const el=$(id);el.hidden=!mismatch;el.textContent='This category list differs from the imported songs. Category buttons are disabled and category icons use music notes in the imported preview. Use Detect categories, edit the list, or import a newer CSV. Export still uses your settings.';}
+  for(const id of ['category-warning','catalogue-warning']){const el=$(id);el.hidden=!mismatch;el.textContent='This category list differs from the imported songs. Category buttons are disabled and category icons use the fallback icon in the imported preview. Use Detect categories, edit the list, or import a newer CSV. Export still uses your settings.';}
   if(!catalogue){$('catalogue-status').textContent='Export from RF’s Sequences page. Maximum 2 MB / 2,000 songs.';return;}
   const exactNames=new Set(catalogue.songs.map(s=>s.name)),missing=namesOf(settings).filter(n=>!exactNames.has(n));
   const notes=[`${catalogue.filename}: ${catalogue.songs.length} songs. Categories found: ${names.join(', ')||'none'}.`,catalogueSaved?'Saved only in this browser.':'Loaded for this session only; browser storage was unavailable.'];
@@ -187,60 +189,62 @@ $('catalogue-source').addEventListener('change',()=>{catalogueSource=$('catalogu
 $('catalogue-options').addEventListener('click',()=>$('catalogue-dialog').showModal());
 $('close-catalogue').addEventListener('click',()=>$('catalogue-dialog').close());
 $('pick-new').addEventListener('click',()=>openNewPicker());
-let pickedNew=new Set(),pickedCategories=[],detectedNames=[],pickerCatalogue=null,pendingCatalogue=null,pickerReturnFocus=null;
+let pickedNew=new Set(),pickedMoving=new Set(),pickedCategories=[],detectedNames=[],pickerCatalogue=null,pendingCatalogue=null,pickerReturnFocus=null;
 const categoryList=(names,kind)=>names.map((name,i)=>`<li><span>${e(name)}</span><button type="button" data-${kind}-up="${i}" aria-label="Move ${e(name)} up" ${i===0?'disabled':''}>↑</button><button type="button" data-${kind}-down="${i}" aria-label="Move ${e(name)} down" ${i===names.length-1?'disabled':''}>↓</button></li>`).join('');
 function pickerCount(){
- const count=pickedNew.size,withCategories=$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled;
- $('new-picker-count').textContent=(pendingCatalogue?pendingCatalogue.songs.length+' songs · ':'')+count+' NEW sashes'+(withCategories?' · '+pickedCategories.length+' category filters':'');
- $('apply-new').textContent=pendingCatalogue?'Import & apply choices':withCategories?'Apply NEW sashes & categories':'Apply NEW sashes';
- $('apply-new').disabled=count>200;
- $('new-picker-list').querySelectorAll('[data-pick-new]').forEach(input=>input.closest('label').querySelector('.new-picker-tag').hidden=!input.checked);
+ const withCategories=$('picker-setup-categories').checked&&!$('picker-setup-categories').disabled;
+ $('new-picker-count').textContent=pickerCatalogue.songs.length+' songs · '+pickedNew.size+' NEW · '+pickedMoving.size+' Moving heads'+(withCategories?' · '+pickedCategories.length+' category filters':'');
+ $('apply-new').textContent=pendingCatalogue?'Import & apply choices':'Apply choices';
+ const tooMany=pickedNew.size>200||pickedMoving.size>200;
+ $('apply-new').disabled=tooMany;$('picker-limit-error').hidden=!tooMany;
 }
 function pickerCategories(){
   $('picker-category-list').innerHTML=categoryList(pickedCategories,'picker');
 }
 function openNewPicker(candidate=null){
   const next=candidate||catalogue;if(!next)return;
-  // Keep an import in memory until catalogue, category and NEW choices are confirmed.
+  // Keep an import in memory until catalogue, categories and both badge choices are confirmed.
   pendingCatalogue=candidate;pickerCatalogue=next;pickerReturnFocus=candidate?$('catalogue-source'):document.activeElement;
-  $('new-picker-title').textContent=candidate?'Import song list':'Catalogue & NEW sashes';
+  $('new-picker-title').textContent=candidate?'Import song list':'Choose song badges';
   $('cancel-new-bottom').textContent=candidate?'Cancel import':'Cancel';
   $('cancel-new').setAttribute('aria-label',candidate?'Cancel import':'Close without applying changes');
-  pickedNew=new Set(namesOf(settings));const present=new Set(pickerCatalogue.songs.map(s=>s.name)),outside=[...pickedNew].filter(n=>!present.has(n));
-  $('new-picker-note').textContent=(candidate?candidate.filename+'. Nothing changes until you choose Import & apply choices.':'Nothing changes until you apply your choices.')+(outside.length?' '+outside.length+' names outside this CSV stay selected unless you clear the selection.':'');
-  $('new-selection-help').textContent='Tick songs to add a NEW sash to their cards. This is optional; '+(candidate?'all songs will be imported, whether ticked or not.':'unticked songs stay in your catalogue.');
+  pickedNew=new Set(namesOf(settings));pickedMoving=new Set(namesOf(settings,'movingHeadNames'));
+  $('new-selection-title').textContent='Choose song badges';
+  const present=new Set(pickerCatalogue.songs.map(s=>s.name)),outside=[...new Set([...pickedNew,...pickedMoving])].filter(n=>!present.has(n));
+  $('new-picker-note').textContent=(candidate?candidate.filename+'. Nothing changes until you choose Import & apply choices.':'Nothing changes until you apply your choices.')+(outside.length?' '+outside.length+' names outside this CSV stay selected unless you clear the badges.':'');
+  $('new-selection-help').textContent='Mark songs as NEW, Moving heads, or both. Moving heads appear as a “Moving spotlights” badge. '+(candidate?'All songs will be imported, whether marked or not.':'Unmarked songs stay in your catalogue.');
   const missingCategory=missingCategoryNotice(pickerCatalogue);
   $('picker-missing-categories').textContent=missingCategory;$('picker-missing-categories').hidden=!missingCategory;
   const detected=categoryNamesOf(pickerCatalogue),proposal=detectedCategories(pickerCatalogue,settings),valid=!proposal.error;
   pickedCategories=proposal.names;
   $('picker-setup-categories').checked=false;$('picker-setup-categories').disabled=!valid;
   $('picker-current-categories').textContent='Current filters: '+(settings.categories?settings.categoryNames.join(' → '):'Off')+'. Detected in CSV: '+(detected.join(', ')||'none')+'.';
-  $('picker-category-help').textContent=valid?'Check this order against RF’s Categories tab; the CSV does not include its saved order. Category changes apply with NEW sashes.':proposal.error;
+  $('picker-category-help').textContent=valid?'Check this order against RF’s Categories tab; the CSV does not include its saved order. Category changes apply with your badge choices.':proposal.error;
   pickerCategories();
   $('new-picker-search').value='';
-  $('new-picker-list').innerHTML=pickerCatalogue.songs.map((s,i)=>`<label class="new-picker-row" data-search="${e((s.displayName+' '+s.name+' '+s.artist+' '+s.category).toLowerCase())}"><input type="checkbox" data-pick-new="${i}" ${pickedNew.has(s.name)?'checked':''}><span><strong>${e(s.displayName||s.name)}</strong><small>${e(s.artist)}</small><small>RF name: ${e(s.name)}</small><small class="picker-song-category">${e(s.category||'No category set')}</small></span><span class="new-picker-tag" ${pickedNew.has(s.name)?'':'hidden'}>NEW</span></label>`).join('');pickerCount();$('new-picker').showModal();
+  $('new-picker-list').innerHTML=pickerCatalogue.songs.map((s,i)=>`<div class="new-picker-row" data-search="${e((s.displayName+' '+s.name+' '+s.artist+' '+s.category).toLowerCase())}"><div class="picker-song-details" id="picker-song-${i}"><strong>${e(s.displayName||s.name)}</strong>${s.artist?'<small>'+e(s.artist)+'</small>':''}<small>RF name: ${e(s.name)}</small><small class="picker-song-category">${e(s.category||'No category set')}</small></div><div class="picker-badge-choices" role="group" aria-labelledby="picker-song-${i}"><label class="picker-badge"><input type="checkbox" data-pick-new="${i}" ${pickedNew.has(s.name)?'checked':''}><span>NEW</span></label><label class="picker-badge"><input type="checkbox" data-pick-moving="${i}" ${pickedMoving.has(s.name)?'checked':''}><span>Moving heads</span></label></div></div>`).join('');pickerCount();$('new-picker').showModal();
 }
 $('picker-setup-categories').addEventListener('change',pickerCount);
 $('picker-category-list').addEventListener('click',event=>{const b=event.target.closest('button');if(!b)return;const up=b.dataset.pickerUp!==undefined,i=+(up?b.dataset.pickerUp:b.dataset.pickerDown),j=i+(up?-1:1);if(j<0||j>=pickedCategories.length)return;[pickedCategories[i],pickedCategories[j]]=[pickedCategories[j],pickedCategories[i]];$('picker-setup-categories').checked=!$('picker-setup-categories').disabled;pickerCategories();pickerCount();});
-$('clear-new').addEventListener('click',()=>{pickedNew.clear();$('new-picker-list').querySelectorAll('[data-pick-new]').forEach(el=>el.checked=false);pickerCount();});
-$('new-picker-list').addEventListener('change',event=>{const el=event.target;if(el.dataset.pickNew===undefined)return;const name=pickerCatalogue?.songs[+el.dataset.pickNew]?.name;if(name===undefined)return;if(el.checked)pickedNew.add(name);else pickedNew.delete(name);pickerCount();});
+$('clear-new').addEventListener('click',()=>{pickedNew.clear();pickedMoving.clear();$('new-picker-list').querySelectorAll('input[type=checkbox]').forEach(el=>el.checked=false);pickerCount();});
+$('new-picker-list').addEventListener('change',event=>{const el=event.target;const moving=el.dataset.pickMoving!==undefined,index=moving?el.dataset.pickMoving:el.dataset.pickNew;if(index===undefined)return;const name=pickerCatalogue?.songs[+index]?.name;if(name===undefined)return;const picked=moving?pickedMoving:pickedNew;if(el.checked)picked.add(name);else picked.delete(name);pickerCount();});
 $('new-picker-search').addEventListener('input',event=>{const q=event.target.value.toLowerCase().trim();$('new-picker-list').querySelectorAll('[data-search]').forEach(el=>el.hidden=!el.dataset.search.includes(q));});
 function closeNewPicker(){
   const target=pickerReturnFocus;
-  pendingCatalogue=null;pickerCatalogue=null;pickedNew.clear();pickedCategories=[];
+  pendingCatalogue=null;pickerCatalogue=null;pickedNew.clear();pickedMoving.clear();pickedCategories=[];
   $('new-picker').close();$('new-picker-list').replaceChildren();$('picker-category-list').replaceChildren();$('new-picker-count').textContent='';
   const focus=target?.isConnected&&target.getClientRects().length?target:$('catalogue-source');focus.focus({preventScroll:true});
 }
 for(const id of ['cancel-new','cancel-new-bottom'])$(id).addEventListener('click',closeNewPicker);
 $('new-picker').addEventListener('cancel',event=>{event.preventDefault();closeNewPicker();});
 $('apply-new').addEventListener('click',()=>{
-  if(!pickerCatalogue||pickedNew.size>200)return;
+  if(!pickerCatalogue||pickedNew.size>200||pickedMoving.size>200)return;
   const importing=!!pendingCatalogue;
-  settings.newNames=[...pickedNew].join('\n');
+  settings.newNames=[...pickedNew].join('\n');settings.movingHeadNames=[...pickedMoving].join('\n');
   if($('picker-setup-categories').checked&&!$('picker-setup-categories').disabled)applyCategories(settings,pickedCategories);
   if(importing){catalogue=pendingCatalogue;catalogueSource='imported';catalogueSaved=savePrivateCatalogue(catalogue);}
-  closeNewPicker();form();changed({label:importing?'Import catalogue and choices':'Apply NEW and category choices'});
-  if(importing){clearTimeout(updateTimer);refresh();$('preview-status').textContent=catalogueSaved?'Song list imported. Your NEW and category choices are applied. Requests and votes stay in this preview.':'Song list imported for this session only; browser storage was unavailable. Keep your original CSV.';}
+  closeNewPicker();form();changed({label:importing?'Import catalogue and choices':'Apply song badges and category choices'});
+  if(importing){clearTimeout(updateTimer);refresh();$('preview-status').textContent=catalogueSaved?'Song list imported. Your badge and category choices are applied. Requests and votes stay in this preview.':'Song list imported for this session only; browser storage was unavailable. Keep your original CSV.';}
 });
 $('remove-catalogue').addEventListener('click',()=>{catalogue=null;catalogueSource='samples';catalogueSaved=savePrivateCatalogue(null);$('catalogue-error').hidden=catalogueSaved;if(!catalogueSaved)$('catalogue-error').textContent='Removed from this preview, but browser storage could not be updated.';changed({label:'Remove imported catalogue'});refresh();});
 $('detect-categories').addEventListener('click',()=>{
@@ -271,12 +275,13 @@ document.querySelector('.settings-pane').addEventListener('click',event=>{
 document.querySelector('.settings-pane').addEventListener('click',event=>{const button=event.target.closest('[data-editor-group]');if(button)selectSettingsGroup(button.dataset.editorGroup);});
 const iconPicker=createIconPicker((target,id)=>{
  if(target.role){settings.icons||={};if(id)settings.icons[target.role]=id;else delete settings.icons[target.role];}
+ else if(target.setting)settings[target.setting]=id;
  else if(target.category!==undefined)settings.categoryIcons={...settings.categoryIcons,[settings.categoryNames[target.category]]:id};
  else settings[target.list][target.row].icon=id;
- form();changed({label:'Change '+(target.role||(target.category!==undefined?'category':target.list))+' icon'});
- $('settings').querySelector(target.role?`[data-icon-role="${target.role}"]`:target.category!==undefined?`[data-icon-category="${target.category}"]`:`[data-icon-list="${target.list}"][data-icon-row="${target.row}"]`)?.focus({preventScroll:true});
+ form();changed({label:'Change '+(target.role||target.setting||(target.category!==undefined?'category':target.list))+' icon'});
+ $('settings').querySelector(target.role?`[data-icon-role="${target.role}"]`:target.setting?`[data-icon-setting="${target.setting}"]`:target.category!==undefined?`[data-icon-category="${target.category}"]`:`[data-icon-list="${target.list}"][data-icon-row="${target.row}"]`)?.focus({preventScroll:true});
 });
-$('settings').addEventListener('click',event=>{const b=event.target.closest('[data-icon-role],[data-icon-list],[data-icon-category]');if(!b)return;const target=b.dataset.iconRole?{role:b.dataset.iconRole}:b.dataset.iconCategory!==undefined?{category:+b.dataset.iconCategory}:{list:b.dataset.iconList,row:+b.dataset.iconRow};iconPicker.open(target,target.role?settings.icons?.[target.role]||defaultIcon(target.role,settings,designStore.template.separateSeasons):target.category!==undefined?categoryIcon(settings,settings.categoryNames[target.category]):settings[target.list][target.row].icon,b);});
+$('settings').addEventListener('click',event=>{const b=event.target.closest('[data-icon-role],[data-icon-list],[data-icon-category],[data-icon-setting]');if(!b)return;const target=b.dataset.iconRole?{role:b.dataset.iconRole}:b.dataset.iconSetting?{setting:b.dataset.iconSetting}:b.dataset.iconCategory!==undefined?{category:+b.dataset.iconCategory}:{list:b.dataset.iconList,row:+b.dataset.iconRow};iconPicker.open(target,target.role?settings.icons?.[target.role]||defaultIcon(target.role,settings,designStore.template.separateSeasons):target.setting?settings[target.setting]:target.category!==undefined?categoryIcon(settings,settings.categoryNames[target.category]):settings[target.list][target.row].icon,b);});
 $('settings').addEventListener('submit',event=>event.preventDefault());
 $('settings').addEventListener('input',event=>{
   const el=event.target;editAction=fieldAction(el);if(el.dataset.key)settings[el.dataset.key]=el.type==='checkbox'?el.checked:el.value;
@@ -315,7 +320,7 @@ $('settings').addEventListener('click',event=>{
   if(el.id==='add-donation-recipient'&&settings.donationRecipients.length<4){settings.donationRecipients.push({name:'',description:'',url:'',image:'',...supportCardDefaults,home:false,info:false});form();changed();const field=$('settings').querySelector(`[data-donation="${settings.donationRecipients.length-1}"]`);if(field){field.closest('[data-recipient]').open=true;field.focus();}}
   if(el.dataset.donationRemove!==undefined){settings.donationRecipients.splice(+el.dataset.donationRemove,1);form();changed();}
   if(el.dataset.remove!==undefined&&settings.schedule.length>1){settings.schedule.splice(+el.dataset.remove,1);form();changed();}
-  if(el.id==='pick-new-music')openNewPicker();
+  if(el.id==='pick-song-badges')openNewPicker();
   if(el.hasAttribute('data-import-catalogue'))$('catalogue-file').click();
   if(el.dataset.previewMessage)previewMessage(el.dataset.previewMessage,el.dataset.previewMode);
   if(el.hasAttribute('data-reset-name-colour')){settings.customNameColour=false;$('settings').querySelector('[data-key=customNameColour]').checked=false;$('settings').querySelector('[data-key=customNameColour]').focus();changed();}
@@ -461,7 +466,7 @@ $('close-expanded-preview').addEventListener('click',()=>expanded.close());
 expanded.addEventListener('close',()=>{expandedGeneration++;expandedFocus?.focus({preventScroll:true});});
 $('expand-preview').addEventListener('click',()=>openExpanded(designStore.template,settings,{air,mode,catalogue:catalogueSource==='imported'?catalogue:null,categoriesMismatch:catalogueSource==='imported'&&!categoriesMatch()}));
 $('copy-design-details').addEventListener('click',()=>{copySources=designStore.all().filter(d=>d.template!==designStore.template.id||d.season!==settings.theme);$('copy-source').innerHTML=copySources.map((d,i)=>`<option value="${i}">${e(d.name+' · '+themes[d.season].name+' · '+d.settings.name)}</option>`).join('');$('copy-groups').innerHTML=Object.keys(copyGroups).map(group=>`<label class="toggle"><input type="checkbox" value="${group}" ${['identity','listening'].includes(group)?'checked':''}>${group[0].toUpperCase()+group.slice(1)}</label>`).join('');$('apply-copy-details').disabled=!copySources.length;$('copy-review').textContent='Copy only the selected groups into '+designStore.template.name+' · '+themes[settings.theme].name+'. Appearance and imported CSVs remain separate. Existing values in these groups will be replaced.';updateCopyReview();$('copy-design-dialog').showModal();});
-function updateCopyReview(){const from=copySources[+$('copy-source').value];const groups=[...$('copy-groups').querySelectorAll('input:checked')].map(el=>el.value);$('apply-copy-details').disabled=!from||!groups.length;if(!from){$('copy-details-preview').textContent='Save another design first to copy its details.';return;}const s=from.settings;const summaries={identity:s.name,listening:[s.fm?s.frequency+' FM':'',s.pulsemesh?'PulseMesh':'',s.listening].filter(Boolean).join(' · ')||'No listening options enabled',schedule:s.dates+' · '+s.schedule.map(r=>r.day+': '+r.hours).join('; '),music:s.categoryNames.length+' category rows · '+namesOf(s).length+' NEW assignments',info:(s.homeCard?informationCards(s).length+' extra-information cards':'Extra-information cards off')+' · '+(s.showMainGuidance?'main-screen guidance on':'main-screen guidance off')+' · '+s.faq.length+' FAQs · '+s.playlists.length+' playlist entries · '+s.resources.length+' resource entries',support:s.donations?(1+s.donationRecipients.length)+' support cards':'Support cards disabled'};$('copy-details-preview').replaceChildren(...groups.map(group=>{const row=document.createElement('p');const label=document.createElement('strong');label.textContent=group[0].toUpperCase()+group.slice(1)+': ';row.append(label,document.createTextNode(summaries[group]));return row;}));}
+function updateCopyReview(){const from=copySources[+$('copy-source').value];const groups=[...$('copy-groups').querySelectorAll('input:checked')].map(el=>el.value);$('apply-copy-details').disabled=!from||!groups.length;if(!from){$('copy-details-preview').textContent='Save another design first to copy its details.';return;}const s=from.settings;const summaries={identity:s.name,listening:[s.fm?s.frequency+' FM':'',s.pulsemesh?'PulseMesh':'',s.listening].filter(Boolean).join(' · ')||'No listening options enabled',schedule:s.dates+' · '+s.schedule.map(r=>r.day+': '+r.hours).join('; '),music:s.categoryNames.length+' category rows · '+namesOf(s).length+' NEW assignments · '+namesOf(s,'movingHeadNames').length+' Moving heads badges',info:(s.homeCard?informationCards(s).length+' extra-information cards':'Extra-information cards off')+' · '+(s.showMainGuidance?'main-screen guidance on':'main-screen guidance off')+' · '+s.faq.length+' FAQs · '+s.playlists.length+' playlist entries · '+s.resources.length+' resource entries · '+s.socials.length+' social links',support:s.donations?(1+s.donationRecipients.length)+' support cards':'Support cards disabled'};$('copy-details-preview').replaceChildren(...groups.map(group=>{const row=document.createElement('p');const label=document.createElement('strong');label.textContent=group[0].toUpperCase()+group.slice(1)+': ';row.append(label,document.createTextNode(summaries[group]));return row;}));}
 $('copy-source').addEventListener('change',updateCopyReview);$('copy-groups').addEventListener('change',updateCopyReview);
 $('cancel-copy-details').addEventListener('click',()=>$('copy-design-dialog').close());
 $('apply-copy-details').addEventListener('click',()=>{const from=copySources[+$('copy-source').value];if(!from)return;const groups=[...$('copy-groups').querySelectorAll('input:checked')].map(el=>el.value);settings=copyDetails(from.settings,settings,groups,designStore.template);$('copy-design-dialog').close();form();changed({label:'Copy '+groups.join(', ')+' from '+from.name});designUI();});

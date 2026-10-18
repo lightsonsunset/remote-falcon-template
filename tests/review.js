@@ -40,13 +40,13 @@ run.onclick=async()=>{
    check('First request appears Up Next with its artist',p().querySelector('.next-playlist').textContent===(first.displayName||first.name)+first.artist);
    check('Up Next is excluded from remaining queue',p().querySelector('.jukebox-queue-container').children.length===0);
    if(second){rows().find(el=>el.dataset.key===second.name).click();await wait(2900);check('Remaining queue uses title and artist from CSV',p().querySelector('.jukebox-queue-title')?.textContent===(second.displayName||second.name)&&p().querySelector('.jukebox-queue-artist')?.textContent===second.artist);}
-   await click('#pick-new');check('Unselected songs have no NEW tag',[...d.querySelectorAll('.new-picker-tag')].every(el=>el.hidden));
-   const firstPick=q('[data-pick-new="0"]');firstPick.checked=true;firstPick.dispatchEvent(new Event('change',{bubbles:true}));check('Only selected row gains NEW',!firstPick.closest('label').querySelector('.new-picker-tag').hidden&&[...d.querySelectorAll('.new-picker-tag:not([hidden])')].length===1);
+   await click('#pick-new');check('Unselected songs have no NEW tag',[...d.querySelectorAll('[data-pick-new]')].every(el=>!el.checked));
+   const firstPick=q('[data-pick-new="0"]');firstPick.checked=true;firstPick.dispatchEvent(new Event('change',{bubbles:true}));check('Only selected row gains NEW',d.querySelectorAll('[data-pick-new]:checked').length===1);
    check('Picker includes CSV category for each row',[...d.querySelectorAll('.picker-song-category')].every((el,i)=>el.textContent===(cat.songs[i].category||'No category set')));
-   await click('#clear-new');check('Clear selection removes every pending sash',q('#new-picker-count').textContent.startsWith('0 NEW sashes')&&[...d.querySelectorAll('[data-pick-new]')].every(el=>!el.checked));
+   await click('#clear-new');check('Clear selection removes every pending sash',q('#new-picker-count').textContent.includes('0 NEW')&&[...d.querySelectorAll('[data-pick-new]')].every(el=>!el.checked));
    firstPick.checked=true;firstPick.dispatchEvent(new Event('change',{bubbles:true}));q('#picker-setup-categories').checked=!q('#picker-setup-categories').disabled;await click('#cancel-new');check('Cancel preserves existing names/categories',q('[data-key="newNames"]').value===''&&!q('[data-key="categories"]').checked);
    await click('#pick-new');q('[data-pick-new="0"]').checked=true;q('[data-pick-new="0"]').dispatchEvent(new Event('change',{bubbles:true}));const canCategories=!q('#picker-setup-categories').disabled;q('#picker-setup-categories').checked=canCategories;await click('#apply-new');
-   check('Apply NEW sashes saves exact RF sequence name',q('[data-key="newNames"]').value===first.name);
+   check('Apply choices saves exact RF sequence name',q('[data-key="newNames"]').value===first.name);
    if(canCategories)check('Category setup applies from same picker',q('[data-key="categories"]').checked&&[...d.querySelectorAll('[data-category]')].every(el=>cat.songs.some(s=>s.category===el.value)));
   }else check('No catalogue: picker disabled with guidance',q('#pick-new').disabled&&q('#pick-new-help').textContent.includes('Import'));
   await click('[data-editor-group="support"]');q('[data-section="9"]').open=true;await input('[data-key="donations"]',true);await input('[data-key="donationUrl"]','https://example.org/give');await click('#add-donation-recipient');

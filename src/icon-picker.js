@@ -10,7 +10,8 @@ export const iconCategories=[
  {id:'christmas',name:'Christmas',icons:['tree','star','snowflake','snowman','candyCane','holly','sleigh','bell','gift','gifts','mitten','icicles','cookie']},
  {id:'halloween',name:'Halloween',icons:['ghost','hat','spider','skull','skullCrossbones','moon','broom','cat','crow','bone','flask','dungeon','mask']},
  {id:'lights',name:'Lights & magic',icons:['lights','wand','bolt','fire']},
- {id:'music',name:'Music & media',icons:['music','headphones','radio','volume','player','spotify','apple','youtube','video','camera']},
+ {id:'music',name:'Music & media',icons:['music','headphones','radio','volume','player','spotify','apple','video','camera']},
+ {id:'social',name:'Social links',icons:['facebook','instagram','youtube','tiktok']},
  {id:'general',name:'General',icons:['home','info','heart','support','link','calendar','clock','hourglass','download','notice','warning','queue','location','key','check','doubleCheck','vote','ticket','community']}
 ];
 export function createIconPicker(onChoose,{id='icon-picker'}={}){
@@ -33,5 +34,5 @@ export function createIconPicker(onChoose,{id='icon-picker'}={}){
  dialog.querySelector('.icon-categories').addEventListener('click',event=>{const button=event.target.closest('[data-icon-category-filter]');if(button){category=button.dataset.iconCategoryFilter;paint();}});
  grid.addEventListener('click',event=>{const b=event.target.closest('[data-pick-icon]');if(b)choose(b.dataset.pickIcon);});
  defaultButton.addEventListener('click',()=>choose(null));dialog.querySelector('.dialog-heading button').addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>{if(focus?.isConnected)focus.focus({preventScroll:true});});
- return {open(next,icon,button){target=next;current=icon;focus=button;search.value='';category='all';defaultButton.hidden=!next.role;dialog.querySelector('h2').textContent=next.role?'Choose '+iconRoles[next.role][0].toLowerCase().replace(/ icon$/, '')+' icon':next.category!==undefined?'Choose category icon':'Choose '+next.list.replace(/s$/,'')+' icon';paint();dialog.showModal();search.focus();}};
+ return {open(next,icon,button){target=next;current=icon;focus=button;search.value='';category='all';defaultButton.hidden=!next.role;dialog.querySelector('h2').textContent=next.role?'Choose '+iconRoles[next.role][0].toLowerCase().replace(/ icon$/, '')+' icon':next.setting?'Choose uncategorised-song icon':next.category!==undefined?'Choose category icon':'Choose '+next.list.replace(/s$/,'')+' icon';paint();dialog.showModal();search.focus();}};
 }

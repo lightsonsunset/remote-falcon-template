@@ -6,7 +6,7 @@ export const editorGroups={
  music:{name:'Music',sections:[30,6,18,22,23,24,25,15],panel:'music'},
  support:{name:'Support',sections:[16,9],panel:'support'},
  info:{name:'Info',sections:[17,27,28,10,29],panel:'info'},
- setup:{name:'Site setup',sections:[1,2,3,4,5,14]},
+ setup:{name:'Site setup',sections:[1,2,3,4,5,31,14]},
  messages:{name:'Song messages',sections:[12]}
 };
 const fields=(...keys)=>keys.map(key=>{

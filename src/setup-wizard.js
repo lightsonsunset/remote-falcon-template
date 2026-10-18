@@ -17,6 +17,7 @@ export function createSetupWizard({getSettings,applySettings,getTemplate=()=>nul
  const toggle=(key,label)=>`<label class="toggle"><input type="checkbox" data-setup-key="${key}" ${draft.value[key]?'checked':''}>${label}</label>`;
  function render(){
   const s=draft.value;
+  $('setup-design').textContent=(getTemplate()?.name||'Lights on Sunset')+' · '+themes[s.theme].name;
   $('setup-title').textContent=setupSteps[step];$('setup-progress').textContent=`Step ${step+1} of 4`;
   $('setup-steps').innerHTML=setupSteps.map((label,i)=>`<span ${i===step?'aria-current="step"':''}><b aria-hidden="true">${i+1}</b> ${label}</span>`).join('');
   $('setup-back').disabled=step===0;$('setup-next').textContent=step===3?'Apply & open editor':'Next';$('setup-tour-choice').hidden=step!==3;dialog.dataset.step=String(step);

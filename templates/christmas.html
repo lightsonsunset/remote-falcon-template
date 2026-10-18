@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.7.0 / 18 October 2026
+<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.8.0 / 18 October 2026
      Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
      Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
      No custom JavaScript. Install in a separate RF draft before going live.
@@ -1112,7 +1112,7 @@
 .los-song-list > .cell-vote-playlist:is([[NEW_SELECTORS]]) + .cell-vote,
       .cell-vote-row:has(> .cell-vote-playlist:is([[NEW_SELECTORS]])) {
         --los-new-display: grid;
-        --los-new-sash: "NEW";
+        --los-new-sash:"NEW";--los-new-sash-image:var(--los-new-corner-art);--los-new-moving-label:"NEW; Moving spotlights";
         --los-new-vote-height: var(--los-new-vote-card-height, 8.5rem);
         --los-new-text-gutter: 3rem;
         --los-new-vote-align: center;
@@ -1906,6 +1906,7 @@
         <!-- EXTRA HOME CARD: optional visitor information. -->
         [[HOME_CARD]]
         [[COUNTDOWN]]
+[[SOCIAL_MAIN]]
       </div>
       <div class="content__body tab-green" id="music-panel" data-tab-panel="music">
         <div class="music-filter-targets"><span id="songs-all"></span>[[CATEGORY_TARGETS]]<span id="songs-new"></span></div>
@@ -1962,6 +1963,7 @@
       </div>
       <div class="content__body tab-yellow" id="info-panel" data-tab-panel="info">
         <div class="section-card info-intro"><h2>[[INFO_TITLE]]</h2><p>[[INFO_TEXT]]</p>[[YOUTUBE_LINK]]</div>
+[[SOCIAL_INFO]]
         [[QUICK_FACTS]]
 <!-- DONATIONS: repeated in Home (three states), Support and Info. -->
           <a class="section-card compact donation-card compact-live share-donation" href="[[DONATION_URL]]" target="_blank" rel="noopener noreferrer" aria-label="[[DONATE_BUTTON]]">

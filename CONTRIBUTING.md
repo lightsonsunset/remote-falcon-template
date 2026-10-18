@@ -29,8 +29,9 @@ Open `http://127.0.0.1:4188`. Serve over HTTP locally; browsers restrict module 
 - `templates/christmas.html`: the original canonical viewer source, with renderer placeholders and native RF hooks.
 - `src/template.js`: compatibility entry point for the original settings and rendering API. Shared validation and rendering live in `src/shared-settings.js`; registrations live in `src/template-registry.js`.
 - `src/themes.js`: Christmas and Halloween colours, default wording and message copy for the same layout.
-- `src/visitor-extras.js`, `src/extras-form.js`: optional playlists, videos, facts, resources and seasonal countdown rendering/editor controls.
+- `src/visitor-extras.js`, `src/extras-form.js`: optional social links, playlists, videos, facts, resources and seasonal countdown rendering/editor controls.
 - `src/song-artwork.js` and `src/song-artwork-form.js`: shared artwork migration, category mappings, script-free viewer CSS and editor/setup controls. Preserve the legacy artwork checkbox through inherited defaults; explicit list and Now Playing choices are independent. Category glyph metadata in `src/icons.js` must match the pinned Font Awesome 6.6 Free stylesheet.
+- `src/song-badges.js`: shared exact-sequence Moving spotlights pills, with a separate NEW corner treatment. The existing NEW selectors also drive the embedded sash background when both labels are present, leaving the artwork pseudo-element available. The shared Music → Song badges controls keep NEW and Moving heads assignments together; the latter renders as Moving spotlights. The shared catalogue picker keeps both badge lists pending until Apply; assignments never change RF categories.
 - `src/copy.js`: editable visitor text, grouped field definitions and safe linked-text substitutions.
 - `src/editor-layout.js`: page ownership, preview-message mapping and conservative HTTPS completion.
 - `src/editor-form.js`: editor-only form markup, concise help, shared shortcuts and collapsible FAQ controls.
@@ -40,6 +41,7 @@ Open `http://127.0.0.1:4188`. Serve over HTTP locally; browsers restrict module 
 - `src/tour.js`, `tour.css`: optional editor-only welcome tour. Its dismissal is an editor preference; it never changes show settings or demo interactions.
 - `src/setup-model.js`, `src/setup-wizard.js`, `setup.css`: optional four-step editor setup. Works on a detached draft, uses the existing validator/theme handling, and commits only on Apply. Uses the selected template’s settings adapter; no RF integration.
 - `src/catalogue.js`: local RF CSV parsing and storage, used only by the editor and preview.
+- `src/rf-export-help.js`: shared editor-only CSV export instructions, linked from catalogue controls and Song badges. Help returns focus to its opener without changing settings or imports.
 - `src/category-help.js`: shared editor-only category guidance and missing-category notices, available from import review and Music settings without committing pending choices.
 - `src/app.js`, `editor.css`, `index.html`: editor interface and export actions.
 - `src/storage.js`: resilient local autosave, separate from editor preferences and demo state.

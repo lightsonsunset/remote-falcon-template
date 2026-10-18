@@ -2,11 +2,13 @@
 export {iconLibrary as linkIcons} from './icons.js';
 import {iconLibrary as linkIcons} from './icons.js';
 export const listDefinitions={
+ socials:{label:'Social link',max:8,fields:{icon:'link',title:'',url:''}},
  playlists:{label:'Playlist',max:12,fields:{icon:'music',title:'',description:'',url:''}},
  facts:{label:'Fact',max:6,fields:{value:'',label:''}},
  resources:{label:'Resource',max:12,fields:{icon:'link',title:'',description:'',url:'',image:''}}
 };
 export const extraDefaults={
+ socialMain:false,socialInfo:false,socialTitle:'Follow the lights',socialText:'',socials:[],
  playlistMusic:false,playlistInfo:false,playlistTitle:'Browse the Playlists',playlistText:'Hear the show music outside show hours.',playlistQuestion:'Can I listen to the playlists outside show hours?',playlistFAQText:'Yes! Browse our playlists below. At the display, use the Music tab to choose what plays.',
  playlists:[{icon:'spotify',title:'Spotify Playlist',description:'Browse the show songs on Spotify.',url:''},{icon:'apple',title:'Apple Music Playlist',description:'Browse the show songs on Apple Music.',url:''}],
  showPreview:false,showPreviewTitle:'Watch a preview of the show',showPreviewText:'A little taste of what to expect when the lights are on.',showPreviewUrl:'',showPreviewButton:'Watch on YouTube',
@@ -25,8 +27,9 @@ export const extraDefaults={
 export function checkedExtraLists(input){
  const result={};
  for(const [key,def] of Object.entries(listDefinitions)){
-  if(!Array.isArray(input[key])||input[key].length>def.max)throw Error(`Use up to ${def.max} ${key}.`);
-  result[key]=input[key].map(row=>{
+  const rows=key==='socials'&&input[key]===undefined?[]:input[key];
+  if(!Array.isArray(rows)||rows.length>def.max)throw Error(`Use up to ${def.max} ${key}.`);
+  result[key]=rows.map(row=>{
    if(!row||typeof row!=='object')throw Error(`Invalid ${def.label.toLowerCase()}.`);
    const clean={};for(const part of Object.keys(def.fields)){
     if(typeof row[part]!=='string'||row[part].length>(['url','image'].includes(part)?4000:part==='description'?1000:160)||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(row[part]))throw Error(`Invalid ${def.label.toLowerCase()} ${part}.`);
@@ -47,7 +50,7 @@ export function validateExtras(s,isHTTPS){
  if(s.showPreview){required('showPreviewTitle');required('showPreviewButton');url('showPreviewUrl');}
  if(s.youtube){required('youtubeLabel');url('youtubeUrl');}
  if(s.quickFacts)required('factsTitle');if(s.resourcesEnabled)required('resourcesTitle');
- for(const [key,on] of [['playlists',s.playlistMusic||s.playlistInfo],['facts',s.quickFacts],['resources',s.resourcesEnabled]]){
+ for(const [key,on] of [['playlists',s.playlistMusic||s.playlistInfo],['facts',s.quickFacts],['resources',s.resourcesEnabled],['socials',s.socialMain||s.socialInfo]]){
   if(!on)continue;
   if(!s[key].length)errors[key]='Add an entry, or switch this section off.';
   s[key].forEach((r,i)=>{
@@ -63,9 +66,11 @@ export function renderExtras(s,e,isHTTPS,c){
  const icon=id=>`<i class="${linkIcons[id][1]}" aria-hidden="true"></i>`;
  const links=rows=>'<div class="visitor-links">'+rows.map(r=>external(r.url,'visitor-link',`<span class="visitor-link-icon">${r.image&&isHTTPS(r.image)?`<img src="${e(r.image)}" alt="" loading="lazy">`:icon(r.icon)}</span><span><strong>${e(r.title||'Your link')}</strong>${r.description?`<span class="visitor-link-description">${e(r.description)}</span>`:''}</span>`)).join('')+'</div>';
  const playlistLinks=links(s.playlists);
+ const socials=s.socials.length?'<section class="section-card social-card">'+(s.socialTitle.trim()?'<h2>'+e(s.socialTitle)+'</h2>':'')+(s.socialText.trim()?'<p>'+e(s.socialText)+'</p>':'')+'<div class="social-links">'+s.socials.map(r=>external(r.url,'social-link',icon(r.icon)+'<span>'+e(r.title||'Your social link')+'</span>')).join('')+'</div></section>':'';
  const full=(s.theme==='halloween'?s.halloweenCountdownFormat:s.countdownFormat)==='full',on=s.theme==='halloween'?s.halloweenCountdown:s.countdown;
  const units=full?[['days',c.COUNTDOWN_DAY_UNIT],['hours',c.COUNTDOWN_HOURS],['minutes',c.COUNTDOWN_MINUTES],['seconds',c.COUNTDOWN_SECONDS]]:[['days',c.COUNTDOWN_DAYS]];
  return {
+  SOCIAL_MAIN:s.socialMain?socials:'',SOCIAL_INFO:s.socialInfo?socials:'',
   PLAYLIST_CARD:s.playlistMusic&&s.playlists.length?`<section class="section-card visitor-playlists"><h2>${e(s.playlistTitle)}</h2>${s.playlistText?`<p>${e(s.playlistText)}</p>`:''}${playlistLinks}</section>`:'',
   PLAYLIST_FAQ:s.playlistInfo&&s.playlists.length?`<div class="faq-item playlist-faq"><strong>${e(s.playlistQuestion)}</strong>${s.playlistFAQText?`<p>${e(s.playlistFAQText)}</p>`:''}${playlistLinks}</div>`:'',
   SHOW_PREVIEW:s.showPreview?`<section class="section-card compact show-preview"><h2>${e(s.showPreviewTitle)}</h2><p>${e(s.showPreviewText)}</p>${external(s.showPreviewUrl,'support-action','<i class="[[ICON:showVideo:fa-brands fa-youtube]]" aria-hidden="true"></i> '+e(s.showPreviewButton))}</section>`:'',
@@ -78,6 +83,7 @@ export function renderExtras(s,e,isHTTPS,c){
  };
 }
 const visitorCSS=`
+.social-card>p{white-space:pre-line}.social-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem}.social-link{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:48px;min-width:48px;max-width:100%;box-sizing:border-box;padding:.65rem .9rem;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:999px;background:color-mix(in srgb,var(--gold) 10%,var(--panel));color:var(--text);text-decoration:none;font-weight:700}.social-link i{font-size:24px;color:var(--gold);flex-shrink:0}.social-link span{overflow-wrap:anywhere;min-width:0}a.social-link:hover{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 20%,var(--panel))}a.social-link:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 /* Optional visitor cards: shared in the viewer and manual edition. */
 .info-tab-button[hidden]{display:none!important}
 .visitor-links{display:grid;gap:.7rem;text-align:left}

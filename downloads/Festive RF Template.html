@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.7.0 / 18 October 2026
+<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.8.0 / 18 October 2026
      Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
      Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
      No custom JavaScript. Install in a separate RF draft before going live.
@@ -1129,7 +1129,7 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
 .los-song-list > .cell-vote-playlist:is(:not(*)) + .cell-vote,
       .cell-vote-row:has(> .cell-vote-playlist:is(:not(*))) {
         --los-new-display: grid;
-        --los-new-sash: "NEW";
+        --los-new-sash:"NEW";--los-new-sash-image:var(--los-new-corner-art);--los-new-moving-label:"NEW; Moving spotlights";
         --los-new-vote-height: var(--los-new-vote-card-height, 8.5rem);
         --los-new-text-gutter: 3rem;
         --los-new-vote-align: center;
@@ -1830,6 +1830,7 @@ body:has(#show-options.hide-queue-artists) .playing-now > img { grid-row:1; }
       .music-tab-button[hidden] { display:none !important; }
       .location-code-input > * { max-width:100%; }
       
+.social-card>p{white-space:pre-line}.social-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem}.social-link{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:48px;min-width:48px;max-width:100%;box-sizing:border-box;padding:.65rem .9rem;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:999px;background:color-mix(in srgb,var(--gold) 10%,var(--panel));color:var(--text);text-decoration:none;font-weight:700}.social-link i{font-size:24px;color:var(--gold);flex-shrink:0}.social-link span{overflow-wrap:anywhere;min-width:0}a.social-link:hover{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 20%,var(--panel))}a.social-link:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 /* Optional visitor cards: shared in the viewer and manual edition. */
 .info-tab-button[hidden]{display:none!important}
 .visitor-links{display:grid;gap:.7rem;text-align:left}
@@ -1963,6 +1964,7 @@ When stopped, please dim headlights and leave running lights on.</p>
         <!-- EXTRA HOME CARD: optional visitor information. -->
         
         <section class="section-card compact seasonal-countdown christmas-countdown"><h2>Countdown to Christmas</h2><div class="countdownContainer"><div class="days-count"><strong id="to-christmas-days">--</strong><span>days to go</span></div></div></section>
+
       </div>
       <div class="content__body tab-green" id="music-panel" data-tab-panel="music">
         <div class="music-filter-targets"><span id="songs-all"></span><span class="category-filter-target" id="songs-category-1"></span><span class="category-filter-target" id="songs-category-2"></span><span id="songs-new"></span></div>
@@ -2021,6 +2023,7 @@ When stopped, please dim headlights and leave running lights on.</p>
       </div>
       <div class="content__body tab-yellow" id="info-panel" data-tab-panel="info">
         <div class="section-card info-intro"><h2>Show Info</h2><p>Welcome to Your Christmas Show. Here is how to listen and join in.</p></div>
+
         
 <!-- DONATIONS: repeated in Home (three states), Support and Info. -->
           <a class="section-card compact donation-card compact-live share-donation" href="#support-panel" target="_blank" rel="noopener noreferrer" aria-label="Donate to Your chosen charity">

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.8.0 — Song badges and social links — 18 October 2026
+
+### Shared customiser
+
+- Renamed the header action to **Set up this design** and the template chooser action to **Change template**. Setup identifies the current template and season without repeating selection.
+- Added optional **Moving spotlights** badges in Jukebox and Voting. Shared **Song badges** controls and the import picker offer independent **NEW** and **Moving heads** choices, with separate manual lists and selection counts. Songs can show the existing NEW sash and a separate Moving spotlights pill together. Existing exact-name assignments are retained.
+- Added **How to export from RF** help beside the catalogue controls and in Song badges, with short CSV steps and links to RF.
+- Added a selectable artwork icon for songs without a category, retaining the music-note default.
+- Added up to eight ordered social links with icons, visible labels, optional heading/message and independent main-screen and Info placements. Added Facebook, Instagram and TikTok icons, with a Social links picker group.
+- Included the new choices in saved designs, backups, Undo/Redo and Copy show details, with compatible defaults for existing designs.
+- Updated setup, song and social-link guidance and rebuilt both manual download packages.
+
 ## 1.7.0 — Compact console and shared editing — 18 October 2026
 
 ### Shared customiser
