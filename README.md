@@ -18,11 +18,11 @@ Choose a season and template, click a preview to explore it in a centred phone, 
 
 Under **Music → Queue information & votes**, optionally show the maximum queue length above the song choices. RF supplies the value; 0 means unlimited. The local preview uses an illustrative limit of 10.
 
-Under **Site setup → Menu & decoration** (or **Menu & seasonal details**), choose icons for navigation, links and messages. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
+Under **Site setup → Menu & decoration** (or **Menu & seasonal details**), choose icons for navigation, links and messages. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media, Social links and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
 
 ## Choose a template
 
-The customiser now offers **Lights on Sunset** and **Compact console**. Use **Choose template** to compare seasonal previews. Existing designs resume automatically. Compact console keeps a separate Christmas and Halloween design; Lights on Sunset keeps its established theme behaviour.
+The customiser now offers **Lights on Sunset** and **Compact console**. Use **Change template** to compare seasonal previews. Existing designs resume automatically. Compact console keeps a separate Christmas and Halloween design; Lights on Sunset keeps its established theme behaviour.
 
 **Undo / Redo** works across templates, with separate history for each design during the current session. Typing in a text field keeps native text undo. Reloading clears editor history, but keeps saved settings. **Copy show details** reviews selected content groups before applying them to another design.
 
@@ -38,7 +38,7 @@ Choose **Set up my show** on the template selection screen for a short wizard: Y
 
 Choose **Straight to editor** to skip setup. On the final review step, optionally tick **Take a quick tour after setup** before applying. Returning users resume their saved design directly.
 
-Reopen **Setup wizard** from the header at any time. It starts with your current settings and only saves when you choose **Apply & open editor**. Back keeps your answers; Skip keeps that step’s previous settings; Cancel changes nothing. Website dates and listening text do not change FPP or activate PulseMesh.
+Reopen **Set up this design** from the header at any time. The wizard shows the current template and season, starts with your current settings, and only saves when you choose **Apply & open editor**. Back keeps your answers; Skip keeps that step’s previous settings; Cancel changes nothing. Website dates and listening text do not change FPP or activate PulseMesh.
 
 Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**, or **Detailed setup help**. The tour returns you to where you started without changing your settings. The downloaded quick-start guide works offline, with screenshots included.
 
@@ -53,12 +53,13 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 | Area | What you can change |
 |---|---|
 | Home (Lights on Sunset) | Welcome, visitor guidance, notices, extra information, off-air video and countdown |
-| Music | Song artwork, Now Playing artwork, NEW sashes, categories, queue wording and counters. Compact console also keeps its welcome, notice, off-air video and countdown here. Its visitor guidance is under Info. |
+| Music | Song artwork, Now Playing artwork, NEW sashes, Moving heads badges, categories, queue wording and counters. Compact console also keeps its welcome, notice, off-air video and countdown here. Its visitor guidance is under Info. |
 | Support | Cards for charities, creators and thank-yous, with optional images and main-screen/Info links |
 | Info | Introduction, YouTube, Quick Facts, FAQs and resources. Compact console also keeps extra-information cards and playlists here; Lights on Sunset’s playlists are edited under Music. |
+| Site setup | Show identity, dates, listening, colours, menu and optional social links |
 | Song messages | Request and voting titles and short explanations, with local preview buttons |
 
-Under **Music → Song appearance**, choose **Category icons** to replace song covers with an icon for each category. Use the shared picker for trees, snowmen, ghosts or other icons; songs without a category and unchosen categories use a music note. Match category names and order to RF under **Categories**. Icons work even with filter buttons hidden. **Show album artwork in Now Playing** is independent; **No artwork** makes the song list text-only. Two artist-name switches independently control the song list and Now Playing / Up Next / queue. Both start on; missing artists leave no blank artist line.
+Under **Music → Song appearance**, choose **Category icons** to replace song covers with an icon for each category. Use the shared picker for trees, snowmen, ghosts or other icons; choose **Songs without a category** for the fallback icon. Its default is a music note, as is any category without a chosen icon. Match category names and order to RF under **Categories**. Icons work even with filter buttons hidden. **Show album artwork in Now Playing** is independent; **No artwork** makes the song list text-only. Two artist-name switches independently control the song list and Now Playing / Up Next / queue. Both start on; missing artists leave no blank artist line.
 
 Selecting a page opens it in the preview. Shared show details, colours, schedule and listening options live in **Site setup**. Start with the features you need; optional extras can stay off.
 
@@ -73,6 +74,10 @@ Extra information supports up to five cards, each with a heading, message, optio
 Visitor guidance can appear above the header, below the header or below On air. Main-screen guidance appears only while on air. Compact console also keeps the same message on Info, including off air. Christmas and Halloween have separate saved Compact console designs; use Copy show details to reuse information.
 
 Header appearance sits directly below Show name in setup and the editor. Compact console can use a styled name, an icon above the name or your own logo. Setup icon choices are saved only when you apply setup.
+
+### Social links
+
+Under **Site setup → Social links**, add up to eight links with an icon and visible label, then arrange their order. Show them on the main screen, Info or both. The main screen is Home in Lights on Sunset and Music in Compact console. Heading and message are optional. Links open in a new tab; this section starts off and retains your entries when hidden. Facebook, Instagram, YouTube and TikTok icons are in **Social links** in the shared picker.
 
 ### 3. Check the preview
 
@@ -91,6 +96,8 @@ Use **Import RF song CSV** to choose a file and review its songs before importin
 Your CSV stays in this browser. The export uses RF's live catalogue, and your settings backup does not contain the imported CSV. Keep the original file. [Import and category instructions](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#catalogue).
 
 ![The tour explaining how detected categories become visitor filter buttons](docs/images/category-tour.jpg)
+
+Under **Music → Moving heads**, choose songs from your imported catalogue or enter exact RF sequence names manually. Apply adds a **Moving heads** badge to their song-list cards in Jukebox and Voting. Songs also marked NEW show **NEW · Moving heads** together; NEW-only songs retain their sash. This does not change categories, requests or which lights run. Cancel, X and Escape discard pending badge choices.
 
 ### 5. Keep a settings backup
 

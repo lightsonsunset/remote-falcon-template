@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- COMPACT CONSOLE TEMPLATE / customiser edition 1.7.0 / 18 October 2026
+<!-- COMPACT CONSOLE TEMPLATE / customiser edition 1.8.0 / 18 October 2026
      Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
      Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
      No custom JavaScript. Install in a separate RF draft before going live.
@@ -47,6 +47,7 @@ body:has(#show-options.cc-halloween.cc-decorated) .cc-menu::after{bottom:-2px;ri
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cc-motion .cc-hanger,.cc-motion .cc-lights span{animation:none}}
 @supports not selector(:has(*)){.music-filter{display:none}.compact-console .content__body{display:block}}
 
+.social-card>p{white-space:pre-line}.social-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem}.social-link{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:48px;min-width:48px;max-width:100%;box-sizing:border-box;padding:.65rem .9rem;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:999px;background:color-mix(in srgb,var(--gold) 10%,var(--panel));color:var(--text);text-decoration:none;font-weight:700}.social-link i{font-size:24px;color:var(--gold);flex-shrink:0}.social-link span{overflow-wrap:anywhere;min-width:0}a.social-link:hover{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 20%,var(--panel))}a.social-link:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 /* Optional visitor cards: shared in the viewer and manual edition. */
 .info-tab-button[hidden]{display:none!important}
 .visitor-links{display:grid;gap:.7rem;text-align:left}
@@ -120,6 +121,7 @@ body:has(#show-options.compact-console) .cc-menu:not(:has(a[data-tab-target="sup
 <div class="content__subitem music-picker-section" {playlist-voting-dynamic-container}><section class="section-card music-request-card"><h2>Vote for the Next Song</h2><p class="request-copy">Tap your favourite. The song with the most votes plays next.</p><div {location-code-dynamic-container}><div class="location-code-card"><h3>Display access code</h3><p>Enter the code shown at the display, then choose a song.</p><div class="location-code-input">{LOCATION_CODE}</div></div></div><div class="music-filter"><a href="#songs-all">All</a><a class="category-filter-link" href="#songs-category-1">Halloween</a><a class="category-filter-link" href="#songs-category-2">Party favourites</a><a href="#songs-new">New this year</a></div><div id="voting_playlists_container" class="los-song-list">{PLAYLISTS}</div></section><section class="section-card cc-schedule"><h2>Show Dates</h2><p>To be announced</p><h3>Show Hours</h3><div class="cc-date-list"><div class="cc-date-row"><div class="cc-date-tile"><small>WEEKLY</small><strong>SUN–THU</strong></div><div><strong class="cc-hours">To be announced</strong><span class="cc-day">Sunday–Thursday</span></div></div><div class="cc-date-row"><div class="cc-date-tile"><small>WEEKLY</small><strong>FRI–SAT</strong></div><div><strong class="cc-hours">To be announced</strong><span class="cc-day">Friday–Saturday</span></div></div><div class="cc-date-row"><div class="cc-date-tile"><small>OCT</small><strong>31</strong></div><div><strong class="cc-hours">To be announced</strong><span class="cc-day">Halloween night</span></div></div></div></section></div>
 
 <a class="section-card donation-card share-donation" href="#support-panel" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i><p><strong>Support Your chosen charity this Halloween.</strong><span class="tap-note">Tap to donate</span></p></a>
+
 </div>
       <div class="content__body tab-blue" id="support-panel" data-tab-panel="support">
         <div class="section-card support-intro"><h2>A Little Kindness, a Little Magic</h2><p>Thank you for being part of the show. Your smiles, kind words and consideration for our neighbours help make this a special time of year.</p></div>
@@ -134,6 +136,7 @@ body:has(#show-options.compact-console) .cc-menu:not(:has(a[data-tab-target="sup
       </div>
       <div class="content__body tab-yellow" id="info-panel" data-tab-panel="info">
         <div class="section-card info-intro"><h2>Show Info</h2><p>Welcome to Your Halloween Show. Here is how to listen and join in.</p></div>
+
         <section id="info-schedule" class="section-card cc-schedule"><h2>Show Dates</h2><p>To be announced</p><div class="cc-date-list"><div class="cc-date-row"><div class="cc-date-tile"><small>WEEKLY</small><strong>SUN–THU</strong></div><div><strong class="cc-hours">To be announced</strong><span class="cc-day">Sunday–Thursday</span></div></div><div class="cc-date-row"><div class="cc-date-tile"><small>WEEKLY</small><strong>FRI–SAT</strong></div><div><strong class="cc-hours">To be announced</strong><span class="cc-day">Friday–Saturday</span></div></div><div class="cc-date-row"><div class="cc-date-tile"><small>OCT</small><strong>31</strong></div><div><strong class="cc-hours">To be announced</strong><span class="cc-day">Halloween night</span></div></div></div></section>
 
 

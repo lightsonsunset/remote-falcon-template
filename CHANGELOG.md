@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0 — Song badges and social links — 18 October 2026
+
+### Shared customiser
+
+- Renamed the header action to **Set up this design** and the template chooser action to **Change template**. Setup identifies the current template and season without repeating selection.
+- Added optional **Moving heads** badges using the imported-song picker or exact sequence names. The badge works in Jukebox and Voting and combines with NEW when both are selected.
+- Added a selectable artwork icon for songs without a category, retaining the music-note default.
+- Added up to eight ordered social links with icons, visible labels, optional heading/message and independent main-screen and Info placements. Added Facebook, Instagram and TikTok icons, with a Social links picker group.
+- Included the new choices in saved designs, backups, Undo/Redo and Copy show details, with compatible defaults for existing designs.
+- Updated setup, song and social-link guidance and rebuilt both manual download packages.
+
 ## 1.7.0 — Compact console and shared editing — 18 October 2026
 
 ### Shared customiser

@@ -1,5 +1,15 @@
 # Verification and compatibility
 
+## Song badges and social links — local verification, 18 October 2026
+
+- All 124 Node tests passed, including older-backup defaults, independent seasonal settings, shared copy groups, Undo/Redo, safe links and CSS escaping for exact sequence names.
+- Six browser suites passed 2,782 assertions: the new shared-song/social editor suite (292), the expanded uncategorised-song stylesheet fixture (1,176), setup (56), category artwork (1,102), registered templates (82) and release readiness (74). Both templates and seasons were checked at 320px, 390px and desktop widths, with local Jukebox/Voting and on/off-air layouts.
+- The new editor checks cover current-design setup context, icon selection, independent NEW/Moving heads selections, pending-choice cancellation, social add/reorder/remove and validation, save/reload and Undo/Redo. The stylesheet fixture covers badges with and without artwork, grouped and ungrouped songs, unavailable hints, category/NEW filters and voting tallies. A Compact Voting badge overlap found during testing was corrected by keeping the badge in the card layout.
+- Visually inspected the two Christmas layouts with combined badges and labelled Facebook, Instagram, YouTube and TikTok links. The social row wraps on phones and retains accessible labels and tap areas; exported links use HTTPS and open separately. Optional features start disabled and the uncategorised icon retains its music-note default.
+- Rebuilt the offline README, four canonical starters and both manual ZIPs for 1.8.0. Package checks verified exact contents, CRCs, offline links, attribution and licences: 40 files for Lights on Sunset and 27 for Compact console. Exports contain no preview scripts, demo catalogue or loopback URLs.
+
+These are local editor, illustrative-preview and pure stylesheet checks. They do not establish a new hosted RF request/voting/playback rehearsal. No RF/FPP page, setting, mode, request, vote or schedule was changed. Real-device and hosted behaviour still require separate checks when authorised.
+
 ## Final local release audit — 18 October 2026
 
 - All 115 Node tests and 23 browser suites passed, totalling 9,080 browser assertions. Coverage includes both templates and seasons, Jukebox/Voting and on/off-air local previews, narrow layouts, category/NEW navigation, uncategorised songs, artwork and artist visibility, setup drafts, the tour, history, extra cards, guidance, backups, validation and exports. Empty-import guidance and the real browser clipboard-permissions fallback also passed separately.

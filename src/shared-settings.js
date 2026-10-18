@@ -1,3 +1,4 @@
+import {songBadgeCSS} from './song-badges.js';
 import {artworkDefaults,checkedArtwork,artworkCSS,songArtworkMode,renameCategoryArtwork} from './song-artwork.js';
 import {checkedInformationCards,validateInformation,renderInformation,informationCSS} from './information-cards.js';
 import {guidanceDefaults,guidanceTokens} from './visitor-guidance.js';
@@ -20,7 +21,7 @@ const starterFAQ=[
   {kind:'text',question:'How do you build a show like this?',answer:'Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.'}
 ];
 export const defaults = {
-  ...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,
+  ...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,movingHeadNames:'',
   name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
   logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,showAlbumArtwork:true,showSongArtists:true,showQueueArtists:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,showQueueLimit:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
@@ -48,7 +49,7 @@ export function changeTheme(input,theme){
   s.schedule=s.schedule.map(r=>({...r,day:r.day===themes[s.theme].holiday?themes[theme].holiday:r.day}));
   s.theme=theme;return s;
 }
-export const namesOf = settings => [...new Set(settings.newNames.split(/\r?\n/).filter(s=>s.trim()))];
+export const namesOf = (settings,key='newNames') => [...new Set((settings[key]||'').split(/\r?\n/).filter(s=>s.trim()))];
 export const escapeHTML = value => String(value).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const escapeCSS = value => String(value).replace(/[\\"\n\r\f<>\u0000]/g, c=>c==='\u0000'?'\\fffd ':`\\${c.codePointAt(0).toString(16)} `);
 export function isHTTPS(value) {
@@ -92,7 +93,7 @@ export function validate(s) {
   });
   s.schedule.forEach((r,i)=>{for(const key of ['day','hours']) if(!r[key].trim())errors[`schedule.${i}.${key}`]='Please complete this row, or remove it.';});
   for(const [key,v] of Object.entries(s.colours)) if(!/^#[a-f\d]{6}$/i.test(v)) errors[`colours.${key}`]='Choose a six-digit hex colour.';
-  if (namesOf(s).length>200) errors.newNames='Use at most 200 sequence names.';
+  for(const key of ['newNames','movingHeadNames'])if(namesOf(s,key).length>200)errors[key]='Use at most 200 sequence names.';
   return errors;
 }
 export function checkedSettings(input) {
@@ -103,7 +104,7 @@ export function checkedSettings(input) {
   s.extraInfoCards=checkedInformationCards(input.extraInfoCards);
   for(const [k,v] of Object.entries(s)) {
     if ([...Object.keys(artworkDefaults),'extraInfoCards','icons','schedule','colours','categoryNames','hiddenCategories','faq','copy','donationRecipients',...Object.keys(listDefinitions)].includes(k)) continue;
-    if(['showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
+    if(['movingHeadNames','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
     if(typeof input[k]!==typeof v) throw Error(`Invalid or missing setting: ${k}.`);
     if(typeof v==='string' && (input[k].length>20000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(input[k]))) throw Error(`Invalid text in ${k}.`);
     s[k]=input[k];
@@ -323,6 +324,7 @@ function viewerOptionsCSS(s){return [
   nameStyleCSS(s),
   s.homeCard&&informationCSS,
   artworkCSS(s),
+  songBadgeCSS(s,escapeCSS),
   !s.showMenuLabels&&'.los-menu__label { display:none; } .los-menu .los-menu__item i { font-size:24px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1; }',
   !s.showSupportTab&&`
 /* Hide only the menu entry; retain Support for direct links and editor preview. */

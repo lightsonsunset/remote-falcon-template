@@ -2,7 +2,7 @@
 import {iconLibrary,iconGlyphs} from './icons.js';
 // Null inherits the released checkbox. Older settings and API callers keep both
 // artwork areas as before; explicit new choices are independent of that value.
-export const artworkDefaults={songArtwork:null,showNowPlayingArtwork:null,categoryIcons:{}};
+export const artworkDefaults={songArtwork:null,showNowPlayingArtwork:null,categoryIcons:{},uncategorisedIcon:'music'};
 export const artworkChoices=[['album','Album artwork'],['category','Category icons'],['none','No artwork']];
 export const songArtworkMode=s=>s.songArtwork??(s.showAlbumArtwork?'album':'none');
 export const nowPlayingArtwork=s=>s.showNowPlayingArtwork??s.showAlbumArtwork;
@@ -11,11 +11,13 @@ export function checkedArtwork(input){
  const songArtwork=input.songArtwork??null,showNowPlayingArtwork=input.showNowPlayingArtwork??null;
  if(songArtwork!==null&&!artworkChoices.some(([id])=>id===songArtwork))throw Error('Choose supported song-list artwork.');
  if(showNowPlayingArtwork!==null&&typeof showNowPlayingArtwork!=='boolean')throw Error('Invalid Now Playing artwork choice.');
+ const uncategorisedIcon=input.uncategorisedIcon??'music';
+ if(typeof uncategorisedIcon!=='string'||!Object.hasOwn(iconLibrary,uncategorisedIcon))throw Error('Choose a supported uncategorised-song icon.');
  const icons=input.categoryIcons===undefined?{}:input.categoryIcons;
  if(!icons||typeof icons!=='object'||Array.isArray(icons)||Object.keys(icons).length>12)throw Error('Use up to 12 category icons.');
  const entries=Object.entries(icons);
  for(const [name,id] of entries)if(name.length>100||/[\u0000-\u001f]/.test(name)||typeof id!=='string'||!Object.hasOwn(iconLibrary,id))throw Error('Choose a supported category icon.');
- return {songArtwork,showNowPlayingArtwork,categoryIcons:Object.fromEntries(entries.filter(([name])=>input.categoryNames?.includes(name)))};
+ return {songArtwork,showNowPlayingArtwork,uncategorisedIcon,categoryIcons:Object.fromEntries(entries.filter(([name])=>input.categoryNames?.includes(name)))};
 }
 export function renameCategoryArtwork(s,oldName,newName){
  if(oldName===newName||!Object.hasOwn(s.categoryIcons,oldName))return;
@@ -54,7 +56,7 @@ body:has(#show-options.hide-queue-artists) .playing-now > img { grid-row:1; }
  if(mode==='category')rules.push(`
 /* Decorative category icons; NEW sashes continue to use ::after. */
 .content__body { --los-new-vote-card-height:8.5rem; }
-.los-song-list { ${glyphCSS('music')} }
+.los-song-list { ${glyphCSS(s.uncategorisedIcon||'music')} }
 .content__body .los-song-list :is(.jukebox-list,.cell-vote-playlist) { padding-left:72px;min-height:72px; }
 .content__body .cell-vote-row > .cell-vote-playlist { min-height:var(--los-new-vote-height,72px); }
 .content__body .los-song-list :is(.jukebox-list,.cell-vote-playlist)::before {
