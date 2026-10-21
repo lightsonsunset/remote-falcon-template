@@ -136,7 +136,7 @@ function refresh(options={}){
   $('export-errors').hidden=!errorCount;
   $('export-status').classList.toggle('export-blocked',!!errorCount);
   $('settings').querySelectorAll('details[data-section]').forEach(d=>d.querySelector('.section-error').hidden=!d.querySelector('[aria-invalid="true"]'));
-  document.querySelectorAll('[data-editor-group]').forEach(b=>{const count=editorGroups[b.dataset.editorGroup].sections.reduce((n,id)=>n+$('settings').querySelector('[data-section="'+id+'"]').querySelectorAll('[aria-invalid="true"]').length,0);const badge=b.querySelector('.group-alert');badge.hidden=!count;badge.textContent=count;badge.setAttribute('aria-label',count+' fields need attention');});
+  document.querySelectorAll('[data-editor-group]').forEach(b=>{const count=editorGroups[b.dataset.editorGroup].sections.reduce((n,id)=>n+($('settings').querySelector('[data-section="'+id+'"]')?.querySelectorAll('[aria-invalid="true"]').length||0),0);const badge=b.querySelector('.group-alert');badge.hidden=!count;badge.textContent=count;badge.setAttribute('aria-label',count+' fields need attention');});
   const low=['text','secondary','gold'].filter(k=>contrast(settings.colours[k],settings.colours.card)<4.5);
   $('colour-advice').textContent=low.length?'Readability check: '+low.map(k=>({text:'main text',secondary:'secondary text',gold:'accent colour'})[k]).join(', ')+' has low contrast on your cards. Try a lighter colour or darker cards.':'Text and accent colours have good contrast on your cards.';
   const valid=!Object.keys(errors).length;
@@ -372,7 +372,7 @@ $('confirm-load-settings').addEventListener('click',()=>{
 });
 $('load-settings').addEventListener('change',async event=>{
   const file=event.target.files[0];if(!file)return;
-  try{if(file.size>1000000)throw Error('That settings file is too large.');const text=await file.text(),next=parseBackup(text);pendingSettings={text,backup:next};const t=templateById(next.template);$('load-settings-title').textContent='Load '+t.name+' settings?';$('load-settings-description').textContent='Load “'+file.name+'” into '+t.name+(t.separateSeasons?' — both Christmas and Halloween designs':'')+'? This replaces those settings. Other templates and imported catalogues stay as they are.';$('load-settings-dialog').showModal();$('cancel-load-settings').focus();setError('');}
+  try{if(file.size>1000000)throw Error('That settings file is too large.');const text=await file.text(),next=parseBackup(text);pendingSettings={text,backup:next};const t=templateById(next.template);$('load-settings-title').textContent='Load '+t.name+' settings?';$('load-settings-description').textContent='Load “'+file.name+'” into '+t.name+(t.separateSeasons?' — '+Object.keys(next.designs).map(season=>themes[season].name).join(', ')+' designs':'')+'? This replaces those settings. Other templates and imported catalogues stay as they are.';$('load-settings-dialog').showModal();$('cancel-load-settings').focus();setError('');}
   catch(err){setError(err.message);}
   event.target.value='';
 });
@@ -421,7 +421,7 @@ const previewChromeObserver=new ResizeObserver(fitPreview);previewChromeObserver
 let sourceGeneration=0,startChosenWizard=()=>{},copySources=[];
 const sources=new Map();
 async function templateSource(t){if(!sources.has(t.id)){const response=await fetch(t.source);if(!response.ok)throw Error('Template could not be loaded. Try again.');sources.set(t.id,await response.text());}return sources.get(t.id);}
-function designUI(){const t=designStore.template;$('active-design').textContent=t.name+' · '+themes[settings.theme].name;$('reset-dialog').querySelector('h2').textContent='Reset '+t.name+' · '+themes[settings.theme].name+' to its defaults?';$('reset-settings').textContent='Reset to defaults';$('save-settings').textContent=t.separateSeasons?'Back up both seasons':'Download settings backup';$('copy-design-details').disabled=designStore.all().length===0;$('manual-template').href='downloads/'+t.package;$('manual-template').textContent='↓ Download '+t.name+' + instructions';}
+function designUI(){const t=designStore.template;$('active-design').textContent=t.name+' · '+themes[settings.theme].name;$('reset-dialog').querySelector('h2').textContent='Reset '+t.name+' · '+themes[settings.theme].name+' to its defaults?';$('reset-settings').textContent='Reset to defaults';$('save-settings').textContent=t.separateSeasons?'Back up all themes':'Download settings backup';$('copy-design-details').disabled=designStore.all().length===0;$('manual-template').href='downloads/'+t.package;$('manual-template').textContent='↓ Download '+t.name+' + instructions';}
 async function switchDesign(id,season){
  const generation=++sourceGeneration;histories.endGroups();clearTimeout(updateTimer);
  const next=designStore.select(id,season);settings=next.settings;catalogue=next.catalogue;catalogueSource=catalogue?'imported':'samples';editorGroups=designStore.template.groups;editorGroup='setup';source='';$('editor-groups')?.remove();$('editor-area-help')?.remove();histories.seed(historyKey(),snapshot());history();form();historyUI();designUI();refresh();preview.navigate(designStore.template.landing);

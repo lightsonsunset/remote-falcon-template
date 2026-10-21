@@ -34,9 +34,21 @@ run.onclick=async()=>{run.disabled=true;results.replaceChildren();try{
   const first=adapter.update(t.render(source,s),s,{air:false,mode:'voting',templateId:t.id,landing:t.landing});
   await new Promise(r=>setTimeout(r,5));s.welcome+=' changed';const second=adapter.update(t.render(source,s),s,{air:false,mode:'voting',templateId:t.id,landing:t.landing});await Promise.all([first,second]);
   check(t.id+' '+width+' overlapping edits retain page and scroll',frame.contentWindow.location.hash==='#info-listening'&&frame.contentWindow.scrollY===frameY&&frame.contentDocument.getElementById('info-panel').scrollTop===panelY&&scrollY===outerY);
+  s.fm=true;await adapter.update(t.render(source,s),s,{air:true,mode:'jukebox',templateId:t.id,landing:t.landing});
+  // In-frame links must move the viewer, never its surrounding editor/scrollers.
+  const navigationChecks=[],bounds=()=>[scrollX,scrollY,frame.getBoundingClientRect().top];
+  for(const panel of ['music','support','info','music']){
+   const before=bounds();frame.contentDocument.querySelector('[data-tab-target="'+panel+'"]').click();
+   await new Promise(r=>setTimeout(r,120));
+   navigationChecks.push([panel,frame.contentWindow.location.hash==='#'+panel+'-panel'&&bounds().every((n,i)=>Math.abs(n-before[i])<1)]);
+  }
+  const nested=frame.contentDocument.querySelector('a[href="#info-listening"]');
+  const beforeNested=bounds();nested.click();await new Promise(r=>setTimeout(r,120));
+  navigationChecks.push(['listening link',frame.contentWindow.location.hash==='#info-listening'&&bounds().every((n,i)=>Math.abs(n-beforeNested[i])<1)]);
+  for(const [panel,ok] of navigationChecks)check(t.id+' '+theme+' '+width+' '+panel+' link preserves editor viewport',ok);
   adapter.navigate('music');await new Promise(r=>setTimeout(r,80));frame.contentDocument.querySelector('[data-tab-target="info"]').click();await new Promise(r=>setTimeout(r,80));
-  frame.contentWindow.history.back();await new Promise(r=>setTimeout(r,120));check(t.id+' '+width+' Back retains native preview navigation',frame.contentWindow.location.hash==='#music-panel');
-  frame.contentWindow.history.forward();await new Promise(r=>setTimeout(r,120));check(t.id+' '+width+' Forward retains native preview navigation',frame.contentWindow.location.hash==='#info-panel');
+  const beforeBack=bounds();frame.contentWindow.history.back();await new Promise(r=>setTimeout(r,120));check(t.id+' '+width+' Back retains preview navigation without moving editor',frame.contentWindow.location.hash==='#music-panel'&&bounds().every((n,i)=>Math.abs(n-beforeBack[i])<1));
+  const beforeForward=bounds();frame.contentWindow.history.forward();await new Promise(r=>setTimeout(r,120));check(t.id+' '+width+' Forward retains preview navigation without moving editor',frame.contentWindow.location.hash==='#info-panel'&&bounds().every((n,i)=>Math.abs(n-beforeForward[i])<1));
   field.remove();gap.remove();
   s.neighbourTitle='';s.neighbourText='';await adapter.update(t.render(source,s),s,{air:true,mode:'jukebox',templateId:t.id,landing:t.landing,startAtLanding:true});check(t.id+' '+width+' empty guidance removed',!frame.contentDocument.querySelector('.visitor-guidance'));
  }

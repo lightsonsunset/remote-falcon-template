@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.10.0 — Thanksgiving and Australia Day — 22 October 2026
+
+### Shared customiser
+
+- Added Thanksgiving and Australia Day to both templates, with seasonal palettes, editable starter wording, illustrated headers and four manual starters per layout. Existing Christmas/Halloween designs and older backups remain compatible.
+- Thanksgiving includes turkey and pumpkin-pie artwork, cream player and listening cards, forest-green information cards and cranberry support cards. Optional falling leaves cover the screen without blocking taps and respect reduced motion.
+- Australia Day includes flag bunting, BBQ, cricket and beach artwork, blue player cards, green song choices, gold listening cards and Aussie starter wording. Personal wording and colours retain priority.
+- Added independent top-image and lower-corner artwork choices for both new themes, separate navbar details and gentle-animation controls. Hiding artwork removes its reserved space, and saved visibility choices are preserved.
+- Made sidebar theme choices more compact and grouped the template chooser's theme cards on a softly tinted background.
+- Kept the editor and preview frame steady when following preview links or using Back/Forward.
+- Refreshed the guides, screenshots and both manual packages. Viewer changes require freshly exported HTML in RF; updating the customiser does not change an installed page.
+
+### Lights on Sunset
+
+- Added a turkey Home icon for Thanksgiving and a Southern Cross for Australia Day, preserving custom icon choices.
+
+### Compact console
+
+- Added separately saved Thanksgiving and Australia Day designs with matching colour presets. Loading an older two-theme backup preserves newer themed designs.
+- Kept the navbar and page content steady when switching between longer pages and the shorter Support page.
+- Kept Voting song cards full-width with a consistent, centred vote column when RF supplies its inline row layout. The NEW marker stays inside the card, clear of the tally, without adding card height; Moving spotlights remains separate. These fixes apply to every Compact theme.
+
 ## 1.9.1 — Current screenshots and setup guidance — 18 October 2026
 
 ### Shared customiser

@@ -1,15 +1,16 @@
 // One editor-only picker for template roles and individual resource/playlist rows.
-import {iconLibrary,iconRoles,defaultIcon,availableIconRoles,iconKeywords} from './icons.js';
-export function iconButton(id,attributes,label){const [name,css]=iconLibrary[id];return `<button type="button" class="icon-choice-button" ${attributes} aria-label="Choose ${label.replace(/ icon$/i,'')} icon"><i class="${css}" aria-hidden="true"></i><span>${name}</span><small>Choose icon</small></button>`;}
+import {iconLibrary,iconRoles,defaultIcon,availableIconRoles,iconKeywords,themedDefaultIcon} from './icons.js';
+export function iconButton(id,attributes,label,appearance){const [name,css]=appearance||iconLibrary[id];return `<button type="button" class="icon-choice-button" ${attributes} aria-label="Choose ${label.replace(/ icon$/i,'')} icon"><i class="${css}" aria-hidden="true"></i><span>${name}</span><small>Choose icon</small></button>`;}
 export function iconSettings(s,compact,requestedRoles,title='Icons'){
  const roles=availableIconRoles(compact).filter(([role])=>requestedRoles.includes(role));
  if(!roles.length)return '';
- return `<details class="copy-group viewer-icons" data-copy-group="icons-${requestedRoles.join('-')}"><summary>${title}</summary><div class="copy-fields icon-role-list">${roles.map(([role,[label]])=>`<div class="icon-role"><span>${label}</span>${iconButton(s.icons?.[role]||defaultIcon(role,s,compact),`data-icon-role="${role}"`,label)}<small class="hint">${s.icons?.[role]?'Custom choice':'Template default'}</small></div>`).join('')}</div></details>`;
+ return `<details class="copy-group viewer-icons" data-copy-group="icons-${requestedRoles.join('-')}"><summary>${title}</summary><div class="copy-fields icon-role-list">${roles.map(([role,[label]])=>`<div class="icon-role"><span>${label}</span>${iconButton(s.icons?.[role]||defaultIcon(role,s,compact),`data-icon-role="${role}"`,label,s.icons?.[role]?null:themedDefaultIcon(role,s))}<small class="hint">${s.icons?.[role]?'Custom choice':'Template default'}</small></div>`).join('')}</div></details>`;
 }
 // Presentation groups only: saved icon IDs and the shared allowlist stay unchanged.
 export const iconCategories=[
  {id:'christmas',name:'Christmas',icons:['tree','star','snowflake','snowman','candyCane','holly','sleigh','bell','gift','gifts','mitten','icicles','cookie']},
  {id:'halloween',name:'Halloween',icons:['ghost','hat','spider','skull','skullCrossbones','moon','broom','cat','crow','bone','flask','dungeon','mask']},
+ {id:'seasons',name:'Harvest & summer',icons:['leaf','sun']},
  {id:'lights',name:'Lights & magic',icons:['lights','wand','bolt','fire']},
  {id:'music',name:'Music & media',icons:['music','headphones','radio','volume','player','spotify','apple','video','camera']},
  {id:'social',name:'Social links',icons:['facebook','instagram','youtube','tiktok']},

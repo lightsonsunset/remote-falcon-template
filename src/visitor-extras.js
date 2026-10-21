@@ -1,3 +1,4 @@
+import {hasCountdown} from './themes.js';
 // Optional visitor content. Shared by the canonical renderer and editor, never demo data.
 export {iconLibrary as linkIcons} from './icons.js';
 import {iconLibrary as linkIcons} from './icons.js';
@@ -78,7 +79,7 @@ export function renderExtras(s,e,isHTTPS,c){
   QUICK_FACTS:s.quickFacts&&s.facts.length?`<section class="section-card info-card quick-facts"><h2>${e(s.factsTitle)}</h2><div class="visitor-facts">${s.facts.map(f=>`<div><strong>${e(f.value||'—')}</strong><span>${e(f.label)}</span></div>`).join('')}</div></section>`:'',
   RESOURCES:s.resourcesEnabled&&s.resources.length?`<section class="section-card info-card visitor-resources"><h2>${e(s.resourcesTitle)}</h2>${s.resourcesText?`<p>${e(s.resourcesText)}</p>`:''}${links(s.resources)}</section>`:'',
   ABOUT_HIDDEN:s.musicAbout?'':'hidden',
-  COUNTDOWN:on?`<section class="section-card compact seasonal-countdown ${s.theme}-countdown${full?' countdown-full':''}"><h2>${c.COUNTDOWN_TITLE}</h2><div class="countdownContainer">${units.map(([unit,label])=>`<div class="days-count"><strong id="to-${s.theme}-${unit}">--</strong><span>${label}</span></div>`).join('')}</div></section>`:'',
+  COUNTDOWN:hasCountdown(s.theme)&&on?`<section class="section-card compact seasonal-countdown ${s.theme}-countdown${full?' countdown-full':''}"><h2>${c.COUNTDOWN_TITLE}</h2><div class="countdownContainer">${units.map(([unit,label])=>`<div class="days-count"><strong id="to-${s.theme}-${unit}">--</strong><span>${label}</span></div>`).join('')}</div></section>`:'',
   VISITOR_EXTRAS_CSS:visitorCSS
  };
 }

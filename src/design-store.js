@@ -8,8 +8,9 @@ export function createDesignStore(storage){
  for(const t of registry){
   let loaded=null;try{const raw=storage?.getItem(t.storageKey);if(raw)loaded=t.parseSettings(raw,true);}catch(error){errors.push(t.name+': '+error.message);}
   for(const season of t.separateSeasons?Object.keys(t.themes):['christmas']){
-   const settings=loaded?(t.separateSeasons?loaded[season]:loaded):t.cloneDefaults(!t.separateSeasons&&pref.activeTemplate===t.id&&Object.hasOwn(t.themes,pref.activeSeason)?pref.activeSeason:season),key=designKey(t,season),catalogue=restoreCatalogue(catalogueStorage(t,season));
-   designs.set(key,{settings,catalogue:catalogue.catalogue});if(loaded){existing.add(key);savedDesigns.add(key);}if(catalogue.error)errors.push(catalogue.error);
+   const restored=loaded&&(t.separateSeasons?loaded[season]:loaded);
+   const settings=restored||t.cloneDefaults(!t.separateSeasons&&pref.activeTemplate===t.id&&Object.hasOwn(t.themes,pref.activeSeason)?pref.activeSeason:season),key=designKey(t,season),catalogue=restoreCatalogue(catalogueStorage(t,season));
+   designs.set(key,{settings,catalogue:catalogue.catalogue});if(restored){existing.add(key);savedDesigns.add(key);}if(catalogue.error)errors.push(catalogue.error);
   }
  }
  let active=registry.find(t=>t.id===pref.activeTemplate)||registry[0];let season=active.separateSeasons&&Object.hasOwn(active.themes,pref.activeSeason)?pref.activeSeason:designs.get(designKey(active,'christmas')).settings.theme;

@@ -1,4 +1,5 @@
 // Shared editor/wizard controls; never included in exported HTML.
+import {themes} from './themes.js';
 import {nameFonts} from './name-style.js';
 import {contrast} from './shared-settings.js';
 import {nameContrastAdvice} from './release-ux.js';
@@ -17,7 +18,7 @@ export function updateNameStyleForm(root,s,appearance={}){
  root.querySelectorAll('[data-name-hidden]').forEach(el=>el.hidden=s.showNameOnHome);
  root.querySelectorAll('[data-name-colour]').forEach(el=>el.hidden=!s.customNameColour);
  const samples=root.querySelectorAll('[data-name-preview]');if(!samples.length)return;
- const font=(s.nameFont==='current'&&appearance.defaultFont)||nameFonts.find(f=>f.id===s.nameFont)||nameFonts[0],doc=root.ownerDocument;
+ const font=(s.nameFont==='current'&&(appearance.defaultFont||nameFonts.find(f=>f.id===themes[s.theme].defaultFont)))||nameFonts.find(f=>f.id===s.nameFont)||nameFonts[0],doc=root.ownerDocument;
  // Register only selected fonts; the browser loads them when the sample is visible.
  if(font.file&&doc.defaultView.FontFace){
   let registered=previewFonts.get(doc);if(!registered){registered=new Set();previewFonts.set(doc,registered);}

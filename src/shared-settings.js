@@ -5,7 +5,8 @@ import {guidanceDefaults,guidanceTokens} from './visitor-guidance.js';
 import {checkedIcons,applyIconTokens} from './icons.js';
 // GPL-3.0-only. Canonical viewer renderer; no preview dependency.
 import {nameFonts,nameStyleDefaults,nameStyleCSS} from './name-style.js';
-import {themes} from './themes.js';
+import {themes,isNewSeason} from './themes.js';
+import {seasonalDefaults,seasonalClasses,seasonalTokens} from './seasonal-style.js';
 import {assetBase,logoChoices,decorationChoices,logoFile,decorationFile} from './assets.js';
 import {copyFields,legacyCopyFields,copyFor,formatCopy} from './copy.js';
 import {extraDefaults,listDefinitions,checkedExtraLists,validateExtras,renderExtras} from './visitor-extras.js';
@@ -21,7 +22,7 @@ const starterFAQ=[
   {kind:'text',question:'How do you build a show like this?',answer:'Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.'}
 ];
 export const defaults = {
-  ...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,movingHeadNames:'',
+  ...seasonalDefaults,...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,movingHeadNames:'',
   name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
   logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,showAlbumArtwork:true,showSongArtists:true,showQueueArtists:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,showQueueLimit:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
@@ -104,11 +105,14 @@ export function checkedSettings(input) {
   s.extraInfoCards=checkedInformationCards(input.extraInfoCards);
   for(const [k,v] of Object.entries(s)) {
     if ([...Object.keys(artworkDefaults),'extraInfoCards','icons','schedule','colours','categoryNames','hiddenCategories','faq','copy','donationRecipients',...Object.keys(listDefinitions)].includes(k)) continue;
-    if(['movingHeadNames','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
+    if([...Object.keys(seasonalDefaults),'movingHeadNames','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
     if(typeof input[k]!==typeof v) throw Error(`Invalid or missing setting: ${k}.`);
     if(typeof v==='string' && (input[k].length>20000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(input[k]))) throw Error(`Invalid text in ${k}.`);
     s[k]=input[k];
   }
+  // Older designs used one header-art switch. New choices are independent and take priority.
+  for(const key of ['headerTopDecorations','headerBottomDecorations'])if(input[key]===undefined)s[key]=input.headerDecorations??true;
+  if(!['header','edges'].includes(s.flagPlacement))throw Error('Choose a supported flag placement.');
   if(!['status','above-header','below-header'].includes(s.guidancePosition))throw Error('Choose a supported guidance position.');
   if(!Object.hasOwn(themes,s.theme))throw Error('Unknown seasonal theme.');
   if(!['download','listen','both'].includes(s.pulsemeshButtons))throw Error('Choose supported PulseMesh buttons.');
@@ -235,11 +239,11 @@ export function renderDocument(source,s,extra={}){
   const e=escapeHTML,names=namesOf(s),t=themes[s.theme],copy=copyFor(s),c=Object.fromEntries(Object.entries(copy).map(([k,v])=>[k,e(formatCopy(v,s))]));
   const flags=[!s.showSongArtists&&'hide-song-artists',!s.showQueueArtists&&'hide-queue-artists',s.fm&&'has-fm',s.pulsemesh&&'has-pulsemesh',(s.fm||s.pulsemesh||s.listening.trim())&&'has-listening',s.donations&&'has-donations',s.categories&&s.categoryNames.some(n=>!s.hiddenCategories.includes(n))&&'has-categories',s.newFilter&&'has-new-songs',s.donationHome&&'has-donations-home',s.donationInfo&&'has-donations-info'].filter(Boolean).join(' ');
   const v={
-    SHOW_NAME:e(s.name),FEATURE_CLASSES:flags,WELCOME:e(s.welcome),SHOW_DATES:e(s.dates),
+    SHOW_NAME:e(s.name),FEATURE_CLASSES:flags+seasonalClasses(s),...seasonalTokens(s),WELCOME:e(s.welcome),SHOW_DATES:e(s.dates),
     LOGO:s.logoMode==='seasonal'?`<img class="show-logo" src="${assetBase+logoFile(s)}" alt="">`:s.logoMode==='custom'&&s.logo?`<img class="show-logo" src="${e(s.logo)}" alt="${e(s.name)} logo">`:`<i class="[[ICON:brand:fa-solid ${t.icon}]]" aria-hidden="true"></i>`,
     BRAND_CLASS:s.logoMode==='seasonal'&&s.combineLogoName&&s.showNameOnHome?'brand-combined':'',
     NAME_CLASS:s.showNameOnHome?'':'show-name-hidden',
-    DECORATION_CSS:s.decorations?decorationCSS(s):'',
+    DECORATION_CSS:s.decorations&&!isNewSeason(s.theme)?decorationCSS(s):'',
     VIEWER_OPTIONS_CSS:viewerOptionsCSS(s),
     NOTICE_HIDDEN:s.notice?'':'hidden',NOTICE_TITLE:e(s.noticeTitle||'Show update'),NOTICE_TEXT:e(s.noticeText),
     SCHEDULE_ROWS:s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('\n'),
@@ -262,7 +266,7 @@ export function renderDocument(source,s,extra={}){
     LOCATION_CODE_BLOCK:`<div {location-code-dynamic-container}><div class="location-code-card"><h3>${c.ACCESS_CODE_TITLE}</h3><p>${c.ACCESS_CODE_HELP}</p><div class="location-code-input">{LOCATION_CODE}</div></div></div>`,
     MUSIC_FM_HIDDEN:s.musicFM?'':'hidden',
     THEME_CSS:s.theme==='halloween'?halloweenCSS:'',
-    SUCCESS_ICON:s.theme==='halloween'?'fa-ghost':'fa-gift',
+    SUCCESS_ICON:isNewSeason(s.theme)?t.icon:s.theme==='halloween'?'fa-ghost':'fa-gift',
     HOME_CARD:renderInformation(s,e,isHTTPS),
     ...guidanceTokens(s,e,{cardAtStatus:extra.GUIDANCE_CARD_STATUS===true}),
     NEW_SELECTORS:names.length?names.map(n=>`[data-key="${escapeCSS(n)}"]`).join(', '):':not(*)',
