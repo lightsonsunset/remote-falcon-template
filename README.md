@@ -2,7 +2,7 @@
 
 **Make your Remote Falcon page your own.**
 
-Choose Lights on Sunset or Compact console, explore a seasonal style and personalise it for your show. No coding required. Each ready-made download includes both seasonal starters and instructions.
+Choose Lights on Sunset or Compact console, explore a seasonal style and personalise it for your show. No coding required. Each ready-made download includes all four seasonal starters and instructions.
 
 **By christmasdave · Lights on Sunset.** The customiser personalises supplied layouts; each template retains its own visual identity.
 
@@ -18,17 +18,17 @@ Choose a season and template, click a preview to explore it in a centred phone, 
 
 Under **Music → Player & queue**, optionally show the maximum queue length above the song choices. RF supplies the value; 0 means unlimited. The local preview uses an illustrative limit of 10.
 
-Choose navigation icons under **Site setup → Navigation menu**, message icons under **Request messages**, and other icons beside the feature they belong to. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Lights & magic, Music & media, Social links and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
+Choose navigation icons under **Site setup → Navigation menu**, message icons under **Request messages**, and other icons beside the feature they belong to. The Font Awesome 6.6 Free library is grouped into Christmas, Halloween, Harvest & summer, Lights & magic, Music & media, Social links and General. Search within a group or browse All. Playlist, resource and category-artwork choices use the same picker. Leaving **Template default** selected preserves the original icons.
 
 ## Choose a template
 
 ![The current template chooser with seasonal previews, setup actions and compact contribution links](docs/images/welcome-modal.jpg)
 
-The customiser now offers **Lights on Sunset** and **Compact console**. Use **Change template** to compare seasonal previews. Existing designs resume automatically. Compact console keeps a separate Christmas and Halloween design; Lights on Sunset keeps its established theme behaviour.
+The customiser now offers **Lights on Sunset** and **Compact console**. Use **Change template** to compare seasonal previews. Existing designs resume automatically. Choose Christmas, Halloween, Thanksgiving or Australia Day in either layout. Compact console keeps a separate saved design for each theme; Lights on Sunset keeps its established theme-switching behaviour.
 
 **Undo / Redo** works across templates, with separate history for each design during the current session. Typing in a text field keeps native text undo. Reloading clears editor history, but keeps saved settings. **Copy show details** reviews selected content groups before applying them to another design.
 
-Compact console places music first, with Info and optional Support views. Its seasonal decorations, gentle motion, colour presets and date tiles can be adjusted in Site setup. Edit the small line above the show name under **Music → Welcome → Tagline**, or leave it blank to hide it. Both seasons are included in its settings backup; only the selected season is exported as RF HTML.
+Compact console places music first, with Info and optional Support views. Its seasonal decorations, gentle motion, colour presets and date tiles can be adjusted in Site setup. Edit the small line above the show name under **Music → Welcome → Tagline**, or leave it blank to hide it. All themes are included in its settings backup; only the selected season is exported as RF HTML.
 
 ![Compact console with its shared controls and music-first phone preview](docs/images/compact-overview.jpg)
 
@@ -65,7 +65,7 @@ Under **Music → Song appearance**, choose **Category icons** to replace song c
 
 **Edit a viewer page** contains the page buttons; selecting one opens its preview. **General settings** contains **Site setup** and **Request messages**, which keep the current preview page. Music is the starting page in Compact console.
 
-Under **Site setup → Theme & style**, choose the season, colours and seasonal decorations. **Show dates & hours** also holds Lights on Sunset’s optional on-air schedule switch. **Listening** holds FM, PulseMesh and the Music reminder option. **Navigation menu** brings menu labels, icons and Support visibility together.
+Under **Site setup → Theme & style**, choose the season, colours and seasonal decorations. Theme buttons use a compact two-column layout, with the selected theme’s description underneath. **Show dates & hours** also holds Lights on Sunset’s optional on-air schedule switch. **Listening** holds FM, PulseMesh and the Music reminder option. **Navigation menu** brings menu labels, icons and Support visibility together.
 
 On Music, **Song selection** holds request/voting headings and unavailable-song wording; **Player & queue** holds now-playing and queue wording, queue limits and counters; **Off-air content** holds the closed-show message and optional About link. Edit “All” under **Categories**, and “New this year” beside its switch in **Song badges**. Optional extras can stay off.
 
@@ -77,7 +77,7 @@ For PulseMesh, choose **Download app only**, **Listen on PulseMesh only** or **B
 
 Extra information supports up to five cards, each with a heading, message, optional image and optional link. Expand a card to edit it, reorder it or remove it. Find these cards on Home for Lights on Sunset and Info for Compact console.
 
-Visitor guidance can appear above the header, below the header or below On air. Main-screen guidance appears only while on air. Compact console also keeps the same message on Info, including off air. Christmas and Halloween have separate saved Compact console designs; use Copy show details to reuse information.
+Visitor guidance can appear above the header, below the header or below On air. Main-screen guidance appears only while on air. Compact console also keeps the same message on Info, including off air. All themes have separate saved Compact console designs; use Copy show details to reuse information.
 
 Header appearance sits directly below Show name in setup and the editor. Compact console can use a styled name, an icon above the name or your own logo. Setup icon choices are saved only when you apply setup.
 
@@ -109,7 +109,7 @@ Under **Music → Song badges**, choose songs from your imported catalogue or en
 
 ### 5. Keep a settings backup
 
-The customiser saves your edits locally in this browser. Use **Download settings backup** (**Back up both seasons** in Compact console) to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
+The customiser saves your edits locally in this browser. Use **Download settings backup** (**Back up all themes** in Compact console) to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
 
 ### 6. Copy your page into RF
 
@@ -123,11 +123,21 @@ Both music modes and availability states are included in the export. No custom J
 
 ## Prefer to edit the HTML yourself?
 
-Choose the [Lights on Sunset package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) or [Compact console package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip), unzip it, and open **START-HERE.html**. Each includes that layout’s Christmas and Halloween HTML starters, fonts, instructions, credits and licences. Lights on Sunset also includes its optional WebP artwork; Compact console’s decorations are drawn in CSS. You do not need to use the customiser.
+Choose the [Lights on Sunset package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) or [Compact console package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip), unzip it, and open **START-HERE.html**. Each includes that layout’s Christmas, Halloween, Thanksgiving and Australia Day HTML starters, fonts, instructions, credits and licences. Both packages include the new seasonal WebP artwork and lightweight SVG accents; Lights on Sunset also includes its optional Christmas/Halloween WebP illustrations. You do not need to use the customiser.
 
 The guide covers [NEW sashes](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#new), [Announcements](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#notice), [support cards](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#donations), image hosting and other optional features.
 
 The package also includes **README.html**: an offline, browser-readable copy of this quick start with its screenshots included in the file.
+
+## Thanksgiving and Australia Day
+
+![Compact console previews with Thanksgiving harvest artwork and Australia Day green-and-gold artwork](docs/images/harvest-summer-themes.jpg)
+
+Under **Site setup → Theme & style**, Thanksgiving pairs amber lights and autumn leaves with a friendly turkey, pumpkin pie and cranberries. Cream player, queue and listening cards, forest-green information cards and cranberry support cards add variety to its warm brown song choices. Its welcoming starter wording and colours remain editable. Australia Day pairs flag blue and white with true green cards, gold trim, flag bunting and illustrated BBQ, cricket and beach details. Its Now playing, Up next and request queue use flag blue, distinct from the green song choices. Compact console includes a matching colour preset with advanced colour options. Personal card, accent and text colours take priority over these starter surfaces.
+
+In **Seasonal decorations**, choose **Image above logo / show name** and **Images in lower corners** independently: show either, both or neither. Hidden artwork leaves no reserved space. **Show navbar details** stays separate. Thanksgiving’s **Show falling leaves** adds a light shower across the full screen, independent of the header artwork; leaves never block taps and are hidden for reduced motion. Australia Day’s **Allow gentle animation** sways the top bunting; there are no falling flags. Lights on Sunset uses a turkey Home icon for Thanksgiving and a Southern Cross for Australia Day, with custom icons still available. Compact console keeps its Music, Info and Support icons. Motion respects reduced-motion preferences. The centre of the header remains available for your name or logo. These themes have no countdown; Christmas/Halloween countdown settings are retained when switching back.
+
+Older two-theme Compact backups still load. Loading one replaces only its Christmas/Halloween designs, leaving any newer themed designs intact.
 
 ## Help and feedback
 

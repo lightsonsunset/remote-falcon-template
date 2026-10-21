@@ -28,7 +28,7 @@ Open `http://127.0.0.1:4188`. Serve over HTTP locally; browsers restrict module 
 
 - `templates/christmas.html`: the original canonical viewer source, with renderer placeholders and native RF hooks.
 - `src/template.js`: compatibility entry point for the original settings and rendering API. Shared validation and rendering live in `src/shared-settings.js`; registrations live in `src/template-registry.js`.
-- `src/themes.js`: Christmas and Halloween colours, default wording and message copy for the same layout.
+- `src/themes.js`: shared theme catalogue, colours, default wording and message copy. `src/seasonal-style.js` supplies the shared HTML/CSS-only Thanksgiving and Australia Day decorations; static artwork is under `assets/seasonal/`. Keep theme-specific choices out of shared preview/history/storage logic.
 - `src/visitor-extras.js`, `src/extras-form.js`: optional social links, playlists, videos, facts, resources and seasonal countdown rendering/editor controls.
 - `src/song-artwork.js` and `src/song-artwork-form.js`: shared artwork migration, category mappings, script-free viewer CSS and editor/setup controls. Preserve the legacy artwork checkbox through inherited defaults; explicit list and Now Playing choices are independent. Category glyph metadata in `src/icons.js` must match the pinned Font Awesome 6.6 Free stylesheet.
 - `src/song-badges.js`: shared exact-sequence Moving spotlights pills, with a separate NEW corner treatment. The existing NEW selectors also drive the embedded sash background when both labels are present, leaving the artwork pseudo-element available. The shared Music → Song badges controls keep NEW and Moving heads assignments together; the latter renders as Moving spotlights. The shared catalogue picker keeps both badge lists pending until Apply; assignments never change RF categories.
@@ -45,7 +45,7 @@ Open `http://127.0.0.1:4188`. Serve over HTTP locally; browsers restrict module 
 - `src/category-help.js`: shared editor-only category guidance and missing-category notices, available from import review and Music settings without committing pending choices.
 - `src/app.js`, `editor.css`, `index.html`: editor interface and export actions.
 - `src/storage.js`: resilient local autosave, separate from editor preferences and demo state.
-- `scripts/package.mjs`: generates two seasonal HTML starters and a ZIP for every registered template, using its canonical renderer/defaults.
+- `scripts/package.mjs`: generates the registered seasonal HTML starters and a ZIP for every template, using its canonical renderer/defaults.
 - `scripts/readme.mjs`: generates the offline README.html from README.md, with embedded screenshots. Rebuild it through npm run build; edit the Markdown source instead of the generated HTML.
 - `tests/`: pure renderer/storage tests and browser layout, interaction and clipboard-failure checks.
 

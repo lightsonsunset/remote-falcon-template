@@ -1,0 +1,2223 @@
+<!doctype html>
+<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.10.0 / 22 October 2026
+     Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
+     Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
+     No custom JavaScript. Install in a separate RF draft before going live.
+     Adapted from Dynamic Menu by Matt Orelup.
+     Further design and feature development by Lights on Sunset.
+     Modified sharing edition: 15 October 2026. No show-specific assets included.
+     Original: https://github.com/Remote-Falcon/remote-falcon-page-templates/blob/main/templates/dynamic-menu.html
+     Distributed under GNU GPL version 3; see LICENSE and CREDITS.md in this package.
+     Provided without warranty. Please retain the credit and licence when sharing. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Your Australia Day Show</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+      :root {
+        --bgColorMenu: #1d1d27;
+        --duration: 0.35s;
+        --text: #ffffff;
+        --gold: #f0ce41;
+        --panel: rgba(15, 15, 18, 0.78);
+        --nav-height: 4.75rem;
+        --nav-gap: 12px;
+        --nav-clearance: calc(var(--nav-height) + var(--nav-gap) + env(safe-area-inset-bottom, 0px) + 20px);
+      }
+
+      html {
+        box-sizing: border-box;
+      }
+
+      * {
+        box-sizing: inherit;
+      }
+
+      body {
+        margin: 0;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        background-color: var(--bgColorMenu);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        font-size: 16px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      div {
+        line-height: 1.5;
+      }
+
+      .tab-red { --bgColorItem: #b72035; }
+      .tab-green { --bgColorItem: #08723d; }
+      .tab-blue { --bgColorItem: #2852a3; }
+      .tab-yellow { --bgColorItem: #c39819; }
+      .tab-red { --activeGlow: rgba(255, 60, 86, 0.5); }
+      .tab-green { --activeGlow: rgba(60, 214, 119, 0.5); }
+      .tab-blue { --activeGlow: rgba(93, 144, 255, 0.5); }
+      .tab-yellow { --activeGlow: rgba(255, 207, 64, 0.5); }
+
+      .content-container {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+      }
+
+      .content__body {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: calc(0.8em + env(safe-area-inset-top, 0px)) calc(0.75em + env(safe-area-inset-right, 0px)) var(--nav-clearance) calc(0.75em + env(safe-area-inset-left, 0px));
+        overflow-y: auto;
+        scroll-padding-bottom: var(--nav-clearance);
+        -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity var(--duration) ease, visibility var(--duration) step-end;
+        background:
+          linear-gradient(135deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.54)),
+          var(--bgColorItem);
+        text-align: center;
+      }
+
+      /* The URL fragment owns panel visibility and the selected menu item.
+         With no panel target (including browser Back), always show Home.
+         Descendant targets keep Music visible when a song filter is selected. */
+      body:not(:has(.content__body:target)):not(:has(.content__body :target)) #home-panel,
+      .content__body:target,
+      .content__body:has(:target) {
+        opacity: 1;
+        visibility: visible;
+        z-index: 3;
+        pointer-events: auto;
+        transition: none;
+      }
+
+      .content__body h1,
+      .content__body h2,
+      .content__body h3,
+      .content__body p {
+        margin: 0.4em 0;
+        color: var(--text);
+        overflow-wrap: break-word;
+      }
+
+      .content__body a {
+        color: var(--gold);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .content__body a:hover {
+        color: #ffffff;
+      }
+
+      .content__body img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+
+      .content__subitem {
+        display: flex;
+        width: 100%;
+        max-width: 680px;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .logo-stage {
+        position: relative;
+        isolation: isolate;
+        padding: 0.35em 0 0.55em;
+        perspective: 700px;
+      }
+
+      .logo-stage::before {
+        content: "";
+        position: absolute;
+        top: 47%;
+        left: 50%;
+        z-index: -2;
+        width: min(535px, 94vw);
+        height: min(345px, 34vh);
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background:
+          radial-gradient(ellipse at 50% 34%, rgba(255, 239, 172, 0.32), transparent 34%),
+          radial-gradient(ellipse at 50% 52%, rgba(162, 18, 36, 0.56), rgba(70, 10, 18, 0) 70%);
+      }
+
+      .logo-stage::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        z-index: -1;
+        width: min(390px, 78vw);
+        height: 34px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        filter: blur(16px);
+      }
+
+      .content__body .hero-logo {
+        width: min(535px, 98vw);
+        max-height: 36vh;
+        object-fit: contain;
+        margin: 0 auto 0.75em;
+        border-radius: 0;
+        transform: translateY(-0.35em) scale(1.035);
+        transform-origin: center center;
+        filter:
+          drop-shadow(0 -1px 0 rgba(255, 248, 215, 0.36))
+          drop-shadow(0 5px 0 rgba(105, 8, 22, 0.26))
+          drop-shadow(0 16px 13px rgba(0, 0, 0, 0.42))
+          drop-shadow(0 38px 30px rgba(0, 0, 0, 0.46));
+      }
+
+      .section-card {
+        width: 100%;
+        max-width: 620px;
+        padding: 0.9em;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+        margin-bottom: 1em;
+      }
+
+      .section-card.compact {
+        max-width: 520px;
+      }
+
+      .section-card.feature {
+        border-color: rgba(240, 206, 65, 0.34);
+      }
+
+      .status-image {
+        display: block;
+        width: min(210px, 72vw);
+        margin: 0 auto 0.45em;
+      }
+
+      .rf-titles {
+        font-size: 1.18em;
+        font-weight: 700;
+        color: var(--text);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .tune-to {
+        font-size: 3.4em;
+        line-height: 1.05;
+        font-weight: 700;
+        color: var(--text);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      strong {
+        color: var(--gold);
+      }
+
+      .show-hours {
+        width: 100%;
+        font-size: 1em;
+      }
+
+      .date-placeholder {
+        display: inline-block;
+        padding: 0.35em 0.7em;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .hours-list {
+        display: grid;
+        gap: 0.45em;
+        width: 100%;
+        margin-top: 0.6em;
+        text-align: left;
+      }
+
+      .hours-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1em;
+        padding: 0.55em 0.7em;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .hours-row span:last-child {
+        color: var(--gold);
+        font-weight: 700;
+        white-space: normal;
+        text-align: right;
+      }
+
+      .donation-card img {
+        width: min(240px, 84vw);
+        max-height: 120px;
+        object-fit: contain;
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.24));
+      }
+
+      .donation-card p {
+        margin-bottom: 0;
+      }
+
+      .donation-card.compact-live {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+        gap: 0.75em;
+        align-items: center;
+        text-align: left;
+      }
+
+      .donation-card.compact-live img {
+        width: 76px;
+        max-height: 76px;
+      }
+
+      .donation-card.compact-live p {
+        margin: 0;
+        font-size: 0.96em;
+      }
+
+      .donation-card.compact-live strong {
+        display: block;
+        color: var(--text);
+      }
+
+      .donation-card.compact-live .tap-note {
+        display: block;
+        margin-top: 0.1em;
+        color: var(--gold);
+        font-size: 0.92em;
+        font-weight: 800;
+      }
+
+      .content__body a.donation-card.compact-live {
+        color: var(--text);
+      }
+
+      .preview-link,
+      .selfie-card {
+        display: grid;
+        grid-template-columns: 54px 1fr;
+        gap: 0.75em;
+        align-items: center;
+        padding: 0.85em;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.09);
+        color: var(--text);
+        text-align: left;
+      }
+
+      .preview-link i,
+      .selfie-card i,
+      .info-tab-callout i,
+      .music-tab-callout i {
+        color: var(--gold);
+        font-size: 2em;
+        text-align: center;
+      }
+
+      .preview-link strong,
+      .selfie-card strong,
+      .info-tab-callout strong,
+      .music-tab-callout strong {
+        display: block;
+        color: var(--text);
+      }
+
+      .preview-link span,
+      .selfie-card span,
+      .info-tab-callout span,
+      .music-tab-callout span {
+        color: rgba(255, 255, 255, 0.84);
+      }
+
+      .selfie-card {
+        position: relative;
+      }
+
+      .selfie-feature {
+        background:
+          linear-gradient(135deg, rgba(240, 206, 65, 0.12), rgba(255, 255, 255, 0.06)),
+          var(--panel);
+      }
+
+      .selfie-feature strong {
+        color: var(--gold);
+        font-size: 1.04em;
+      }
+
+      .countdownContainer {
+        display: flex;
+        justify-content: center;
+      }
+
+      .days-count {
+        display: flex;
+        width: min(210px, 68vw);
+        min-height: 112px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .days-count strong {
+        color: var(--gold);
+        font-size: 3.2em;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .days-count span {
+        margin-top: 0.4em;
+        font-size: 0.92em;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .music-tab-callout,
+      .info-tab-callout {
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        gap: 0.75em;
+        align-items: center;
+        text-align: left;
+      }
+
+      .music-tab-button,
+      .info-tab-button {
+        border: 1px solid rgba(240, 206, 65, 0.38);
+        cursor: pointer;
+        color: var(--text);
+        font: inherit;
+      }
+
+      .music-tab-button:active,
+      .info-tab-button:active {
+        transform: translateY(1px);
+      }
+
+      .music-tab-button.primary-cta {
+        border: 2px solid rgba(240, 206, 65, 0.78);
+        background:
+          linear-gradient(135deg, rgba(240, 206, 65, 0.22), rgba(8, 114, 61, 0.68)),
+          rgba(0, 0, 0, 0.32);
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.32),
+          0 0 0.95em rgba(240, 206, 65, 0.18);
+      }
+
+      .music-tab-button.primary-cta i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: #141414;
+        font-size: 1.45em;
+      }
+
+      .music-tab-button.primary-cta strong {
+        color: var(--gold);
+        font-size: 1.18em;
+      }
+
+      .show-hours strong,
+      .info-list strong {
+        display: block;
+        margin-top: 0.5em;
+      }
+
+      .link-list {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+      }
+
+      .link-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.75em;
+        min-height: 56px;
+        padding: 0.75em;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        text-align: left;
+        margin-bottom: 0.75em;
+      }
+
+      .link-item img {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
+        object-fit: contain;
+        margin: 0;
+      }
+
+      .link-item img.resource-logo-wide {
+        width: 54px;
+      }
+
+      .link-item .brand-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
+        margin: 0;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text);
+        font-size: 1.45em;
+      }
+
+      .resource-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.08em;
+      }
+
+      .resource-name {
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      .resource-detail {
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.9em;
+        line-height: 1.35;
+      }
+
+      .tab-yellow {
+        --infoAccent: #8bd8ff;
+      }
+
+      .info-intro {
+        max-width: 620px;
+      }
+
+      .info-intro p {
+        max-width: 540px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .info-card {
+        text-align: left;
+      }
+
+      .info-card h2,
+      .info-card h3 {
+        text-align: center;
+      }
+
+      .info-card strong {
+        color: var(--infoAccent);
+      }
+
+      .info-faq {
+        display: grid;
+        gap: 0.75em;
+      }
+
+      .faq-item {
+        padding: 0.75em;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .faq-item strong {
+        margin: 0 0 0.25em;
+      }
+
+      .faq-item p {
+        margin-bottom: 0;
+      }
+
+      .linked-listening { display: grid; gap: 0.85em; margin-top: 0.6em; }
+      .faq-item .linked-listening p { margin: 0; }
+      .linked-listening .share-pulsemesh { display: grid; gap: 0.7em; }
+      .faq-pulse-option { display: grid; justify-items: start; gap: 0.1em; min-width: 0; }
+      .faq-pulse-option a { display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; overflow-wrap: anywhere; }
+      .faq-pulse-option small { color: var(--text-secondary); font-size: 0.85em; }
+      .linked-listening .other-listening { overflow-wrap: anywhere; }
+
+      .info-pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.55em;
+        margin-top: 0.8em;
+      }
+
+      .info-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0.45em 0.75em;
+        border-radius: 999px;
+        background: rgba(139, 216, 255, 0.16);
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      .content__body a.info-pill {
+        color: var(--text);
+      }
+
+      .info-stat {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.6em;
+        margin-top: 0.8em;
+      }
+
+      .info-stat div {
+        padding: 0.75em;
+        border-radius: 8px;
+        background: rgba(139, 216, 255, 0.12);
+        text-align: center;
+      }
+
+      .info-stat strong {
+        display: block;
+        font-size: 1.4em;
+      }
+
+      .playlist-links {
+        display: grid;
+        gap: 0.65em;
+        margin-top: 0.8em;
+      }
+
+      .playlist-link {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 0.75em;
+        align-items: center;
+        min-height: 58px;
+        padding: 0.75em;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        text-align: left;
+      }
+
+      .content__body a.playlist-link {
+        color: var(--text);
+      }
+
+      .playlist-link i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text);
+        font-size: 1.45em;
+      }
+
+      .playlist-link .fa-spotify {
+        color: #1ed760;
+      }
+
+      .support-intro {
+        max-width: 620px;
+      }
+
+      .support-card {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 1em;
+        align-items: center;
+        text-align: left;
+      }
+
+      .support-card:not(:has(> img)) { grid-template-columns: minmax(0, 1fr); }
+      .support-card > div { min-width: 0; }
+
+      .support-card img {
+        width: 112px;
+        max-height: 112px;
+        object-fit: contain;
+        margin: 0;
+        border-radius: 8px;
+        filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.24));
+      }
+
+      .support-card img.support-logo-light {
+        padding: 0.45em;
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .support-card h3 {
+        margin-top: 0;
+      }
+
+      .support-card p {
+        margin: 0.35em 0 0.8em;
+      }
+
+      .support-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45em;
+        min-height: 42px;
+        padding: 0.55em 0.85em;
+        border-radius: 8px;
+        background: var(--gold);
+        color: #151515;
+        font-weight: 800;
+      }
+
+      .content__body a.support-action {
+        color: #151515;
+      }
+
+      .support-action:hover {
+        background: #ffffff;
+        color: #151515;
+      }
+
+      .content__body a.support-action:hover {
+        color: #151515;
+      }
+
+      .music-options {
+        display: grid;
+        width: 100%;
+      }
+
+      .music-option {
+        padding: 0.8em;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        margin-bottom: 0.75em;
+      }
+
+      .radio-frequency {
+        display: block;
+        margin-top: 0.18em;
+        color: var(--gold);
+        font-size: 2.2em;
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: 0;
+        text-shadow: 0 0 12px rgba(240, 206, 65, 0.34);
+      }
+
+      .glowing-icon {
+        margin-left: 0.25em;
+        color: #e10909;
+        text-shadow: 0 0 8px #e10909, 0 0 16px #e10909, 0 0 24px #e10909;
+      }
+
+      .pulsemesh-download-wrap {
+        display: grid;
+        justify-items: center;
+        gap: 0.45rem;
+        margin-top: 0.85rem;
+      }
+
+      .content__body a.pulsemesh-download {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 100%;
+        max-width: 18rem;
+        min-height: 52px;
+        padding: 0.8rem;
+        border: 1px solid rgba(255, 241, 198, 0.5);
+        border-radius: 16px;
+        background: linear-gradient(135deg, #f8e2a4, #e8c778);
+        color: #272119;
+        font-size: 1rem;
+        font-weight: 750;
+        line-height: 1.35;
+        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+      }
+
+      .content__body a.pulsemesh-download:hover {
+        color: #272119;
+        background: linear-gradient(135deg, #ffedbd, #f3d995);
+      }
+
+      .pulsemesh-download > i { flex-shrink: 0; }
+      .pulsemesh-download > span { min-width: 0; overflow-wrap: anywhere; }
+      .pulsemesh-platforms {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .music-live-section,
+      .music-picker-section {
+        max-width: 680px;
+      }
+
+      .music-section-heading {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        max-width: 540px;
+        margin: 0.25em auto 0.4em;
+        padding: 0.28em 0.82em;
+        border: 1px solid rgba(240, 206, 65, 0.3);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.28);
+        color: var(--gold);
+        font-size: 1.55em;
+        font-weight: 900;
+        line-height: 1.1;
+        text-align: center;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      }
+
+      .music-section-heading.compact {
+        margin-top: 0.9em;
+        font-size: 1.32em;
+      }
+
+      .playing-now,
+      .next-playlist,
+      .jukebox-queue-container {
+        width: 100%;
+        max-width: 540px;
+        margin: 0 auto 1em;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
+          rgba(0, 35, 22, 0.9);
+        color: var(--text);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+      }
+
+      .playing-now {
+        display: flex;
+        min-height: 130px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1em;
+        text-align: center;
+        font-size: 1.28em;
+        font-weight: 900;
+      }
+
+      .playing-now .sequence-image {
+        width: 132px;
+        height: 132px;
+        margin: 0 0 0.75em;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.32);
+      }
+
+      .next-playlist {
+        display: flex;
+        min-height: 86px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.85em;
+        text-align: center;
+        font-size: 1.08em;
+        font-weight: 850;
+      }
+
+      .next-playlist .sequence-image,
+      .jukebox-queue .sequence-image {
+        display: none;
+      }
+
+      .jukebox-queue-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.55em 0.85em;
+      }
+
+      .playing-now:empty::after {
+        content: "Waiting for the next song";
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.78em;
+        font-weight: 700;
+      }
+
+      .next-playlist:empty::after {
+        content: "No song queued yet";
+        color: rgba(255, 255, 255, 0.72);
+        font-weight: 700;
+      }
+
+      .jukebox-queue-container:empty::after {
+        content: "Queue is open";
+        padding: 0.65em 0;
+        color: rgba(255, 255, 255, 0.72);
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .jukebox-queue {
+        width: 100%;
+        margin: 0;
+        padding: 0.75em 0.25em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+        text-align: center;
+        font-size: 0.98em;
+        font-weight: 850;
+      }
+
+      .jukebox-queue:last-child {
+        border-bottom: none;
+      }
+      .queue-instructions { max-width:680px;margin:.2rem auto .65rem;text-align:center;color:var(--text-secondary);white-space:pre-line;overflow-wrap:anywhere; }
+      .music-listen-reminder[hidden] { display:none !important; }
+      .playing-now .jukebox-list-artist,.playing-now .cell-vote-playlist-artist,
+      .next-playlist .jukebox-list-artist,.jukebox-queue-artist { display:block;margin-top:.35em;font-size:.85em;font-weight:500;color:var(--text-secondary);overflow-wrap:anywhere; }
+      .playing-now,.next-playlist,.jukebox-queue-title { overflow-wrap:anywhere; }
+
+      .music-request-card {
+        position: relative;
+        max-width: 680px;
+        text-align: center;
+      }
+
+      .music-request-card h2 {
+        font-size: 1.45em;
+      }
+
+      .request-copy {
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .music-filter {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.35em;
+        width: 100%;
+        max-width: 600px;
+        margin: 0.55em auto 1em;
+        padding: 0.25em;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 22px;
+        background: rgba(0, 0, 0, 0.22);
+      }
+
+      .music-filter a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
+        padding: 0.42em 0.55em;
+        border-radius: 17px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.92em;
+        font-weight: 900;
+        line-height: 1.1;
+        text-align: center;
+        transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      @media (min-width: 560px) {
+        .music-filter { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      }
+
+      /* CATEGORY FILTER RULES: positions must match RF's rendered category order. */
+      body:not(:has(#show-options.has-categories .category-filter-target:target)):not(:has(#show-options.has-new-songs #songs-new:target)) .music-filter a[href="#songs-all"],
+      body:has(#show-options.has-new-songs #songs-new:target) .music-filter a[href="#songs-new"] {
+        background:var(--gold); color:var(--accent-ink); box-shadow:0 4px 12px #0004;
+      }
+      .music-filter-targets { position:static;width:0;height:0;overflow:hidden; }
+.music-filter-targets span { position:fixed;top:0;left:0;width:1px;height:1px;overflow:hidden; }
+#music-panel { overflow-anchor:none; }
+/* RF emits uncategorised Voting cards and tallies as adjacent siblings,
+   without a category-section or cell-vote-row wrapper. Keep each pair aligned. */
+.content__body .los-song-list:has(> .cell-vote-playlist) { display:grid;grid-template-columns:minmax(0,1fr) 3.1rem;gap:12px 6px;align-items:stretch; }
+.content__body .los-song-list:has(> .cell-vote-playlist) > .category-section,
+.content__body .los-song-list:has(> .cell-vote-playlist) .cell-vote-row { grid-column:1 / -1; }
+.content__body .los-song-list > .cell-vote-playlist { grid-column:1;margin-bottom:0;min-width:0;align-content:var(--los-new-vote-align,normal);padding-right:calc(.78em + var(--los-new-text-gutter,0px)); }
+.content__body .los-song-list > .cell-vote-playlist + .cell-vote { grid-column:2;display:flex;flex-direction:column;align-items:center;justify-content:center;align-self:stretch;margin:0;padding:4px;min-width:0;border:1px solid color-mix(in srgb,var(--gold) 24%,transparent);border-radius:9px;color:var(--gold);font-weight:750;pointer-events:none; }
+/* NEW applies to the unwrapped card and its own tally as well as grouped rows. */
+body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list > :is(.cell-vote-playlist,.cell-vote) { display:var(--los-new-display,none)!important; }
+body:has(#show-options.has-categories):has(#songs-category-1:target) .music-filter a[href="#songs-category-1"] { background:var(--gold);color:var(--accent-ink); }
+body:has(#show-options.has-categories):has(#songs-category-1:target) .los-song-list > :is(.category-section,.jukebox-list,.cell-vote-playlist,.cell-vote,.cell-vote-row) { display:none !important; }
+body:has(#show-options.has-categories):has(#songs-category-1:target) .los-song-list > .category-section:nth-child(1 of .category-section) { display:var(--los-category-display,block) !important; }
+body:has(#show-options.has-categories):has(#songs-category-2:target) .music-filter a[href="#songs-category-2"] { background:var(--gold);color:var(--accent-ink); }
+body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-list > :is(.category-section,.jukebox-list,.cell-vote-playlist,.cell-vote,.cell-vote-row) { display:none !important; }
+body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-list > .category-section:nth-child(2 of .category-section) { display:var(--los-category-display,block) !important; }
+
+      /* Use the NEW assignment below without changing RF categories or order.
+         Flatten category wrappers so empty categories leave no gaps/headings. */
+      body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list .category-section { display: contents !important; }
+      body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list .category-label { display: none !important; }
+      body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list .jukebox-list,
+      body:has(#show-options.has-new-songs):has(#songs-new:target) .los-song-list .cell-vote-row {
+        display: var(--los-new-display, none) !important;
+      }
+
+      .los-song-list {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+      }
+
+      .category-section {
+        width: 100%;
+      }
+
+      .category-label {
+        display: flex;
+        align-items: center;
+        gap: 0.65em;
+        margin: 1.05em 0 0.65em;
+        color: var(--gold);
+        font-size: 1.08em;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .category-label::before,
+      .category-label::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: rgba(240, 206, 65, 0.36);
+      }
+
+      .jukebox-list,
+      .cell-vote-playlist {
+        position: relative;
+        display: grid;
+        grid-template-columns: 70px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        column-gap: 0.85em;
+        align-items: center;
+        width: 100%;
+        min-height: 88px;
+        margin-bottom: 0.7em;
+        padding: 0.72em 0.78em;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.58);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01)),
+          rgba(0, 45, 28, 0.96);
+        color: var(--text);
+        text-align: left;
+        font-size: 1em;
+        font-weight: 900;
+        cursor: pointer;
+        overflow-wrap: break-word;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+        transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+      }
+
+      .jukebox-list:hover,
+      .cell-vote-playlist:hover {
+        border-color: rgba(240, 206, 65, 0.72);
+        background:
+          linear-gradient(135deg, rgba(240, 206, 65, 0.12), rgba(255, 255, 255, 0.02)),
+          rgba(0, 54, 34, 0.98);
+      }
+
+      .jukebox-list:active,
+      .cell-vote-playlist:active {
+        transform: translateY(1px);
+        background: rgba(36, 91, 55, 0.98);
+      }
+
+      .jukebox-list img,
+      .cell-vote-playlist img,
+      .sequence-image {
+        grid-row: 1 / span 2;
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+        margin: 0;
+        border-radius: 8px;
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.28);
+      }
+
+      .jukebox-list-artist,
+      .cell-vote-playlist-artist {
+        display: block;
+        grid-column: 2;
+        grid-row: 2;
+        margin-top: 0.18em;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 0.92em;
+        font-style: italic;
+        font-weight: 500;
+        line-height: 1.3;
+        overflow-wrap: break-word;
+      }
+
+      /* RF omits images that have not been assigned. Its unwrapped title must
+         not be auto-placed in the narrow artwork column. Compact each row
+         independently so catalogues can contain songs with and without art. */
+      .los-song-list .jukebox-list:not(:has(img)),
+      .los-song-list .cell-vote-playlist:not(:has(img)) {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+        min-height: 64px;
+      }
+      .los-song-list .jukebox-list:not(:has(img)) {
+        padding-right: calc(.78em + var(--los-new-text-gutter, 0px));
+      }
+      .los-song-list .jukebox-list:not(:has(img)) > .jukebox-list-artist,
+      .los-song-list .cell-vote-playlist:not(:has(img)) > .cell-vote-playlist-artist {
+        grid-column: 1;
+      }
+      .cell-vote-row > .cell-vote-playlist:not(:has(img)) {
+        min-height: var(--los-new-vote-height, 64px);
+      }
+
+      /* NEW SONG ASSIGNMENTS: edit the sequence names in all FOUR selectors.
+         Add more [data-key="Exact RF sequence name"] entries to all FOUR :is() lists.
+         These assignments drive the sash AND the New this year filter.
+         Use the RF sequence name, not its display title or FPP index. */
+      .jukebox-list:is(:not(*)),
+      .los-song-list > .cell-vote-playlist:is(:not(*)),
+.los-song-list > .cell-vote-playlist:is(:not(*)) + .cell-vote,
+      .cell-vote-row:has(> .cell-vote-playlist:is(:not(*))) {
+        --los-new-display: grid;
+        --los-new-sash:"NEW";--los-new-sash-image:var(--los-new-corner-art);--los-new-moving-label:"NEW; Moving spotlights";
+        --los-new-vote-height: var(--los-new-vote-card-height, 8.5rem);
+        --los-new-text-gutter: 3rem;
+        --los-new-vote-align: center;
+        --los-new-vote-top: auto;
+        --los-new-vote-bottom: 0.7rem;
+        --los-new-vote-transform: none;
+      }
+
+      /* Float the sash over the corner without changing song text spacing. */
+      .jukebox-list::after,
+      .cell-vote-playlist::after {
+        content: var(--los-new-sash, none);
+        position: absolute;
+        top: 1rem;
+        right: -1.8rem;
+        width: 6.75rem;
+        height: 1.65rem;
+        transform: rotate(45deg);
+        border-top: 1px solid rgba(255, 249, 220, 0.65);
+        border-bottom: 1px solid rgba(100, 65, 6, 0.2);
+        background: linear-gradient(135deg, #ffe7a7, #edc56a);
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
+        color: #36280e;
+        font-size: 0.8rem;
+        font-weight: 850;
+        letter-spacing: 0.1em;
+        line-height: 1.5rem;
+        white-space: nowrap;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      /* RF hides this whole screen-sized layer, releasing taps with the message. */
+      .request-feedback {
+        --feedback-accent: #ffe08b;
+        --feedback-rgb: 255, 224, 139;
+        --feedback-bg: #20271f;
+        display: none;
+        position: fixed;
+        inset: 0;
+        padding-left: calc(12px + env(safe-area-inset-left, 0px));
+        padding-right: calc(12px + env(safe-area-inset-right, 0px));
+        z-index: 1000;
+        pointer-events: auto;
+      }
+
+      .request-feedback--success { --feedback-accent: #a9efc4; --feedback-rgb: 169, 239, 196; --feedback-bg: #142b24; }
+      .request-feedback--error { --feedback-accent: #ffc1ca; --feedback-rgb: 255, 193, 202; --feedback-bg: #2b1e25; }
+
+      .innerRequestSuccessful,
+      .failed_Info_Box {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+        width: min(100%, 400px);
+        max-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px);
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px);
+        margin: 0 auto;
+        padding: 1.65rem 1.4rem 1.5rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        border: 1px solid rgba(255, 224, 139, 0.56);
+        border-radius: 28px;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(var(--feedback-rgb), 0.14), transparent 75%),
+          var(--feedback-bg);
+        color: #fffaf0;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 0 5px rgba(15, 24, 21, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        text-align: center;
+        pointer-events: auto;
+      }
+
+      .innerRequestSuccessful::before,
+      .failed_Info_Box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: repeating-linear-gradient(135deg, #b83245 0 12px, #fff1d0 12px 24px, #297b59 24px 36px, #fff1d0 36px 48px);
+        pointer-events: none;
+      }
+
+      .request-feedback .status-icon {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 64px;
+        margin: 0 auto;
+        border: 1px solid rgba(var(--feedback-rgb), 0.35);
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(var(--feedback-rgb), 0.17), rgba(var(--feedback-rgb), 0.04));
+        color: var(--feedback-accent);
+        font-size: 1.8rem;
+        line-height: 1;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      }
+
+      .request-feedback .request-feedback__title {
+        margin: 0;
+        color: var(--feedback-accent);
+        font-size: clamp(1.2rem, 5vw, 1.45rem);
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+      }
+
+      .request-feedback .request-feedback__message {
+        margin: 0.65rem 0 0;
+        color: #f2ece2;
+        font-size: 0.95rem;
+        font-weight: 400;
+        line-height: 1.55;
+      }
+
+      /* Keep RF's automatic inline location helper interactive wherever inserted. */
+      .request-feedback__location { grid-column: 1 / -1; }
+      .request-feedback__location:empty { display: none; }
+      .request-feedback .rf-location-notice {
+        grid-column: 1 / -1;
+        width: min(100%, 420px);
+        margin: 0.6rem auto 0;
+        padding: 0.85rem;
+        background: #1b1b24;
+        color: #f6f4f8;
+        text-align: left;
+        pointer-events: auto;
+      }
+
+      /* Use our own class name so RF's optional menu script does not attach. */
+      .los-menu {
+        position: fixed;
+        left: calc(var(--nav-gap) + env(safe-area-inset-left, 0px));
+        right: calc(var(--nav-gap) + env(safe-area-inset-right, 0px));
+        bottom: calc(var(--nav-gap) + env(safe-area-inset-bottom, 0px));
+        z-index: 100;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+        max-width: 30rem;
+        height: var(--nav-height);
+        margin: 0 auto;
+        padding: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 28px;
+        background: #1b1b24;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32), 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        font-family: inherit;
+      }
+
+      /* Blur is optional; the solid surface above remains readable without it. */
+      @supports ((backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px))) {
+        .los-menu {
+          background: rgba(23, 23, 31, 0.92);
+          -webkit-backdrop-filter: blur(16px);
+          backdrop-filter: blur(16px);
+        }
+      }
+
+      .los-menu__item.tab-red { --nav-tint: #48232d; --nav-accent: #ffb3bd; }
+      .los-menu__item.tab-green { --nav-tint: #153d2c; --nav-accent: #8be9b4; }
+      .los-menu__item.tab-blue { --nav-tint: #233552; --nav-accent: #a8c7ff; }
+      .los-menu__item.tab-yellow { --nav-tint: #45381c; --nav-accent: #ffe08b; }
+
+      .los-menu__item {
+        display: flex;
+        min-width: 0;
+        min-height: 44px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 6px 4px;
+        border-radius: 21px;
+        color: #d2d3dd;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        touch-action: manipulation;
+        transition: background-color 0.18s ease, color 0.18s ease;
+      }
+
+      .los-menu__item i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 1.25rem;
+        line-height: 1;
+      }
+
+      .los-menu__label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+
+      .los-menu__item:focus-visible {
+        outline: 3px solid #fff0ac;
+        outline-offset: -3px;
+      }
+
+      .los-menu__item:active {
+        filter: brightness(1.15);
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .los-menu__item:hover {
+          background: rgba(255, 255, 255, 0.08);
+          color: #ffffff;
+        }
+      }
+
+      body:not(:has(.content__body:target)):not(:has(.content__body :target)) .los-menu__item[data-tab-target="home"],
+      body:has(#home-panel:target) .los-menu__item[data-tab-target="home"],
+      body:has(#music-panel:target) .los-menu__item[data-tab-target="music"],
+      body:has(#music-panel :target) .los-menu__item[data-tab-target="music"],
+      body:has(#support-panel:target) .los-menu__item[data-tab-target="support"],
+      body:has(#info-panel:target) .los-menu__item[data-tab-target="info"],
+      body:has(#info-panel :target) .los-menu__item[data-tab-target="info"] {
+        background: var(--nav-tint);
+        color: var(--nav-accent);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .los-menu__item,
+        .content__body {
+          transition: none;
+        }
+      }
+
+      @media (max-width: 440px) {
+        .content__body {
+          padding: calc(0.65em + env(safe-area-inset-top, 0px)) calc(0.55em + env(safe-area-inset-right, 0px)) var(--nav-clearance) calc(0.55em + env(safe-area-inset-left, 0px));
+        }
+
+        .section-card {
+          padding: 0.75em;
+        }
+
+        .content__body h2 {
+          font-size: 1.25em;
+        }
+
+        .content__body .hero-logo {
+          width: min(470px, 98vw);
+          max-height: 29vh;
+          transform: translateY(-0.25em) scale(1.03);
+        }
+
+        .hours-row {
+          flex-direction: column;
+          gap: 0.1em;
+          text-align: center;
+        }
+
+        .hours-row span:last-child {
+          text-align: center;
+        }
+
+        .preview-link,
+        .selfie-card,
+        .info-tab-callout,
+        .music-tab-callout {
+          grid-template-columns: 42px 1fr;
+        }
+
+        .support-card {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .support-card img {
+          margin: 0 auto;
+        }
+
+        .info-stat {
+          grid-template-columns: 1fr;
+        }
+
+        .tune-to {
+          font-size: 2.8em;
+        }
+
+        .jukebox-list,
+        .cell-vote-playlist {
+          grid-template-columns: 54px 1fr;
+          min-height: 70px;
+          font-size: 0.92em;
+        }
+
+        .jukebox-list img,
+        .cell-vote-playlist img,
+        .sequence-image {
+          width: 50px;
+          height: 50px;
+        }
+
+      }
+      /* Shared content surfaces. Keep the floating navbar's styles independent. */
+      :root {
+        --page-bg: #111118;
+        --panel: #1b1b24;
+        --text: #f6f4f8;
+        --gold: #f3d995;
+        --surface-inset: rgba(255, 255, 255, 0.045);
+        --surface-border: rgba(255, 255, 255, 0.09);
+        --text-secondary: #c4c3cf;
+      }
+
+      /* One neutral browser canvas across all sections, including safe areas. */
+      html,
+      body,
+      .content-container {
+        background-color: var(--page-bg);
+        color-scheme: dark;
+      }
+
+      .content__body.tab-red { --section-rgb: 255, 179, 189; --section-wash: 218, 48, 73; --section-accent: #ffb3bd; }
+      .content__body.tab-green { --section-rgb: 139, 233, 180; --section-wash: 27, 155, 86; --section-accent: #8be9b4; }
+      .content__body.tab-blue { --section-rgb: 168, 199, 255; --section-wash: 49, 109, 203; --section-accent: #a8c7ff; }
+      .content__body.tab-yellow { --section-rgb: 255, 224, 139; --section-wash: 184, 132, 30; --section-accent: #ffe08b; --infoAccent: #ffe08b; }
+
+      .content__body {
+        background-color: var(--page-bg);
+        background-image:
+          radial-gradient(ellipse at 8% 8%, rgba(var(--section-wash), 0.27), transparent 65%),
+          radial-gradient(ellipse at 100% 100%, rgba(var(--section-wash), 0.16), transparent 65%),
+          linear-gradient(155deg, rgba(var(--section-wash), 0.27), rgba(var(--section-wash), 0.14));
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        padding-left: calc(0.75rem + env(safe-area-inset-left, 0px));
+        padding-right: calc(0.75rem + env(safe-area-inset-right, 0px));
+      }
+
+      .section-card {
+        padding: 1.25rem;
+        border-color: var(--surface-border);
+        border-radius: 24px;
+        background: var(--panel);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      }
+
+      .section-card.feature,
+      .selfie-feature {
+        border-color: rgba(var(--section-rgb), 0.19);
+        background: linear-gradient(145deg, rgba(var(--section-rgb), 0.055), transparent 75%), var(--panel);
+      }
+
+      .content__body h2 {
+        font-size: 1.25rem;
+        line-height: 1.35;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+      }
+
+      .content__body h3 { font-size: 1.05rem; line-height: 1.4; }
+      .content__body p { color: var(--text-secondary); line-height: 1.6; }
+      .rf-titles, .radio-frequency, .music-section-heading { text-shadow: none; }
+
+      .logo-stage { perspective: none; }
+      .logo-stage::before {
+        background: radial-gradient(ellipse, rgba(255, 210, 145, 0.09), transparent 68%);
+      }
+      .logo-stage::after { display: none; }
+      .content__body .hero-logo {
+        transform: none;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.22));
+      }
+
+      .hours-row, .preview-link, .selfie-card, .days-count,
+      .link-item, .faq-item, .info-stat div, .playlist-link, .music-option {
+        border-radius: 16px;
+        background: var(--surface-inset);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+      }
+
+      .selfie-feature { background: linear-gradient(145deg, rgba(var(--section-rgb), 0.055), transparent 75%), var(--panel); }
+      .hours-row { gap: 0.6em; padding: 0.7em 0.85em; }
+      .date-placeholder { background: rgba(var(--section-rgb), 0.09); color: var(--section-accent); }
+      .hours-row span:last-child, .selfie-feature strong { color: var(--section-accent); }
+      .days-count { background: rgba(var(--section-rgb), 0.065); }
+      .days-count strong { color: var(--section-accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+      .resource-name { font-weight: 700; }
+      .resource-detail, .preview-link span, .selfie-card span,
+      .info-tab-callout span, .music-tab-callout span { color: var(--text-secondary); font-weight: 400; }
+      .content__body .preview-link strong, .content__body .info-tab-callout strong { color: var(--text); }
+
+      .playlist-link i, .link-item .brand-icon {
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .link-item img { padding: 4px; border-radius: 10px; background: #f4f4f6; }
+      .support-card img { border-radius: 16px; filter: none; }
+      .support-action { min-height: 44px; border-radius: 14px; background: var(--section-accent); font-weight: 700; }
+      .info-pill { min-height: 44px; background: rgba(var(--section-rgb), 0.09); font-weight: 700; }
+      .info-stat div { background: rgba(var(--section-rgb), 0.055); }
+      .info-card strong { color: var(--section-accent); }
+      .faq-item strong { color: var(--text); font-weight: 650; }
+
+      .music-tab-button, .info-tab-button { border-color: rgba(var(--section-rgb), 0.20); }
+      .music-tab-button.primary-cta {
+        border: 1px solid rgba(139, 233, 180, 0.28);
+        background: linear-gradient(135deg, rgba(139, 233, 180, 0.12), rgba(139, 233, 180, 0.035)), var(--panel);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+      }
+      .music-tab-button.primary-cta i { background: #8be9b4; color: #153d2c; }
+      .music-tab-button.primary-cta strong { color: #8be9b4; }
+
+      .show-status {
+        display: flex;
+        width: min(240px, 100%);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        min-height: 78px;
+        margin: 0 auto 1rem;
+        padding: 0.8rem 1rem;
+        border: 1px solid rgba(255, 224, 139, 0.38);
+        border-radius: 16px;
+        background: linear-gradient(145deg, rgba(255, 224, 139, 0.08), transparent), #232129;
+        box-shadow: inset 0 0 0 4px rgba(255, 224, 139, 0.025), 0 0 20px rgba(255, 224, 139, 0.045);
+        color: #ffe08b;
+        line-height: 1.3;
+      }
+      .show-status__label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6em;
+        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+      .show-status__label::before {
+        content: "";
+        flex: 0 0 9px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #e5c77f;
+        box-shadow: 0 0 0 4px rgba(229, 199, 127, 0.09);
+      }
+      .show-status__detail { color: #cdc6b3; font-size: 0.78rem; font-weight: 500; }
+      .show-status--live {
+        color: #a1f1bf;
+        background: linear-gradient(145deg, rgba(139, 233, 180, 0.12), transparent), #153126;
+        border-color: rgba(139, 233, 180, 0.55);
+        box-shadow: inset 0 0 0 4px rgba(139, 233, 180, 0.035), 0 0 24px rgba(71, 211, 124, 0.12);
+      }
+      .show-status--live .show-status__label::before { background: #8be9b4; box-shadow: 0 0 0 4px rgba(139, 233, 180, 0.12), 0 0 12px rgba(139, 233, 180, 0.5); }
+      .show-status--live .show-status__detail { color: #c4dfd1; }
+
+      /* Preserve RF's generated content and state behaviour; restyle its surfaces. */
+      .music-section-heading {
+        border-color: var(--surface-border);
+        background: var(--panel);
+        color: var(--section-accent);
+        font-weight: 700;
+      }
+      .playing-now, .next-playlist, .jukebox-queue-container {
+        border-color: var(--surface-border);
+        border-radius: 24px;
+        background: var(--panel);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+        font-weight: 700;
+      }
+      .jukebox-queue { border-color: var(--surface-border); font-weight: 650; }
+      .music-filter { border-color: var(--surface-border); background: var(--surface-inset); }
+      .music-filter a { min-height: 44px; font-weight: 700; }
+      .category-label { color: var(--section-accent); font-weight: 700; text-transform: none; }
+      .category-label::before, .category-label::after { background: rgba(var(--section-rgb), 0.18); }
+      .jukebox-list, .cell-vote-playlist {
+        border-color: rgba(var(--section-rgb), 0.16);
+        border-radius: 16px;
+        background: var(--surface-inset);
+        font-weight: 700;
+        box-shadow: none;
+      }
+      .jukebox-list:hover, .cell-vote-playlist:hover { border-color: rgba(var(--section-rgb), 0.4); background: rgba(var(--section-rgb), 0.08); }
+      .jukebox-list:active, .cell-vote-playlist:active { background: rgba(var(--section-rgb), 0.13); }
+      .jukebox-list img, .cell-vote-playlist img, .playing-now .sequence-image { border-radius: 12px; box-shadow: none; }
+      .jukebox-list-artist, .cell-vote-playlist-artist { color: var(--text-secondary); font-style: normal; }
+      .rf-location-notice { border-radius: 16px; }
+
+      .content__body a:focus-visible { outline: 3px solid #fff0ac; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        .preview-link:hover, .playlist-link:hover, .link-item:hover, .info-tab-button:hover { background-color: rgba(var(--section-rgb), 0.08); }
+      }
+      @media (max-width: 440px) {
+        .section-card { padding: 1rem; border-radius: 22px; }
+        .content__body h2 { font-size: 1.18rem; }
+      }
+      /* RF empties inactive containers; only an active voting view has this child. */
+      .los-voting-copy { display: none; }
+      body:has(#los-voting-live .playing-now) .los-jukebox-copy { display: none; }
+      body:has(#los-voting-live .playing-now) .los-voting-copy { display: block; }
+      /* RF places each tally beside its clickable song. Overlay the tally on
+         that same card so tapping the tally still reaches the song beneath. */
+      .cell-vote-row { position: relative; margin-bottom: 0.7em; }
+      .cell-vote-row > .cell-vote-playlist {
+        min-width: 0;
+        min-height: var(--los-new-vote-height, 88px);
+        align-content: var(--los-new-vote-align, normal);
+        margin-bottom: 0;
+        padding-right: 3.8rem;
+      }
+      .cell-vote-row > .cell-vote {
+        position: absolute;
+        right: 0.7rem;
+        top: var(--los-new-vote-top, 50%);
+        bottom: var(--los-new-vote-bottom, auto);
+        transform: var(--los-new-vote-transform, translateY(-50%));
+        min-width: 2.35rem;
+        padding: 0.3rem 0.2rem;
+        border: 1px solid rgba(255, 224, 139, 0.24);
+        border-radius: 10px;
+        background: rgba(255, 224, 139, 0.08);
+        color: #ffe3a6;
+        font-size: 1rem;
+        font-weight: 750;
+        line-height: 1.2;
+        text-align: center;
+        pointer-events: none;
+      }
+      .cell-vote::after { content: "votes"; display: block; margin-top: 0.12rem; font-size: 0.6rem; font-weight: 500; }
+      @media (max-width: 440px) {
+        .cell-vote-row > .cell-vote-playlist { min-height: var(--los-new-vote-height, 70px); }
+      }
+
+      /* A small listening shortcut, shown only inside the active music mode. */
+      .content__body a.music-listen-reminder {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem 0.7rem;
+        max-width: 100%;
+        min-height: 44px;
+        margin: 0 0 0.6rem;
+        padding: 0.55rem 0.85rem;
+        border: 1px solid rgba(139, 233, 180, 0.2);
+        border-radius: 16px;
+        background: rgba(15, 38, 28, 0.85);
+        color: #d1e6d9;
+        font-size: 0.85rem;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+      .music-listen-reminder strong { color: #a1f1bf; white-space: nowrap; }
+      .music-listen-reminder__help { color: #d1e6d9; text-decoration: underline; text-underline-offset: 3px; }
+      #info-listening { scroll-margin-top: 1rem; }
+
+      /* Manual Home notice. The HTML hidden attribute is the on/off switch. */
+      .show-notice {
+        display: grid;
+        grid-template-columns: 1.4rem minmax(0, 1fr);
+        gap: 0.8rem;
+        width: 100%;
+        max-width: 680px;
+        margin: 0 0 1rem;
+        padding: 1rem;
+        border: 1px solid rgba(255, 224, 139, 0.38);
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(255, 224, 139, 0.08), transparent), #292128;
+        text-align: left;
+      }
+      .show-notice[hidden] { display: none; }
+      .show-notice > i { margin-top: 0.2rem; color: #ffe08b; font-size: 1.2rem; }
+      .content__body .show-notice h2 { margin: 0; color: #ffe08b; font-size: 1rem; }
+      .content__body .show-notice p { margin: 0.35rem 0 0; font-size: 0.92rem; }
+      .show-notice p:empty { display: none; }
+
+      /* RF owns availability and supplies the return time. The same hook is
+         used for nightly caps and cooldowns, so keep the explanation neutral
+         and preserve RF's own message below it. */
+      .los-song-list .sequence-unavailable {
+        cursor: default;
+        border-style: dashed;
+        border-color: rgba(255, 224, 139, 0.24);
+        background: rgba(255, 224, 139, 0.035);
+        transform: none;
+      }
+      .los-song-list .sequence-unavailable-hint {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        display: block;
+        margin-top: 0.65rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 10px;
+        background: rgba(255, 224, 139, 0.09);
+        color: #ffe3a6;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+        font-style: normal;
+        text-align: left;
+        overflow-wrap: anywhere;
+      }
+      .los-song-list .sequence-unavailable-hint::before {
+        content: "Giving other favourites a turn.";
+        display: block;
+        margin-bottom: 0.15rem;
+        font-weight: 400;
+      }
+
+      /* SHARING OPTIONS: feature names are on #show-options below. */
+      #show-options:not(.has-donations) .share-donation,
+      #show-options:not(.has-pulsemesh) .share-pulsemesh,
+      #show-options:not(.has-categories) .category-filter-link,
+      #show-options:not(.has-new-songs) .music-filter a[href="#songs-new"],
+      #show-options:not(.has-categories):not(.has-new-songs) .music-filter { display: none !important; }
+      .music-filter { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      @media (min-width: 560px) {
+        body:has(#show-options.has-categories) .music-filter { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        body:has(#show-options.has-categories.has-new-songs) .music-filter { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      }
+      .share-brand { padding: 2rem 1rem 1.5rem; }
+      .share-brand > i { color: var(--gold); font-size: 2rem; }
+      .content__body .share-brand h1 {
+        max-width: 100%; font-size: clamp(1.8rem, 7vw, 3rem);
+        line-height: 1.15; letter-spacing: -0.035em; margin: 0.45em 0 0.2em;
+      }
+      .share-donation > i, .additional-donation > i { font-size: 2.4rem; color: var(--gold); text-align: center; }
+      .share-donation.support-card { grid-template-columns: minmax(0, 1fr); }
+      .music-option { min-width: 0; }
+      .radio-frequency { overflow-wrap: anywhere; }
+
+      /* COLOUR SETTINGS: optional. Keep text light against these dark surfaces.
+         Section washes are RGB triplets; other values below are hex colours. */
+      :root { --page-bg: #111118; --panel: #063c26; --gold: #ffcd00; --text:#f4f8f9; --text-secondary:#d0dfd5; --accent-ink:#17131e; }
+      #home-panel { --section-wash: 7, 35, 73; --section-accent:#ffcd00; --section-rgb:255, 205, 0; }
+      #music-panel { --section-wash: 8, 46, 32; --section-accent:#ffcd00; --section-rgb:255, 205, 0; }
+      #support-panel { --section-wash: 16, 43, 82; --section-accent:#ffcd00; --section-rgb:255, 205, 0; }
+      #info-panel { --section-wash: 7, 50, 38; --section-accent:#ffcd00; --section-rgb:255, 205, 0; }
+    /* Builder options also work when RF nests this document. */
+      #show-options:not(.has-fm) .share-fm { display: none !important; }
+      #show-options:not(.has-listening) .music-options::after { content: "Hang tight, mate. Listening details are coming soon."; }
+      #show-options:not(.has-listening) #info-listening .linked-listening::after { content: "Hang tight, mate. Listening details are coming soon."; }
+      .show-logo { display:block; width:auto; max-width:min(280px,100%); max-height:180px; margin:0 auto 1rem; object-fit:contain; }
+      .content__body .share-brand .show-name-hidden { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip-path:inset(50%); white-space:nowrap!important; border:0!important; }
+      .share-brand.brand-combined .show-logo { max-width:min(340px,100%); max-height:150px; margin-bottom:0; }
+      .content__body .share-brand.brand-combined h1 { max-width:340px; margin:0 auto .75rem; padding:.35rem .35rem .55rem; color:var(--gold); font-size:clamp(1.45rem,5vw,2.15rem); font-weight:800; line-height:1.15; letter-spacing:.015em; text-wrap:balance; border-bottom:1px solid var(--gold); border-radius:0 0 45% 45%; }
+      .share-brand h1, .share-brand p, .show-notice p, .support-card p, .hours-row span { overflow-wrap:anywhere; }
+      .show-notice p, .other-listening { white-space:pre-line; }
+      .content__body .section-card { background-color:var(--panel); }
+      /* Images are contained, never cropped. Compact cards use the same image. */
+      .content__body .donation-image { display:block;width:min(320px,100%);height:200px;object-fit:contain;margin:0 auto 1rem; }
+      .content__body .donation-image--compact { width:72px;height:64px;margin:0;justify-self:center; }
+      .music-filter { display:flex;flex-wrap:wrap; }
+      .music-filter a { flex:1 1 105px;min-width:0;overflow-wrap:anywhere; }
+      .music-filter a.category-filter-link { color:var(--text-secondary); }
+      .music-filter a { color:var(--text-secondary); }
+      .content__body .share-brand p,.content__body .support-card p { color:var(--text-secondary); }
+      
+      
+/* Seasonal artwork remains outside the interactive content. */
+@font-face{font-family:"LOS Nunito";src:url("https://lightsonsunset.github.io/remote-falcon-template/assets/fonts/nunito.ttf") format("truetype");font-weight:100 900;font-display:swap}
+@font-face{font-family:"LOS Playfair Display";src:url("https://lightsonsunset.github.io/remote-falcon-template/assets/fonts/playfair-display.ttf") format("truetype");font-weight:400 900;font-display:swap}
+body:has(#show-options.season-theme){font-family:"LOS Nunito",Arial,sans-serif}
+#show-options.season-theme{--season-heading:"LOS Nunito",Georgia,serif}
+#show-options.season-theme .content__body h2,#show-options.season-theme .content__body h3{font-family:var(--season-heading)}
+#show-options.season-theme .logo-stage::before,#show-options.season-theme .logo-stage::after{display:none}
+#show-options.season-theme .share-brand{position:relative;isolation:isolate;flex-shrink:0}
+#show-options.season-header-on .share-brand{padding:105px 44px 90px;min-height:330px}
+#show-options.season-theme .show-logo{object-fit:contain;max-width:min(320px,100%);max-height:160px}
+#show-options.season-theme .share-brand>h1,#show-options.season-theme .share-brand>p,#show-options.season-theme .share-brand>a,#show-options.season-theme .share-brand>.show-logo{position:relative;z-index:1}
+#show-options.season-theme .season-header-art{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;border-radius:18px;container-type:inline-size}
+#show-options.season-theme .season-header-source{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#show-options.season-theme .season-header-frame{position:absolute;inset:0}
+#show-options.season-theme .season-header-frame::before,#show-options.season-theme .season-header-frame::after{content:"";position:absolute;left:0;right:0;height:120px;height:calc(100cqw / 3);background-image:url("https://lightsonsunset.github.io/remote-falcon-template/assets/seasonal/australia-day-header.webp");background-size:100% auto;background-repeat:no-repeat}
+#show-options.season-theme .season-header-frame::before{top:0;background-position:center top}
+#show-options.season-theme .season-header-frame::after{bottom:0;background-position:center bottom}
+#show-options.season-header-on .share-brand h1{font-size:clamp(25px,4vw,34px);line-height:1.15}
+#show-options.season-header-on .share-brand p{font-size:14px;line-height:1.5}
+#show-options.season-header-on .share-brand .cc-eyebrow{font-size:9px}
+#show-options.season-theme .season-drift{position:absolute;left:0;right:0;top:0;height:80px;pointer-events:none;overflow:hidden;z-index:2}
+#show-options.season-theme .season-particle{position:absolute;top:-26px;left:3%;width:20px;height:22px;object-fit:contain;border-radius:0;animation:season-fall 14s linear infinite;opacity:0}
+#show-options.season-theme .season-particle-1{left:92%;animation-delay:-5s;animation-duration:17s}
+#show-options.season-theme .season-particle-2{left:70%;animation-delay:-11s;animation-duration:19s}
+@keyframes season-fall{0%{opacity:0;transform:translateY(0) rotate(-12deg)}12%,85%{opacity:.65}100%{opacity:0;transform:translateY(var(--season-fall-distance,100px)) rotate(15deg)}}
+body:has(#show-options.season-theme) .los-menu{background:color-mix(in srgb,var(--panel) 30%,#080e12);border-color:color-mix(in srgb,var(--gold) 45%,transparent)}
+body:has(#show-options.season-theme) .los-menu__item{--nav-tint:color-mix(in srgb,var(--panel) 75%,var(--gold));--nav-accent:var(--gold)}
+body:has(#show-options.season-navbar-on) .los-menu{border:2px solid var(--gold);box-shadow:0 10px 30px #0009,inset 0 0 0 2px #00843d}
+
+/* Only the header bunting sways. The page and corner illustrations stay still. */
+#show-options.season-australia-day.season-header-on .share-brand{padding-top:108px;padding-bottom:125px;min-height:350px}
+#show-options.season-australia-day .season-header-frame::before,#show-options.season-australia-day .season-header-frame::after{height:min(140px,calc(100cqw / 3));background-size:min(100%,420px) auto}
+#show-options.season-australia-day.season-motion .season-header-frame::before{transform-origin:50% 0;animation:season-bunting 7s ease-in-out infinite alternate}
+@media(min-width:600px){#show-options.season-australia-day.season-header-on .share-brand{padding-bottom:150px}}
+@keyframes season-bunting{from{transform:perspective(700px) rotateX(-2deg) rotate(-.6deg)}to{transform:perspective(700px) rotateX(3deg) rotate(.6deg)}}
+body:has(#show-options.season-australia-day) .season-home-icon{font-size:26px;display:inline-block;width:1em;height:1em;background:currentColor;mask:url("https://lightsonsunset.github.io/remote-falcon-template/assets/seasonal/southern-cross.svg") center/contain no-repeat;-webkit-mask:url("https://lightsonsunset.github.io/remote-falcon-template/assets/seasonal/southern-cross.svg") center/contain no-repeat}
+#show-options.season-australia-day .section-card,#show-options.season-australia-day .jukebox-list,#show-options.season-australia-day .cell-vote-playlist{border-color:color-mix(in srgb,var(--gold) 28%,transparent)}
+@media(prefers-reduced-motion:reduce){#show-options.season-australia-day.season-motion .season-header-frame::before{animation:none;transform:none}}
+
+
+/* Australia Day card colours: listening gold, information blue, support red. */
+#show-options.season-australia-day .section-card:has(>.music-options){--panel:#f6d776;--text:#173722;--text-secondary:#344b34;--gold:#16472d;--accent-ink:#ffffff;--section-rgb:22,71,45;--surface-inset:#ffffff26}
+#show-options.season-australia-day :is(.info-intro,.live-schedule,.cc-schedule,.home-extra,.info-tab-callout){--panel:#12386a;--text:#f4f8f9;--text-secondary:#dde9f7;--gold:#ffcd00;--accent-ink:#17131e;--section-rgb:255,205,0}
+#show-options.season-australia-day :is(.support-intro,.support-card,.donation-card,.additional-donation){--panel:#7d2436;--text:#f4f8f9;--text-secondary:#ffe4df;--gold:#ffcd00;--accent-ink:#17131e;--section-rgb:255,205,0}
+#show-options.season-australia-day :is(.section-card:has(>.music-options),.info-intro,.live-schedule,.cc-schedule,.home-extra,.info-tab-callout,.support-intro,.support-card,.donation-card,.additional-donation){--section-accent:var(--gold);--surface-border:color-mix(in srgb,var(--gold) 35%,transparent);background:var(--panel);color:var(--text);border-color:var(--surface-border)}
+#show-options.season-australia-day :is(.section-card:has(>.music-options),.info-intro,.live-schedule,.cc-schedule,.home-extra,.info-tab-callout,.support-intro,.support-card,.donation-card,.additional-donation) :is(h2,h3){color:var(--text)}
+#show-options.season-australia-day :is(.section-card:has(>.music-options),.info-intro,.live-schedule,.cc-schedule,.home-extra,.info-tab-callout,.support-intro,.support-card,.donation-card,.additional-donation) .support-action,#show-options.season-australia-day :is(.section-card:has(>.music-options),.info-intro,.live-schedule,.cc-schedule,.home-extra,.info-tab-callout,.support-intro,.support-card,.donation-card,.additional-donation) .support-action:hover{background:var(--gold);color:var(--accent-ink)}
+/* A coordinated player surface, separate from the selectable song cards. */
+#show-options.season-australia-day :is(.music-live-section > .playing-now,.music-live-section > .next-playlist,.music-live-section > .jukebox-queue-container,.cc-player,.cc-queue){--panel:#12386a;--text:#f4f8f9;--text-secondary:#dde9f7;--gold:#ffcd00;--accent-ink:#17131e;--player-border:#ffcd00;--surface-border:color-mix(in srgb,var(--player-border) 38%,var(--panel));background:var(--panel);color:var(--text);border-color:var(--surface-border)}
+#show-options.season-australia-day :is(.music-live-section > .playing-now,.cc-player){border:2px solid color-mix(in srgb,var(--player-border) 70%,var(--panel))}
+#show-options.season-australia-day .music-live-section :is(.playing-now,.next-playlist,.jukebox-queue-container):empty::after,#show-options.season-australia-day .cc-queue .jukebox-queue-container:empty::after{color:var(--text-secondary)}
+
+#show-options.season-theme .music-picker-section > .music-request-card{margin-top:16px}
+body:has(#show-options.season-theme) .request-feedback{--feedback-accent:#ffcd00;--feedback-bg:#063c26}
+body:has(#show-options.season-theme) .innerRequestSuccessful::before,body:has(#show-options.season-theme) .failed_Info_Box::before{background:linear-gradient(130deg,#ffcd00,#063c26)}
+@media(max-width:420px){#show-options.season-custom-logo.season-header-on .share-brand{padding-left:28px;padding-right:28px;padding-bottom:85px}#show-options.season-custom-logo .season-header-frame{opacity:.55}}
+/* Remove the artwork and its space independently. Both enabled retains the original layout. */
+#show-options.season-theme:not(.season-header-top) .season-header-frame::before,#show-options.season-theme:not(.season-header-bottom) .season-header-frame::after{display:none}
+#show-options.season-header-on:not(.season-header-top) .share-brand{padding-top:28px;min-height:0}
+#show-options.season-header-on:not(.season-header-bottom) .share-brand{padding-bottom:24px;min-height:0}
+@media(prefers-reduced-motion:reduce){#show-options.season-theme .season-drift{display:none}#show-options.season-theme .season-particle{animation:none}}
+
+@font-face { font-family:"LOS Nunito";src:url("https://lightsonsunset.github.io/remote-falcon-template/assets/fonts/nunito.ttf") format("truetype");font-style:normal;font-weight:800;font-display:swap; }
+.content__body .share-brand h1, .content__body .share-brand.brand-combined h1 { font-family:"LOS Nunito", Arial, sans-serif;font-weight:800;font-synthesis:none;letter-spacing:normal; }
+
+/* ARTIST VISIBILITY: independent song-list and playback/queue choices.
+   Empty RF artist elements take no space; missing elements need no placeholder. */
+.content__body :is(.jukebox-list-artist,.cell-vote-playlist-artist,.jukebox-queue-artist):empty,
+body:has(#show-options.hide-song-artists) .los-song-list :is(.jukebox-list-artist,.cell-vote-playlist-artist),
+body:has(#show-options.hide-queue-artists) :is(.playing-now,.next-playlist,.jukebox-queue) :is(.jukebox-list-artist,.cell-vote-playlist-artist,.jukebox-queue-artist) { display:none; }
+/* Do not reserve an artwork grid row for an absent or hidden artist. */
+.content__body :is(.jukebox-list,.cell-vote-playlist,.playing-now):not(:has(> :is(.jukebox-list-artist,.cell-vote-playlist-artist):not(:empty))) > img,
+body:has(#show-options.hide-song-artists) .los-song-list :is(.jukebox-list,.cell-vote-playlist) > img,
+body:has(#show-options.hide-queue-artists) .playing-now > img { grid-row:1; }
+
+      .neighbour-message,.request-feedback__message { white-space:pre-line; }
+      .los-menu__label { white-space:normal;overflow-wrap:anywhere;max-width:100%; }
+      #show-options:not(.has-donations-home) #home-panel .share-donation,
+      #show-options:not(.has-donations-info) #info-panel .share-donation { display:none !important; }
+      .faq-answer,.home-extra p { white-space:pre-line;overflow-wrap:anywhere; }
+      .home-extra h2 { color:var(--section-accent); }
+      .live-schedule h2,.live-schedule h3 { margin:0 0 .45rem;font-size:1rem; }
+      .live-schedule p { margin:0 0 .75rem; }
+      .live-schedule .hours-row { gap:.65rem;padding-block:.3rem; }
+      .content__body a.pulsemesh-download { background:var(--gold);color:var(--accent-ink); }
+      .content__body a.pulsemesh-download:hover { background:var(--gold);filter:brightness(1.08); }
+      .jukebox-list::after,.cell-vote-playlist::after { background:var(--gold);color:var(--accent-ink); }
+    /* Optional RF values collapse when RF supplies no content. */
+      .queue-count,.votes-remaining { color:var(--text-secondary);font-size:.9rem;text-align:center;overflow-wrap:anywhere; }
+      .votes-remaining { padding:.65rem .8rem;background:rgba(255,255,255,.06);border-radius:14px;margin:.7rem 0; }
+      .votes-remaining:empty { display:none; }
+      .location-code-card { padding:1rem;margin:.8rem 0;border:1px solid rgba(255,255,255,.15);border-radius:18px;text-align:left; }
+      .location-code-card h3 { margin:0 0 .5rem; }
+      .location-code-card p { font-size:.9rem; }
+      .location-code-input input { color:var(--text);background:var(--panel);border:1px solid var(--gold);border-radius:10px;padding:.7rem;max-width:100%;box-sizing:border-box; }
+      .music-tab-button[hidden] { display:none !important; }
+      .location-code-input > * { max-width:100%; }
+      
+.social-card>p{white-space:pre-line}.social-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem}.social-link{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:48px;min-width:48px;max-width:100%;box-sizing:border-box;padding:.65rem .9rem;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:999px;background:color-mix(in srgb,var(--gold) 10%,var(--panel));color:var(--text);text-decoration:none;font-weight:700}.social-link i{font-size:24px;color:var(--gold);flex-shrink:0}.social-link span{overflow-wrap:anywhere;min-width:0}a.social-link:hover{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 20%,var(--panel))}a.social-link:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+/* Optional visitor cards: shared in the viewer and manual edition. */
+.info-tab-button[hidden]{display:none!important}
+.visitor-links{display:grid;gap:.7rem;text-align:left}
+.visitor-link{display:flex;align-items:center;gap:.85rem;padding:.85rem;border-radius:18px;background:var(--panel);border:1px solid var(--surface-border);color:var(--text);text-decoration:none;min-height:56px;box-sizing:border-box}
+.visitor-link>span:last-child{min-width:0;overflow-wrap:anywhere;flex:1}.visitor-link strong{display:block;font-size:1rem}
+.visitor-link-description{display:block;margin-top:.2rem;color:var(--text-secondary);font-size:.9rem;white-space:pre-line}
+.visitor-link-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);color:var(--section-accent);font-size:1.5rem}
+.visitor-link-icon img{width:100%;height:100%;object-fit:contain;border-radius:8px}.visitor-link-icon .fa-spotify{color:#1ed760}
+a.visitor-link:hover{border-color:var(--section-accent)}a.visitor-link:focus-visible,.faq-link:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.visitor-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,135px),1fr));gap:.75rem}
+.visitor-facts>div{padding:1rem .65rem;border-radius:18px;background:var(--panel);border:1px solid var(--surface-border);overflow-wrap:anywhere}
+.visitor-facts strong{display:block;font-size:1.6rem;line-height:1.25;color:var(--section-accent);font-variant-numeric:tabular-nums}.visitor-facts span{display:block;margin-top:.4rem;color:var(--text-secondary)}
+.show-preview p,.visitor-playlists>p,.visitor-resources>p{white-space:pre-line}.show-preview .support-action{display:inline-flex;gap:.5rem;max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}
+.youtube-link{display:inline-flex;gap:.4rem;align-items:center;justify-content:center;overflow-wrap:anywhere;max-width:100%;box-sizing:border-box}.playlist-faq .visitor-links{margin-top:.8rem}.faq-link{color:var(--section-accent);overflow-wrap:anywhere}
+/* Countdown uses the regular card style with stable, readable digits. */
+.seasonal-countdown{flex-shrink:0}
+.seasonal-countdown .countdownContainer{display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem;max-width:100%;margin:0}
+.seasonal-countdown .days-count{box-sizing:border-box;min-width:0;width:auto;max-width:none;padding:.8rem .45rem;margin:0;border-radius:16px}
+.seasonal-countdown .days-count strong{display:block;line-height:1.15;font-variant-numeric:tabular-nums;color:var(--section-accent);font-size:clamp(2.5rem,9vw,3.4rem)}
+.seasonal-countdown .days-count span{display:block;overflow-wrap:anywhere;margin-top:.4rem;color:var(--text-secondary);font-size:.8rem}
+.seasonal-countdown.countdown-full .countdownContainer{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seasonal-countdown.countdown-full .days-count strong{font-size:clamp(1.6rem,5vw,2.6rem)}
+@media(min-width:600px){.seasonal-countdown.countdown-full .countdownContainer{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+      .browser-compat-note { display:none; }
+      /* Basic reading and requests stay available without relational selectors.
+         Navigation uses native anchors; category/NEW filters need a newer browser. */
+      @supports not selector(:has(*)) {
+        #show-options { display:block;overflow-y:auto;scroll-padding-bottom:var(--nav-clearance); }
+        #show-options .content__body { position:relative;top:auto;right:auto;bottom:auto;left:auto;min-height:100%;opacity:1;visibility:visible;pointer-events:auto;overflow:visible;transition:none;z-index:auto; }
+        #show-options .browser-compat-note { display:block;max-width:620px;padding:.75rem 1rem;border:1px solid currentColor;border-radius:12px;font-size:.9rem; }
+        #show-options .music-filter { display:none!important; }
+        .los-menu::before,.los-menu::after { display:none!important; }
+        .los-menu__item { background:transparent;box-shadow:none; }
+        #show-options .los-jukebox-copy,#show-options .los-voting-copy { display:none; }
+        #show-options .support-card { grid-template-columns:minmax(0,1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FEATURE OPTIONS: keep content-container and add only the names you need:
+       has-donations has-pulsemesh has-categories has-new-songs
+       All are off initially. Read START-HERE.html before enabling categories. -->
+    <div class="content-container  season-theme season-australia-day season-header-on season-header-top season-header-bottom season-navbar-on season-motion" id="show-options">
+      <div class="content__body tab-red" id="home-panel" data-tab-panel="home">
+        <p class="browser-compat-note">You’re viewing a simple version of this page. Use the menu or scroll to explore. Update your browser for page tabs and song filters.</p>
+        <!-- SHOW BRANDING: text works without uploading any images.
+             Optional: replace the icon and h1 with your own hosted logo image. -->
+
+        <div class="content__subitem logo-stage share-brand ">
+          <div class="season-header-art" aria-hidden="true"><img class="season-header-source" src="https://lightsonsunset.github.io/remote-falcon-template/assets/seasonal/australia-day-header.webp" alt="" draggable="false"><span class="season-header-frame"></span></div><i class="fa-solid fa-sun" aria-hidden="true"></i>
+          <h1 class="">Your Australia Day Show</h1>
+          <p>G’day! Bring your mates and enjoy the lights.</p>
+        </div>
+
+        <!-- HOME NOTICE: edit the title and message, then remove hidden.
+             Restore hidden when finished. This does not change show status. -->
+        <aside class="show-notice" id="show-notice" hidden aria-labelledby="show-notice-title">
+          <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
+          <div><h2 id="show-notice-title">Show update</h2><p></p></div>
+        </aside>
+        <div class="content__subitem" {after-hours-message}>
+          <div class="section-card compact feature"><div class="show-status"><span class="show-status__label">Off air</span><span class="show-status__detail">Knocked off for the day</span></div><!-- SHOW SCHEDULE: update all copies, including the Info FAQ. -->
+            <h2>Show Dates</h2>
+            <p><span class="date-placeholder">To be announced</span></p>
+            <h3>Show Hours</h3>
+            <div class="show-hours"><div class="hours-list"><div class="hours-row"><span>Sunday–Thursday</span><span>To be announced</span></div>
+<div class="hours-row"><span>Friday–Saturday</span><span>To be announced</span></div>
+<div class="hours-row"><span>Australia Day</span><span>To be announced</span></div></div></div></div>
+
+<!-- DONATIONS: repeated in Home (three states), Support and Info. -->
+          <a class="section-card compact donation-card compact-live share-donation" href="#support-panel" target="_blank" rel="noopener noreferrer" aria-label="Donate to Your chosen charity">
+            <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+            <p><strong>Support Your chosen charity this Australia Day.</strong><span class="tap-note">Tap to donate</span></p>
+          </a>
+        </div>
+        <div class="content__subitem" {jukebox-dynamic-container}>
+          <div class="section-card compact feature"><div class="show-status show-status--live"><span class="show-status__label">On air</span><span class="show-status__detail">Snags are cooking, enjoy the tunes</span></div>
+            <p class="rf-titles">Please help us be a good neighbour.</p><p class="neighbour-message">Keep radios at a reasonable volume.
+Do not park in or block driveways.
+When stopped, please dim headlights and leave running lights on.</p>
+          </div>
+          
+          <div class="section-card">
+            <h2>Get the Tunes Going</h2>
+            <div class="music-options">
+
+              <div class="music-option share-fm">Tune your car radio to <span class="radio-frequency">88.7 FM</span></div>
+              <div class="music-option share-pulsemesh">At the show? Open PulseMesh and select our display to listen.
+                <div class="pulsemesh-download-wrap">
+
+<a class="pulsemesh-download" href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download" aria-hidden="true"></i><span>Download PulseMesh</span></a><span class="pulsemesh-platforms">For iPhone and Android</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="section-card compact music-tab-callout music-tab-button primary-cta"  href="#music-panel" aria-label="Request a Tune"><i class="fa-solid fa-music" aria-hidden="true"></i><span><strong>Request a Tune</strong>See what’s playing and pop a favourite in the queue.</span></a>
+          <!-- DONATIONS: repeated in Home (three states), Support and Info. -->
+          <a class="section-card compact donation-card compact-live share-donation" href="#support-panel" target="_blank" rel="noopener noreferrer" aria-label="Donate to Your chosen charity">
+            <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+            <p><strong>Support Your chosen charity this Australia Day.</strong><span class="tap-note">Tap to donate</span></p>
+          </a>
+        </div>
+        <div class="content__subitem" {playlist-voting-dynamic-container}>
+          <div class="section-card compact feature"><div class="show-status show-status--live"><span class="show-status__label">On air</span><span class="show-status__detail">Snags are cooking, enjoy the tunes</span></div>
+            <p class="rf-titles">Please help us be a good neighbour.</p><p class="neighbour-message">Keep radios at a reasonable volume.
+Do not park in or block driveways.
+When stopped, please dim headlights and leave running lights on.</p>
+          </div>
+          
+          <div class="section-card">
+            <h2>Get the Tunes Going</h2>
+            <div class="music-options">
+
+              <div class="music-option share-fm">Tune your car radio to <span class="radio-frequency">88.7 FM</span></div>
+              <div class="music-option share-pulsemesh">At the show? Open PulseMesh and select our display to listen.
+                <div class="pulsemesh-download-wrap">
+
+<a class="pulsemesh-download" href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download" aria-hidden="true"></i><span>Download PulseMesh</span></a><span class="pulsemesh-platforms">For iPhone and Android</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="section-card compact music-tab-callout music-tab-button primary-cta"  href="#music-panel" aria-label="Vote for the Next Tune"><i class="fa-solid fa-music" aria-hidden="true"></i><span><strong>Vote for the Next Tune</strong>Give your favourite a vote and help pick the next tune.</span></a>
+          <!-- DONATIONS: repeated in Home (three states), Support and Info. -->
+          <a class="section-card compact donation-card compact-live share-donation" href="#support-panel" target="_blank" rel="noopener noreferrer" aria-label="Donate to Your chosen charity">
+            <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+            <p><strong>Support Your chosen charity this Australia Day.</strong><span class="tap-note">Tap to donate</span></p>
+          </a>
+        </div>
+        <!-- EXTRA HOME CARD: optional visitor information. -->
+        
+        
+
+      </div>
+      <div class="content__body tab-green" id="music-panel" data-tab-panel="music">
+        <div class="music-filter-targets"><span id="songs-all"></span><span class="category-filter-target" id="songs-category-1"></span><span class="category-filter-target" id="songs-category-2"></span><span id="songs-new"></span></div>
+        <div class="content__subitem" {after-hours-message}>
+          <div class="section-card compact feature"><div class="show-status"><span class="show-status__label">Off air</span><span class="show-status__detail">Knocked off for the day</span></div>
+            <h2>More Tunes Next Show</h2><p>We’ll be back for another round of lights and tunes. Check the show hours and swing by, mate.</p><!-- SHOW SCHEDULE: update all copies, including the Info FAQ. -->
+            <h2>Show Dates</h2>
+            <p><span class="date-placeholder">To be announced</span></p>
+            <h3>Show Hours</h3>
+            <div class="show-hours"><div class="hours-list"><div class="hours-row"><span>Sunday–Thursday</span><span>To be announced</span></div>
+<div class="hours-row"><span>Friday–Saturday</span><span>To be announced</span></div>
+<div class="hours-row"><span>Australia Day</span><span>To be announced</span></div></div></div></div>
+          
+          <a class="section-card compact info-tab-callout info-tab-button"  href="#info-panel" aria-label="The Show Lowdown"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span><strong>The Show Lowdown</strong>Show hours and how to hear the tunes.</span></a>
+        </div>
+        <div class="content__subitem music-live-section" {jukebox-dynamic-container}>
+<a class="music-listen-reminder share-fm"  href="#info-listening" aria-label="Tune to 88.7 FM. Ways to listen">
+            <span><i class="fa-solid fa-radio" aria-hidden="true"></i>&nbsp; Tune to <strong>88.7 FM</strong></span>
+            <span class="music-listen-reminder__help">Ways to listen</span>
+          </a>
+          <div class="music-section-heading">Now Playing</div><div class="playing-now">{NOW_PLAYING}</div>
+          <div class="music-section-heading compact">Up Next</div><div class="next-playlist">{NEXT_PLAYLIST}</div>
+          <div class="music-section-heading compact">Request Queue</div><div class="jukebox-queue-container">{JUKEBOX_QUEUE}</div>
+        </div>
+        <div class="content__subitem music-picker-section" {jukebox-dynamic-container}>
+          <div class="section-card music-request-card"><h2>Request a Tune</h2><p class="request-copy">Tap a tune to pop it in the queue.</p>
+<div {location-code-dynamic-container}><div class="location-code-card"><h3>Display access code</h3><p>Enter the code shown at the display, then choose a song.</p><div class="location-code-input">{LOCATION_CODE}</div></div></div>
+          <div class="music-filter">
+              <a href="#songs-all">All</a><a class="category-filter-link" href="#songs-category-1">Aussie favourites</a><a class="category-filter-link" href="#songs-category-2">Party favourites</a><a href="#songs-new">New this year</a>
+            </div><div id="playlists_container" class="los-song-list">{PLAYLISTS}</div></div>
+        </div>
+        <div class="content__subitem music-live-section" id="los-voting-live" {playlist-voting-dynamic-container}>
+<a class="music-listen-reminder share-fm"  href="#info-listening" aria-label="Tune to 88.7 FM. Ways to listen">
+            <span><i class="fa-solid fa-radio" aria-hidden="true"></i>&nbsp; Tune to <strong>88.7 FM</strong></span>
+            <span class="music-listen-reminder__help">Ways to listen</span>
+          </a><div class="music-section-heading">Now Playing</div><div class="playing-now">{NOW_PLAYING}</div>
+        </div>
+        <div class="content__subitem music-picker-section" {playlist-voting-dynamic-container}>
+          <div class="section-card music-request-card"><h2>Vote for the Next Tune</h2><p class="request-copy">Give your favourite a vote. The tune with the most votes plays next.</p>
+<div {location-code-dynamic-container}><div class="location-code-card"><h3>Display access code</h3><p>Enter the code shown at the display, then choose a song.</p><div class="location-code-input">{LOCATION_CODE}</div></div></div>
+          <div class="music-filter">
+              <a href="#songs-all">All</a><a class="category-filter-link" href="#songs-category-1">Aussie favourites</a><a class="category-filter-link" href="#songs-category-2">Party favourites</a><a href="#songs-new">New this year</a>
+            </div><div id="voting_playlists_container" class="los-song-list">{PLAYLISTS}</div></div>
+        </div>
+      </div>
+      <div class="content__body tab-blue" id="support-panel" data-tab-panel="support">
+        <div class="section-card support-intro"><h2>Give a Little, Help a Mate</h2><p>Cheers for being part of the show. A friendly wave and a bit of care for the neighbours go a long way.</p></div>
+        <!-- DONATION DETAILS: hidden until has-donations is enabled. -->
+        <div class="section-card support-card share-donation">
+          
+          <div><h3>Your chosen charity</h3><p>Support a cause close to our community.</p>
+            <a class="support-action" href="#support-panel" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> Donate to Your chosen charity</a>
+          </div>
+        </div>
+        
+      </div>
+      <div class="content__body tab-yellow" id="info-panel" data-tab-panel="info">
+        <div class="section-card info-intro"><h2>The Show Lowdown</h2><p>G’day and welcome to Your Australia Day Show! Here’s how to tune in and join the fun.</p></div>
+
+        
+<!-- DONATIONS: repeated in Home (three states), Support and Info. -->
+          <a class="section-card compact donation-card compact-live share-donation" href="#support-panel" target="_blank" rel="noopener noreferrer" aria-label="Donate to Your chosen charity">
+            <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+            <p><strong>Support Your chosen charity this Australia Day.</strong><span class="tap-note">Tap to donate</span></p>
+          </a>
+        <div class="section-card info-card"><h2>FAQ</h2><div class="info-faq"><div class="faq-item"><strong>When is the show running?</strong><p>To be announced</p><div class="hours-list"><div class="hours-row"><span>Sunday–Thursday</span><span>To be announced</span></div><div class="hours-row"><span>Friday–Saturday</span><span>To be announced</span></div><div class="hours-row"><span>Australia Day</span><span>To be announced</span></div></div></div>
+<div class="faq-item" id="info-listening"><strong>How do I hear the music?</strong><div class="linked-listening"><p class="share-fm">Tune your car radio to 88.7 FM.</p><div class="share-pulsemesh"><div class="faq-pulse-option"><a href="https://pulsemesh.io/download" target="_blank" rel="noopener noreferrer">Download PulseMesh</a><small>For iPhone and Android</small></div></div></div></div>
+<div class="faq-item"><strong>Can I choose a song?</strong><p class="faq-answer">Yes. Open the Music tab during show hours. In Jukebox mode, picks join the queue. On voting nights, the song with the most votes plays next.</p></div>
+<div class="faq-item"><strong>Why can I not choose a particular song?</strong><p class="faq-answer">Some songs take a break to give other favourites a turn. The message under a song tells you when it will be available again.</p></div>
+<div class="faq-item"><strong>How do you build a show like this?</strong><p class="faq-answer">Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.</p></div></div></div>
+        
+      </div>
+    </div>
+    <!-- Keep RF messages outside panel stacking contexts so they cover all page controls. -->
+        <div class="request-feedback request-feedback--success" id="requestSuccessful" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="innerRequestSuccessful">
+            <i class="fa-solid fa-sun status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Good on ya!</p>
+              <p class="request-feedback__message los-jukebox-copy">Your song is in the queue. Settle in for a ripper light show!</p>
+              <p class="request-feedback__message los-voting-copy">Good choice, mate! Your vote is in. The most-voted tune plays next.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback request-feedback--error" id="requestFailed" style="display: none" role="alert" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-triangle-exclamation status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">A little hiccup…</p>
+              <p class="request-feedback__message los-jukebox-copy">We couldn&#39;t confirm your request. Check the queue before trying again.</p>
+              <p class="request-feedback__message los-voting-copy">We couldn&#39;t confirm your vote. Check the song&#39;s vote count before trying again.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="requestPlaying" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-music status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Great minds, great tunes!</p>
+              <p class="request-feedback__message los-jukebox-copy">This song is already playing, queued, or at its request limit. Choose another favourite!</p>
+              <p class="request-feedback__message los-voting-copy">This song is already playing or isn&#39;t available for another pick yet. Choose another favourite!</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="queueFull" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-list-check status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Chock-a-block for now</p>
+              <p class="request-feedback__message">The queue is full for now. Try again after a song plays and there’s room for another favourite.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback request-feedback--error" id="invalidLocation" style="display: none" role="alert" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-location-dot status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Let&#39;s get you connected</p>
+              <p class="request-feedback__message">We could not confirm your location. If you are at the display, use the help below to join in.</p>
+            </div>
+            <div class="request-feedback__location">{RETRY_LOCATION_INLINE}</div>
+          </div>
+        </div>
+        <div class="request-feedback request-feedback--error" id="invalidLocationCode" style="display: none" role="alert" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-key status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Check your display code</p>
+              <p class="request-feedback__message">That code wasn&#39;t accepted. Check the display code and give it another try.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="alreadyVoted" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-check-double status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Your vote’s already in, mate!</p>
+              <p class="request-feedback__message">Enjoy the lights and vote again in the next round.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="alreadyRequested" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-hourglass-half status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">Your pick’s already in!</p>
+              <p class="request-feedback__message">Your request is already in for this round. You can pick again when the next song starts.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="sequenceUnavailable" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-clock status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">This tune’s having a breather</p>
+              <p class="request-feedback__message">This tune isn’t available right now. Have a go at another favourite.</p>
+            </div>
+          </div>
+        </div>
+        <div class="request-feedback" id="dailyVoteLimitReached" style="display: none" role="status" aria-live="polite" aria-atomic="true">
+          <div class="failed_Info_Box">
+            <i class="fa-solid fa-check-to-slot status-icon" aria-hidden="true"></i>
+            <div>
+              <p class="request-feedback__title">That&#39;s a wrap for your votes!</p>
+              <p class="request-feedback__message">You have used your votes for this show. Settle in and enjoy the lights!</p>
+            </div>
+          </div>
+        </div>
+
+
+    <nav class="los-menu" aria-label="Main navigation">
+      <a class="los-menu__item tab-red" aria-label="Home" data-tab-target="home" href="#home-panel">
+        <i class="season-home-icon" aria-hidden="true"></i>
+        <span class="los-menu__label">Home</span>
+      </a>
+      <a class="los-menu__item tab-green" aria-label="Music" data-tab-target="music" href="#music-panel">
+        <i class="fa-solid fa-music" aria-hidden="true"></i>
+        <span class="los-menu__label">Music</span>
+      </a>
+      <a class="los-menu__item tab-blue" aria-label="Support" data-tab-target="support" href="#support-panel">
+        <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+        <span class="los-menu__label">Support</span>
+      </a>
+      <a class="los-menu__item tab-yellow" aria-label="Info" data-tab-target="info" href="#info-panel">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <span class="los-menu__label">Info</span>
+      </a>
+    </nav>
+
+
+  </body>
+</html>

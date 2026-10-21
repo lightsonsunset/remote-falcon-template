@@ -1,4 +1,5 @@
 // Illustrative product demo only. This module is never used by the exporter.
+import {hasCountdown} from './themes.js';
 import {namesOf,themes} from './template.js';
 import {nowPlayingArtwork} from './song-artwork.js';
 import {categoryNamesOf} from './catalogue.js';
@@ -40,8 +41,8 @@ export function holidayTime(theme,now=new Date()){
 export const christmasDays=(now=new Date())=>holidayDays('christmas',now);
 export function demoState(){return {queue:[],votes:Object.create(null),message:null};}
 export function createPreview(iframe, notify) {
-  let state=demoState(), settings, imported=null, mode='jukebox', air=true, generation=0, timer, countdownTimer, lastHash='#home-panel',dragEnabled=true,templateId=null,landing='home',settleRender=null,pendingContext=null;
-  function updateCountdown(doc){for(const [unit,value] of Object.entries(holidayTime(settings.theme))){const el=doc.getElementById('to-'+settings.theme+'-'+unit);if(el)el.textContent=String(value);}}
+  let state=demoState(), settings, imported=null, mode='jukebox', air=true, generation=0, timer, countdownTimer, lastHash='#home-panel',dragEnabled=true,templateId=null,landing='home',settleRender=null,pendingContext=null,finishNavigation=null,followingFragment=false;
+  function updateCountdown(doc){if(!hasCountdown(settings.theme))return;for(const [unit,value] of Object.entries(holidayTime(settings.theme))){const el=doc.getElementById('to-'+settings.theme+'-'+unit);if(el)el.textContent=String(value);}}
   const scrollPositions=()=>{
     const d=iframe.contentDocument;if(!d)return [];
     return [...d.querySelectorAll('[id]')].filter(e=>e.scrollTop||e.scrollLeft).map(e=>[e.id,e.scrollTop,e.scrollLeft]);
@@ -52,9 +53,30 @@ export function createPreview(iframe, notify) {
     if(d?.getElementById(lastHash.slice(1))?.closest('.content__body')?.id===panel+'-panel')return;
     lastHash=hash;if(pendingContext)pendingContext={positions:[],y:0,disclosures:[]};
     if(!d?.getElementById(panel+'-panel'))return;
-    const focused=document.activeElement,restoreOuter=captureViewport(iframe,focused);
-    iframe.contentWindow.location.hash=hash;restoreOuter();
-    requestAnimationFrame(()=>{restoreOuter();if(document.activeElement===iframe&&focused&&focused!==iframe&&focused.isConnected)focused.focus({preventScroll:true});});
+    followFragment(hash);
+  }
+  function preserveNavigationViewport(action){
+    finishNavigation?.();
+    const d=iframe.contentDocument,focused=document.activeElement,restoreOuter=captureViewport(iframe,focused);
+    // Native fragment/history navigation can scroll the frame's ancestors too.
+    // Keep the inner jump immediate until navigation settles, then restore only
+    // the editor viewport. Never reset the viewer's own destination/scroll.
+    const behavior=d.documentElement.style.scrollBehavior;
+    d.documentElement.style.scrollBehavior='auto';
+    const finish=()=>{
+      if(finishNavigation!==finish)return;
+      finishNavigation=null;
+      if(iframe.contentDocument!==d)return;
+      restoreOuter();d.documentElement.style.scrollBehavior=behavior;
+      if(document.activeElement===iframe&&focused&&focused!==iframe&&focused.isConnected)focused.focus({preventScroll:true});
+    };
+    finishNavigation=finish;
+    action?.();restoreOuter();requestAnimationFrame(finish);
+  }
+  function followFragment(hash){
+    followingFragment=true;
+    try{preserveNavigationViewport(()=>{lastHash=hash;iframe.contentWindow.location.hash=hash;});}
+    finally{followingFragment=false;}
   }
   function songs(){
     if(imported)return imported.songs.map(s=>({id:s.name,title:s.displayName||s.name,artist:s.artist,imageUrl:s.imageUrl,category:groupNames().indexOf(s.category||'')}));
@@ -109,7 +131,8 @@ export function createPreview(iframe, notify) {
           populate(doc);message(doc,'requestSuccessful');
         };
         card.addEventListener('click',activate);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
-        if(mode==='voting'){const tally=element(doc,'div','cell-vote',String(state.votes[s.id]||0));if(categoryName){const row=element(doc,'div','cell-vote-row');row.append(card,tally);group.append(row);}else group.append(card,tally);}else group.append(card);
+        // Match RF's inline row layout so the illustrative preview exposes sizing conflicts.
+        if(mode==='voting'){const tally=element(doc,'div','cell-vote',String(state.votes[s.id]||0));if(categoryName){const row=element(doc,'div','cell-vote-row');row.style.cssText='display:flex;width:100%;align-items:flex-end';row.append(card,tally);group.append(row);}else group.append(card,tally);}else group.append(card);
       }
       container.append(group);
     }
@@ -128,9 +151,10 @@ export function createPreview(iframe, notify) {
       const a=e.target.closest('a');if(!a)return;e.preventDefault();
       if(a.getAttribute('aria-disabled')==='true')return;
       const href=a.getAttribute('href');
-      if(href?.startsWith('#')&&doc.getElementById(href.slice(1))){lastHash=href;iframe.contentWindow.location.hash=href;}
+      if(href?.startsWith('#')&&doc.getElementById(href.slice(1)))followFragment(href);
       else notify('External links are disabled in this demo. They work in your exported page.');
     });
+    iframe.contentWindow.addEventListener('popstate',()=>{if(!followingFragment&&!pendingContext)preserveNavigationViewport();});
     iframe.contentWindow.addEventListener('hashchange',()=>{lastHash=iframe.contentWindow.location.hash||'#'+landing+'-panel';});
     populate(doc);
   }

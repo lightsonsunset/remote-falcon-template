@@ -9,7 +9,7 @@ const title='A longer song title for narrow screens';
 const song=(mode,state,withImage)=>{
  const unavailable=!withImage,cls=mode==='jukebox'?'jukebox-list':'cell-vote-playlist';
  const card='<div class="'+cls+(unavailable?' sequence-unavailable':'')+'" data-key="'+state+(withImage?'-image':'-text')+'" data-artist="'+state+'">'+(withImage?image:'')+(unavailable?'<span>'+title+'</span>':title)+artist(mode,state)+(unavailable?'<span class="sequence-unavailable-hint">Back next show</span>':'')+'</div>';
- return mode==='voting'?'<div class="cell-vote-row">'+card+'<div class="cell-vote">2</div></div>':card;
+ return mode==='voting'?'<div class="cell-vote-row" style="display:flex;width:100%;align-items:flex-end">'+card+'<div class="cell-vote">2</div></div>':card;
 };
 run.onclick=async()=>{run.disabled=true;results.replaceChildren();try{
  for(const t of registry){const source=await(await fetch('../'+t.source)).text();

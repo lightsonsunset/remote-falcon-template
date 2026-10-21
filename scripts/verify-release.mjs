@@ -8,6 +8,14 @@ import {root,releaseFiles,sourceRootFiles,sourceDirectories} from './release-fil
 import {render,cloneDefaults} from '../src/template.js';
 import {assetBase,artwork} from '../src/assets.js';
 const files=await releaseFiles();
+const {version}=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
+assert(/^\d+\.\d+\.\d+$/.test(version),'Product version must use MAJOR.MINOR.PATCH');
+const changelog=await readFile(join(root,'CHANGELOG.md'),'utf8');
+const releaseHeading=changelog.split(/\r?\n/).find(line=>line.startsWith('## '));
+assert(releaseHeading?.startsWith('## '+version+' — '),'Current changelog release must match package version');
+const releaseDate=releaseHeading.split(' — ').at(-1);
+assert(/^\d{1,2} [A-Z][a-z]+ \d{4}$/.test(releaseDate),'Release needs a publication date');
+
 for(const e of await readdir(root)){
  if(![...sourceRootFiles,...sourceDirectories,'.git','_site','node_modules'].includes(e))throw Error('Unreviewed file at repository root: '+e);
 }
@@ -36,6 +44,7 @@ function crc32(data){let c=0xffffffff;for(const b of data){c^=b;for(let i=0;i<8;
 let totalEntries=0;
 for(const template of registry){
  const source=await readFile(join(root,template.source),'utf8');
+ assert(source.includes('customiser edition '+version+' / '+releaseDate),'Template release metadata differs: '+template.name);
  for(const [season,name] of Object.entries(template.downloads)){
   const html=template.render(source,template.cloneDefaults(season));
   assert.equal(await readFile(join(root,'downloads',name),'utf8'),html,'Stale manual starter: '+name);
@@ -72,6 +81,6 @@ for(const template of registry){
   }
  }
  totalEntries+=entryCount;
- console.log(template.name+': 2 canonical starters; '+entryCount+' exact ZIP entries, CRCs and offline guide links verified.');
+ console.log(template.name+': '+Object.keys(template.downloads).length+' canonical starters; '+entryCount+' exact ZIP entries, CRCs and offline guide links verified.');
 }
 console.log('Release audit passed: '+files.length+' allowlisted source files; '+totalEntries+' packaged entries across '+registry.length+' templates.');

@@ -1,9 +1,10 @@
 // Editor-only download names and advisory Home-heading contrast checks.
+import {themes} from './themes.js';
 import {contrast} from './template.js';
 
 export function viewerFilename(settings,template){
  const name=String(settings.name||'').normalize('NFKC').replace(/[<>:"/\\|?*\u0000-\u001f\u007f]/g,' ').trim().replace(/[\s.]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,90).replace(/-$/,'')||'My-Show';
- return name+(template&&template.id!=='festive'?'-'+template.id:'')+'-'+(settings.theme==='halloween'?'Halloween':'Christmas')+'.html';
+ return name+(template&&template.id!=='festive'?'-'+template.id:'')+'-'+themes[settings.theme].name.replace(/ /g,'-')+'.html';
 }
 
 export function nameContrastAdvice(s){

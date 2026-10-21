@@ -1,4 +1,5 @@
 // Fixed, self-hosted heading fonts. No user-supplied CSS or font URLs.
+import {themes} from './themes.js';
 import {assetBase} from './assets.js';
 export const nameFonts=[
  {id:'current',label:'Default'},
@@ -11,7 +12,7 @@ export const nameStyleDefaults={nameFont:'current',customNameColour:false,nameCo
 export const fontPackageFiles=nameFonts.filter(f=>f.file).flatMap(f=>['fonts/'+f.file,'fonts/'+f.id+'-OFL.txt']);
 export function nameStyleCSS(s){
  if(!s.showNameOnHome)return '';
- const font=nameFonts.find(f=>f.id===s.nameFont),rules=[];
+ const font=nameFonts.find(f=>f.id===(s.nameFont==='current'&&themes[s.theme].defaultFont||s.nameFont)),rules=[];
  if(!font)throw Error('Unsupported show-name font.');
  if(font.file)rules.push('font-family:"'+font.family+'", '+font.fallback+';font-weight:'+font.weight+';font-synthesis:none;letter-spacing:normal;');
  if(s.customNameColour){if(!/^#[a-f0-9]{6}$/i.test(s.nameColour))throw Error('Invalid show-name colour.');rules.push('color:'+s.nameColour+';');}

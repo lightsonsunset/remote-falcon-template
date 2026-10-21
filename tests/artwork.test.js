@@ -11,8 +11,8 @@ test('older settings retain their original logo and navbar appearance',()=>{
  assert.equal(next.logoStyle,'classic');assert.equal(next.combineLogoName,false);assert.equal(next.showNameOnHome,true);assert.equal(next.christmasDecoration,'default');assert.equal(next.halloweenDecoration,'default');assert.equal(next.name,s.name);
 });
 test('every bundled design exports a public asset and survives settings round trips',async()=>{
- assert.equal(allArtworkFiles.length,13);
- for(const file of allArtworkFiles){const b=await readFile(new URL('../assets/'+file,import.meta.url));assert.equal(b.subarray(8,12).toString(),'WEBP');assert(b.length<150000);}
+ assert.equal(allArtworkFiles.filter(f=>f.endsWith('.webp')&&!f.includes('/')).length,13);
+ for(const file of allArtworkFiles){const b=await readFile(new URL('../assets/'+file,import.meta.url));if(file.endsWith('.webp'))assert.equal(b.subarray(8,12).toString(),'WEBP');else{assert.match(b.toString(),/^<svg/);assert.doesNotMatch(b.toString(),/<script|\son\w+\s*=|<foreignObject|https?:\/\/(?!www.w3.org)/i);}assert(b.length<150000);}
  for(const theme of ['christmas','halloween']){
   const s=cloneDefaults(theme);s.logoMode='seasonal';s.decorations=true;s.combineLogoName=true;
   for(const c of logoChoices[theme]){s.logoStyle=c.id;const html=render(source,s);assert(html.includes(assetBase+c.file));assert(html.includes('share-brand brand-combined'));assert.deepEqual(parseSettings(settingsFile(s)),s);}

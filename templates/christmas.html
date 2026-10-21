@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.9.1 / 18 October 2026
+<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.10.0 / 22 October 2026
      Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
      Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
      No custom JavaScript. Install in a separate RF draft before going live.
@@ -1778,7 +1778,7 @@
       .music-filter a { color:var(--text-secondary); }
       .content__body .share-brand p,.content__body .support-card p { color:var(--text-secondary); }
       [[THEME_CSS]]
-      [[DECORATION_CSS]]
+      [[DECORATION_CSS]][[SEASON_CSS]]
 [[VIEWER_OPTIONS_CSS]]
       .neighbour-message,.request-feedback__message { white-space:pre-line; }
       .los-menu__label { white-space:normal;overflow-wrap:anywhere;max-width:100%; }
@@ -1822,14 +1822,14 @@
     <!-- FEATURE OPTIONS: keep content-container and add only the names you need:
        has-donations has-pulsemesh has-categories has-new-songs
        All are off initially. Read START-HERE.html before enabling categories. -->
-    <div class="content-container [[FEATURE_CLASSES]]" id="show-options">
+    <div class="content-container [[FEATURE_CLASSES]]" id="show-options">[[SEASON_FLOATING_ART]]
       <div class="content__body tab-red" id="home-panel" data-tab-panel="home">
         <p class="browser-compat-note">You’re viewing a simple version of this page. Use the menu or scroll to explore. Update your browser for page tabs and song filters.</p>
         <!-- SHOW BRANDING: text works without uploading any images.
              Optional: replace the icon and h1 with your own hosted logo image. -->
 [[MAIN_GUIDANCE_ABOVE]]
         <div class="content__subitem logo-stage share-brand [[BRAND_CLASS]]">
-          [[LOGO]]
+          [[SEASON_HEADER_ART]][[LOGO]]
           <h1 class="[[NAME_CLASS]]">[[SHOW_NAME]]</h1>
           <p>[[WELCOME]]</p>
         </div>

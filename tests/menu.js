@@ -1,3 +1,4 @@
+import {hasCountdown} from '../src/themes.js';
 import {registry} from '../src/template-registry.js';
 import {createDesignStore} from '../src/design-store.js';
 import {availableIconRoles} from '../src/icons.js';
@@ -22,7 +23,7 @@ run.onclick=async()=>{
   check(prefix+' page and general settings are labelled separately',!!q('[aria-label="Edit a viewer page"]')&&!!q('[aria-label="General settings"]')&&q('[data-editor-group="messages"]').firstChild.textContent.trim()==='Request messages');
   for(const [key,g] of Object.entries(t.groups)){
    const hash=preview().location.hash;await click('[data-editor-group="'+key+'"]');
-   check(prefix+' '+key+' section ownership',JSON.stringify([...d.querySelectorAll('#settings>[data-section]:not([hidden])')].map(el=>+el.dataset.section))===JSON.stringify(g.sections));
+   check(prefix+' '+key+' section ownership',JSON.stringify([...d.querySelectorAll('#settings>[data-section]:not([hidden])')].map(el=>+el.dataset.section))===JSON.stringify(g.sections.filter(n=>n!==21||hasCountdown(theme))));
    check(prefix+' '+key+' preview navigation',preview().location.hash===(g.panel?'#'+g.panel+'-panel':hash));
   }
   for(const el of d.querySelectorAll('[data-go-section]')){el.click();const dest=q('[data-section="'+el.dataset.goSection+'"]');check(prefix+' shortcut '+el.textContent,!!dest&&!dest.hidden&&dest.open);}

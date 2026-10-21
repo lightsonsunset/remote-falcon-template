@@ -2,6 +2,94 @@
 
 Entries below record checks at the time of each batch. Earlier feature limitations and unpublished status are historical; use the latest release notes for current product status.
 
+## 1.10.0 release checks - 22 October 2026
+
+- All 140 Node tests, both manual-package audits and the allowlisted website build passed. Eight canonical starters match their renderers; the two ZIPs contain 95 expected entries with verified CRCs, attribution and offline-guide links. Release version and date match the changelog and both canonical headers. Exports contain no preview scripts or illustrative catalogue data.
+- All 9,164 browser assertions passed in seven local suites: seasonal themes (1,690), Voting layout (5,688), shared refinements (684), menu (808), registered templates (164), setup (56) and release readiness (74). These isolated demonstrations and stylesheet fixtures cover both layouts, all four themes, narrow and desktop viewer widths, music/air states, saved-setting compatibility, preview navigation and Voting tally/NEW clearance.
+- Reviewed all nine README screenshots and current guide wording. The Released tab shows this release; In progress retains only the three planned themes. Keyboard tab switching, Escape and focus restoration passed. The historical hosted RF checks below remain distinct from these local checks. No RF/FPP page, setting, request or vote changed during release preparation; physical-device playback was not retested.
+
+## RF Now playing limitation - 22 October 2026
+
+- Hosted read-only inspection found that Voting supplied only the Now playing title despite the same song's artwork loading in its selection card. The owner reproduced artwork and artist returning when any visible song had no category, and disappearing when every song had a category again. Both templates use the same native RF placeholder.
+- RF's public viewer source gates its rich Now playing content on the presence of an uncategorised song in Voting. This is an external rendering limitation, not a missing template block or a theme-specific artwork switch. The local illustrative preview can show artwork and artists even when hosted RF omits them. No export workaround, fabricated live response or RF setting change was applied. The owner reported the issue upstream.
+- The owner separately confirmed the latest Compact Voting NEW placement on the hosted RF page. This is owner-reported verification in addition to the local checks below.
+
+## Compact NEW marker clearance - local verification, 22 October 2026
+
+- Read-only inspection of hosted RF confirmed that the row-level NEW marker overlapped the tally on shorter Compact Voting cards. The marker now sits at the top-right of the song card, with horizontal space for the title. No extra vertical padding or minimum card height was added; the 42-pixel tally remains centred and Moving spotlights stays separate.
+- All 8,444 local browser assertions passed: 5,688 Voting layout checks, 2,592 artist-layout checks and 164 registered-template checks. Coverage includes four themes, both templates, 320/390/1280-pixel widths, RF inline flex and NEW-filter grid layouts, short and long titles, four-digit counts, enlarged text, album/category/no artwork and missing artists. A short NEW card retains the height of the equivalent untagged card.
+- The normal phone preview was visually reviewed. Original-template exports remain identical for every theme; Compact changes only CSS. This correction was checked locally, not uploaded to RF. No RF/FPP page, setting, request or vote was changed during this follow-up.
+
+## Compact Voting card widths - 22 October 2026
+
+- RF supplies an inline flex layout for grouped Voting rows. Compact now explicitly gives the song card the remaining width and reserves a centred 42-pixel tally column, including when the NEW filter uses its grid layout. The shared illustrative preview includes the observed inline styles so future sizing conflicts are visible locally.
+- All 6,644 local browser assertions passed: 3,888 focused Voting layout checks, 2,592 artist-layout checks and 164 registered-template checks. Coverage includes all four themes in both templates, 320/390/1280-pixel layouts, album/category/no artwork, missing or hidden artists, long titles, badges, unavailable hints, category/NEW filters and enlarged text. These are local stylesheet fixtures and labelled demonstrations, separate from the hosted check below.
+- Hosted RF verification used the real catalogue in a designated test viewer. All 76 Compact Thanksgiving Voting rows had equal 513-pixel cards and centred 42-pixel tally columns at the checked desktop width. The saved source matched the intended CSS-only patch and passed RF validation. No votes or requests were submitted. Jukebox and the owner's testing page were restored after the check; the personal main-page code and FPP schedule were untouched. Physical-device playback was not checked.
+- All 140 Node tests and both manual-package audits passed. Original-template exports remain byte-for-byte unchanged in every theme; Compact exports change only CSS and retain native RF hooks without preview scripts or demo data. Local packages and the website build were refreshed. No product publication or version bump.
+
+## Seasonal player distinction - local verification, 21 October 2026
+
+- Shared seasonal CSS gives Thanksgiving parchment player/queue cards with walnut text, and Australia Day flag-blue player/queue cards with white text and gold accents. Now playing has a stronger even border. Both layouts, song-choice surfaces, RF markup, artwork options, wording and queue controls are preserved. Custom card, accent, text or secondary-text colours opt out of the starter surfaces.
+- All 2,196 local browser assertions passed: 506 focused checks across 76 cases plus the 1,690 existing seasonal checks. Coverage includes both templates and themes at 320, 390 and 1280 pixels, Jukebox/Voting and both air states, empty/populated queues, Compact disclosure controls, at least 16 pixels before selection, long titles, absent/hidden artists, artwork on/off, readable contrast and each custom-colour opt-out.
+- Visually reviewed both themes in both phone layouts and refreshed the generic guide image. Christmas/Halloween default exports remain byte-for-byte identical to the prior local batch. New-theme viewer markup is unchanged outside CSS, with no preview scripts or illustrative song data in exports. These are isolated local demonstrations and CSS stress checks, not hosted RF or physical-device verification. No owner storage, RF/FPP settings or publication was changed.
+
+## Thanksgiving gathering refinement - local verification, 20 October 2026
+
+- Both templates now use a transparent turkey, pumpkin-pie and cranberry header with amber lights, plus cream listening cards, forest-green information cards and cranberry support cards. The 900 x 600 WebP header is approximately 131 KB. Starter wording uses ordinary hyphens; saved wording and custom palettes take priority. Lights on Sunset has a small original SVG turkey Home default, with custom icon overrides preserved.
+- Optional falling leaves now cover the viewport independently of the top and lower header images. Eight leaves on phones and twelve on wider screens drift in front of content without intercepting taps; request messages remain above this decorative layer. Reduced motion hides the leaves, and the existing motion setting remains compatible with backups and history.
+- All 140 Node tests and 2,207 local browser assertions passed: seasonal layouts (1,690), card colour/contrast/customisation (276), animation/pointer/reduced-motion checks (48) and editor controls/history/reload (193). Checks cover both layouts, 320/390 pixel phones through desktop, Jukebox/Voting, both air states, custom logos and independent artwork choices. Default Christmas, Halloween and Australia Day outputs remain identical to their prior local baselines.
+- Visually reviewed both mobile layouts, refreshed the generic theme screenshot and guides, and rebuilt/audited both manual packages and the site output. Exported viewers contain no preview scripts or illustrative song data. These checks use isolated local demonstrations; no hosted RF, physical-device or publication check is claimed. Owner browser storage and RF/FPP pages/settings were untouched.
+
+## Compact theme selection — local verification, 20 October 2026
+
+- Both templates use compact icon-and-name theme buttons in the sidebar, with the selected description below. The template chooser retains its descriptive cards in a softly tinted, labelled group. Settings, theme-switching policies and viewer HTML are unchanged by this editor-only refinement.
+- All 808 existing shared-menu assertions and 121 focused browser checks passed. Checks covered 320, 390 and 1500 pixel widths in light/dark modes, keyboard selection and focus, visible selected states, tap targets, updated descriptions and unchanged saved designs when browsing/cancelling the chooser. A local layout-only fixture confirmed six choices fit three compact rows; no extra themes were added.
+- Visually reviewed phone/desktop captures, refreshed the four affected generic guide screenshots and rebuilt the offline README and both packages. All 138 Node tests, package audits and the website build passed. These are isolated local illustrative-preview checks, with no publication, RF/FPP changes or owner-storage replacement.
+
+## Independent header artwork — local verification, 20 October 2026
+
+- Thanksgiving and Australia Day now share independent top-image and lower-corner controls in both templates. All four combinations were checked at 320, 390 and desktop widths with styled names and custom logos; hidden artwork releases its spacing, while the original both-enabled layout is retained. Gentle animation follows the top artwork, independently of navbar details.
+- All 138 Node tests, 1,498 seasonal browser assertions and 193 focused editor checks passed. Coverage includes older enabled/disabled header settings from saved storage and backups, partial newer settings, Undo/Redo, persistence, responsive controls and unchanged destination styling when copying show details. Existing Christmas/Halloween default exports still match the pre-theme baseline.
+- Visually inspected top-only, corners-only, both and neither in the Australia Day preview. Updated the guides and rebuilt/audited both manual packages and the website output. Exports retain HTML/CSS-only artwork and contain no preview scripts or illustrative catalogue data.
+- Checks used isolated local demonstration sessions; owner preview storage was preserved. No hosted RF, physical-device or publication check is claimed, and no RF/FPP page or setting changed.
+
+## Australia Day card colours and wording — local verification, 20 October 2026
+
+- Shared Australia Day styling now distinguishes gold listening cards, blue information/schedule cards and muted red support cards from green music cards. Custom card, accent or text palettes take priority. Theme-specific starter wording uses Aussie phrasing while retaining clear On air / Off air labels and existing request/voting behaviour; saved wording overrides remain unchanged.
+- All 136 Node tests, 826 existing seasonal browser assertions and 276 focused browser checks passed. Focused checks cover both layouts at 320, 390 and 1280 pixels, both music modes and air states, readable card/button contrast, horizontal fit and personal colour/text overrides. Existing Christmas/Halloween default exports still match the saved pre-theme baseline.
+- Refreshed the theme screenshot and guide, rebuilt both manual packages and audited their contents. Exported viewers remain HTML/CSS-only, with no preview scripts or illustrative catalogue data. These checks use the authorised local demonstration; no hosted RF, physical-device or publication check is claimed.
+
+## Australia Day summer refinement — local verification, 20 October 2026
+
+- Replaced the floral Australia Day header and three optional logo illustrations with BBQ, cricket, beach, flag and summer-light artwork. The header is approximately 92 KB; the three optional logos are 53–77 KB. Deep flag-blue backgrounds, green cards and gold trim replace the earlier teal palette. Saved custom colours and icon overrides remain intact.
+- Removed falling flags and their placement control. Older draft placement values still load safely; decoration stays in the header. Bunting uses a small CSS-only sway and stops when motion is disabled or reduced motion is requested. Wide-screen artwork has a display-size cap to preserve space around headings.
+- Lights on Sunset defaults to a Southern Cross Home icon for this theme. Selecting a custom icon and restoring the theme default retain the existing settings format and accessible Home label. Compact console retains its existing navigation symbols.
+- All 135 Node tests and 1,798 relevant local browser assertions passed: seasonal themes (826), shared menu (808) and registered templates (164). Coverage includes narrow phones through desktop, both music modes and air states, custom/included logos, icon-only navigation, settings and export parity. Separate reduced-motion checks passed; the original four Christmas/Halloween default exports still match the pre-theme baseline.
+- Both manual packages and the allowlisted website build were regenerated and audited. Exports contain no preview JavaScript or illustrative song data. Checks use the authorised local demonstration, not a hosted RF or physical-device test; no publication or RF/FPP change was made.
+
+## Thanksgiving and Australia Day — local verification, 19 October 2026
+
+- Added both themes through the shared theme catalogue, controls, identity styling and decoration renderer. Each template keeps its existing layout and settings. Normalised Christmas/Halloween default exports for both templates match the saved pre-theme baseline exactly, including the earlier local navigation fixes.
+- All 134 Node tests passed, including new-theme validation, native RF hook retention, script-free exports, missing-field defaults, older two-theme Compact backups, preservation of newer themed designs on import, independent history, setup drafts and shared-content copying.
+- Five local browser suites passed 2,530 assertions: seasonal artwork/layout (818), registered templates (164), shared refinements (684), menu/settings ownership (808) and setup (56). The theme matrix covers both layouts at 320, 390, 768 and 1440 pixels, Jukebox/Voting and on/off air, stable navbar positions, included/custom logos, icon-only navigation, decoration switches and image loading. Separate narrow/desktop checks confirmed reduced-motion preferences stop drifting artwork.
+- Transparent header illustrations are optimised WebP files of approximately 139 KB (Thanksgiving) and 122 KB (Australia Day); optional logo illustrations are 72–113 KB. Small SVG accents are self-contained. Artwork remains outside interactive content, with no scripts or external image dependencies in the SVGs.
+- Rebuilt four canonical HTML starters per template, the illustrated offline guide and both manual ZIPs. Package audits verify exact renderer parity, included assets, CRCs, guide links and privacy allowlists. The generated viewer contains no preview scripts or illustrative catalogue data.
+- These are local illustrative-preview checks, not hosted RF or physical-device tests. New artwork is bundled for future project hosting but has not been published. No RF/FPP page, settings, requests or votes were changed. Publication and owner visual review remain pending.
+
+## Preview link scroll preservation — local verification, 19 October 2026
+
+- Reproduced an outer-editor scroll jump when clicking Compact's in-frame navbar. The shared preview adapter now preserves the editor and ancestor scroll containers for in-frame links, editor page navigation and native Back/Forward, while allowing the viewer to reach the selected panel or nested target. This parent-owned code is excluded from RF exports.
+- Real mouse clicks and keyboard activation in disposable local editors passed for both templates and seasons, including Back/Forward: the editor scroll position and scaled phone-frame position stayed unchanged. Shared refinements passed 684 assertions, including new in-frame/nested-link and history viewport checks at 320px, 390px and desktop widths, existing rapid-edit preservation and field caret checks.
+- These checks use the labelled illustrative preview. No saved review designs, hosted RF/FPP pages or settings were changed; no real-device or live-service claim is made. The fix remains local.
+
+## Compact navbar stability — local verification, 19 October 2026
+
+- Reserved scrollbar space on the Compact document root, with an overflow fallback for browsers without scrollbar-gutter support. The selector is scoped to Compact's existing show-options container; Lights on Sunset and saved settings are unchanged. The fix is CSS only and uses the canonical preview/export/manual-download source.
+- Checked both templates and seasons at 320px, 390px and 1280px, with menu labels shown/hidden and local Jukebox, Voting and off-air states. All 144 layout cases / 2,304 assertions passed with Chromium's scrollbar-hiding flag enabled and disabled: navbar, button and icon bounds stayed constant across Music, Info and Support, selected panels remained visible, and content fit horizontally.
+- Existing navigation (140), registered-template (82) and category-navigation (252) browser assertions passed, including Back/Forward and nested fragments. These checks use the labelled illustrative preview and local stylesheet fixtures; they are not a new hosted RF or physical-device test.
+- Both rebuilt Compact HTML downloads passed native fragment navigation and Back/Forward at 320px and 390px in Chromium phone emulation, with no scripts in either document. All 126 Node tests and both canonical-download/package audits passed.
+- No RF/FPP page, setting, request or vote was changed. The fix remains local for review.
+
 ## 1.9.1 documentation refresh — 18 October 2026
 
 - Compared the published README with the released source, reviewed all eight documentation images, and refreshed five stale supporting screenshots. Captures use generic defaults and the labelled illustrative preview; the current chooser is now included in the README.
