@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.12.0 — Patriotic and Valentine themes, saved seasonal designs — 22 October 2026
+
+### Shared customiser
+
+- Added US Patriotic and Valentine’s Day to both templates, with original illustrated headers, seasonal palettes, editable starter wording and six manual starters per layout.
+- US Patriotic includes American flags, eagle and star artwork, small red-white-blue fireworks that launch, burst and fade in the header corners, white player panels and navy song cards. Valentine’s Day includes roses, chocolates, a love letter, twelve gently rising hearts with staggered timing, cream player panels and deep rose song cards. Decorative motion remains optional.
+- Both themes reuse independent upper/lower artwork, navigation and motion controls. Custom colours, wording, logos and icons remain authoritative; older designs and backups remain compatible.
+- Navigation keeps its familiar Music, Info and Support symbols. Lights on Sunset uses an eagle Home icon for US Patriotic and Cupid for Valentine’s Day, preserving accessible names and custom choices. NEW and Moving spotlights retain their existing placement, dimensions and optional moving-head effect.
+- Added No logo to setup and the editor in both templates. Show name, welcome text and seasonal decorations remain independently editable; saved logo and icon choices are retained.
+- Separated Header artwork from Logo in setup and the editor. Both templates can use included pictures in either position, keep an own logo below chosen artwork, or hide either independently. Saved appearances, backups and selective reuse remain compatible.
+- US Patriotic fireworks remain enabled when header artwork is changed or hidden. Colour pickers keep the inline sample live while delaying readability-warning layout changes and viewer refreshes until the selection is committed. Dropdown lists have a more distinct surface in light and dark modes.
+- Added a small Clear action below editable text fields in both templates and setup, with normal validation, editor Undo/Redo and draft cancellation.
+- Both templates now keep separate saved designs and imported catalogues for each theme. New themes offer a compact, grouped review of customised settings and an explicit custom-colour choice; returning themes restore saved work immediately. Existing designs and older backups are preserved.
+- Replaced Copy show details with Reuse details from another saved design, explaining that it uses designs saved in this browser. Changes to previously copied practical details can be reviewed individually without automatic overwrites. Keep choices persist, conflicts start unchecked, and applied updates support Undo/Redo.
+- Reuse compares every setting with its source theme defaults, including edited messages, FAQs, navigation preferences and cleared fields. Expand a group to choose individual settings; unchanged defaults follow the new theme. Dates, song selections, imported catalogues and custom colours remain opt-in. Reuse more makes skipped details easy to recover, while later reuse starts unchecked to protect the destination design.
+- Reset to defaults now offers This design or All saved designs across both templates. Each design returns to its own theme defaults, imported song lists are retained, and each changed design supports Undo/Redo during the session.
+- Choose your starting point now puts compact template choices beside one sample preview, with themes underneath and a clearer selected state. Setup and editor actions stay visible in a fixed footer; a small Have an idea? header link opens submission and contact options. Browsing does not change saved designs.
+- Moved Your current design beside the introduction on wider screens so settings and preview begin higher on the page. Saved-theme restoration confirmations are temporary and do not shift the working area; update reminders and reuse actions remain available.
+- Refreshed guides and manual downloads. Installing a new viewer theme requires fresh HTML in RF; updating the customiser does not update an installed page.
+
+### Lights on Sunset
+
+- Added three included-logo illustrations for each new theme. Existing Lights on Sunset settings are retained in their original theme when moving to separate seasonal designs.
+
+### Compact console
+
+- Added independent US Patriotic and Valentine’s Day designs and colour presets. Older backups preserve newer designs that they do not contain.
+
 ## 1.11.0 — Song badges and setup refinements — 22 October 2026
 
 ### Shared customiser

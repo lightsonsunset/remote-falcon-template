@@ -1,5 +1,6 @@
+import {createDesignStore} from '../src/design-store.js';
 import {SETTINGS_KEY,PREFS_KEY} from '../src/storage.js';
-import {cloneDefaults,settingsFile,parseSettings,render} from '../src/template.js';
+import {cloneDefaults,settingsFile,render} from '../src/template.js';
 import {nameFonts} from '../src/name-style.js';
 const frame=document.querySelector('#editor'),results=document.querySelector('#results');
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -11,8 +12,8 @@ document.querySelector('#run').onclick=async()=>{
  try{
   const initial=cloneDefaults();initial.name='A Very Long Neighbourhood Lights & Music Celebration';initial.logoMode='seasonal';initial.combineLogoName=true;
   localStorage.setItem(SETTINGS_KEY,settingsFile(initial));localStorage.setItem(PREFS_KEY,JSON.stringify({tourSeen:true}));await reload();
-  let d=frame.contentDocument;const q=s=>d.querySelector(s),click=async s=>{q(s).click();await wait(350);},input=async(s,value)=>{const el=q(s);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));await wait(400);};
-  const state=()=>parseSettings(localStorage.getItem(SETTINGS_KEY),true),viewer=()=>q('#preview').contentDocument;
+  let d=frame.contentDocument;const q=s=>d.querySelector(s),click=async s=>{q(s).click();await wait(350);},input=async(s,value)=>{const el=q(s);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));if(el.type==='color')el.dispatchEvent(new Event('change',{bubbles:true}));await wait(400);};
+  const state=()=>createDesignStore(localStorage).read().settings,viewer=()=>q('#preview').contentDocument;
   await input('#catalogue-source','samples');q('#catalogue-source').dispatchEvent(new Event('change',{bubbles:true}));
   check('Header has four actions and GitHub is in the footer',q('.app-header nav').children.length===4&&q('footer a[href*=github]'));
   check('Single manual download remains independent of form',d.querySelectorAll('a[download]').length===1);
@@ -22,7 +23,7 @@ document.querySelector('#run').onclick=async()=>{
   q('[data-section="2"]').open=true;q('.name-style').open=true;
   check('Default label preserves the existing saved font ID',q('[data-key=nameFont] option[value=current]').textContent==='Default');
   for(const theme of ['christmas','halloween']){
-   await click('[data-season="'+theme+'"]');
+   await click('[data-season="'+theme+'"]');if(q('#copy-design-dialog').open)await click('[data-start-fresh]');
    for(const font of nameFonts){
     await input('[data-key=nameFont]',font.id);const v=viewer(),h=v.querySelector('.share-brand h1');await v.fonts.ready;
     check(theme+' '+font.label+' font loads with heading-only styling',font.file?[...v.fonts].some(face=>face.family.replaceAll('"','')===font.family&&face.status==='loaded')&&v.defaultView.getComputedStyle(h).fontFamily.includes(font.family)&&!v.defaultView.getComputedStyle(v.querySelector('.section-card h2')).fontFamily.includes('LOS'):!v.defaultView.getComputedStyle(h).fontFamily.includes('LOS'));

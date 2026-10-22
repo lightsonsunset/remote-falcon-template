@@ -1,7 +1,7 @@
 // Editor-only setup draft. Validation and theme behaviour are shared with the editor.
 import {changeTheme,validate,checkedSettings} from './template.js';
 export const setupSteps=['Your show','Dates & hours','Music & listening','Visitor guidance','Review & finish'];
-export const setupKeys=[['theme','name','welcome','logoMode','logo','logoStyle','combineLogoName','showNameOnHome','nameFont','customNameColour','nameColour','icons'],['dates','schedule'],['fm','frequency','pulsemesh','pulsemeshButtons','pulsemeshUrl','listening','showAlbumArtwork','songArtwork','showNowPlayingArtwork','showSongArtists','showQueueArtists'],['showMainGuidance','guidancePosition','neighbourTitle','neighbourText']];
+export const setupKeys=[['theme','name','welcome','headerArtwork','headerTopDecorations','logoMode','logo','logoStyle','combineLogoName','showNameOnHome','nameFont','customNameColour','nameColour','icons'],['dates','schedule'],['fm','frequency','pulsemesh','pulsemeshButtons','pulsemeshUrl','listening','showAlbumArtwork','songArtwork','showNowPlayingArtwork','showSongArtists','showQueueArtists'],['showMainGuidance','guidancePosition','neighbourTitle','neighbourText']];
 export function setupErrors(settings,step,validator=validate){
  const keys=setupKeys[step]||setupKeys.flat();
  return Object.fromEntries(Object.entries(validator(settings)).filter(([key])=>keys.some(k=>key===k||key.startsWith(k+'.'))));

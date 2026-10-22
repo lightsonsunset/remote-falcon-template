@@ -112,12 +112,13 @@ export function checkedSettings(input) {
   }
   // Older designs used one header-art switch. New choices are independent and take priority.
   for(const key of ['headerTopDecorations','headerBottomDecorations'])if(input[key]===undefined)s[key]=input.headerDecorations??true;
+  if(!['theme','none','classic','lights','crest'].includes(s.headerArtwork))throw Error('Choose supported header artwork.');
   if(!['header','edges'].includes(s.flagPlacement))throw Error('Choose a supported flag placement.');
   if(!['status','above-header','below-header'].includes(s.guidancePosition))throw Error('Choose a supported guidance position.');
   if(!Object.hasOwn(themes,s.theme))throw Error('Unknown seasonal theme.');
   if(!['download','listen','both'].includes(s.pulsemeshButtons))throw Error('Choose supported PulseMesh buttons.');
   Object.assign(s,checkedExtraLists(input));
-  if(!['icon','symbol','seasonal','custom'].includes(s.logoMode))throw Error('Choose a supported logo option.');
+  if(!['none','icon','symbol','seasonal','custom'].includes(s.logoMode))throw Error('Choose a supported logo option.');
   if(!logoChoices[s.theme].some(c=>c.id===s.logoStyle))throw Error('Choose a supported logo design.');
   for(const theme of ['christmas','halloween'])if(!decorationChoices[theme].some(c=>c.id===s[theme+'Decoration']))throw Error('Choose a supported navbar decoration.');
   if(!nameFonts.some(f=>f.id===s.nameFont))throw Error('Choose a supported show-name font.');
@@ -240,7 +241,7 @@ export function renderDocument(source,s,extra={}){
   const flags=[!s.showSongArtists&&'hide-song-artists',!s.showQueueArtists&&'hide-queue-artists',s.fm&&'has-fm',s.pulsemesh&&'has-pulsemesh',(s.fm||s.pulsemesh||s.listening.trim())&&'has-listening',s.donations&&'has-donations',s.categories&&s.categoryNames.some(n=>!s.hiddenCategories.includes(n))&&'has-categories',s.newFilter&&'has-new-songs',s.donationHome&&'has-donations-home',s.donationInfo&&'has-donations-info'].filter(Boolean).join(' ');
   const v={
     SHOW_NAME:e(s.name),FEATURE_CLASSES:flags+seasonalClasses(s),...seasonalTokens(s),WELCOME:e(s.welcome),SHOW_DATES:e(s.dates),
-    LOGO:s.logoMode==='seasonal'?`<img class="show-logo" src="${assetBase+logoFile(s)}" alt="">`:s.logoMode==='custom'&&s.logo?`<img class="show-logo" src="${e(s.logo)}" alt="${e(s.name)} logo">`:`<i class="[[ICON:brand:fa-solid ${t.icon}]]" aria-hidden="true"></i>`,
+    LOGO:s.logoMode==='none'?'':s.logoMode==='seasonal'?`<img class="show-logo" src="${assetBase+logoFile(s)}" alt="">`:s.logoMode==='custom'&&s.logo?`<img class="show-logo" src="${e(s.logo)}" alt="${e(s.name)} logo">`:`<i class="[[ICON:brand:fa-solid ${t.icon}]]" aria-hidden="true"></i>`,
     BRAND_CLASS:s.logoMode==='seasonal'&&s.combineLogoName&&s.showNameOnHome?'brand-combined':'',
     NAME_CLASS:s.showNameOnHome?'':'show-name-hidden',
     DECORATION_CSS:s.decorations&&!isNewSeason(s.theme)?decorationCSS(s):'',

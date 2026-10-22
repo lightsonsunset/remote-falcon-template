@@ -1,4 +1,4 @@
-import {registry} from '../src/template-registry.js';
+import {registry,parseBackup} from '../src/template-registry.js';
 import {createDesignStore} from '../src/design-store.js';
 import {setupSteps} from '../src/setup-model.js';
 const frame=document.querySelector('#editor'),run=document.querySelector('#run'),results=document.querySelector('#results');
@@ -40,7 +40,7 @@ run.onclick=async()=>{
   await click('#setup-next');await wait(250);const applied=read();
   check(tag+' Apply saves guidance with unchanged other settings',values(applied)===JSON.stringify([true,'above-header','Welcome <friends> & neighbours','Please keep driveways clear.\nEnjoy the show.'])&&Object.keys(initial).every(k=>keys.includes(k)||JSON.stringify(initial[k])===JSON.stringify(applied[k])));
   await click('#history-undo');check(tag+' Undo restores previous guidance',values(read())===values(initial));await click('#history-redo');check(tag+' Redo restores guidance',values(read())===values(applied));
-  const backup=createDesignStore(localStorage).backup(),restored=t.parseSettings(backup,true);check(tag+' backup retains guidance',values(t.separateSeasons?restored[theme]:restored)===values(applied));
+  const backup=createDesignStore(localStorage).backup(),restored=parseBackup(backup);check(tag+' backup retains guidance',values(restored.designs[theme])===values(applied));
   await reload();await start();check(tag+' reload retains applied guidance',q('#setup-neighbourTitle').value===applied.neighbourTitle&&q('#setup-guidancePosition').value==='above-header');
   input('showMainGuidance',false);check(tag+' hiding main keeps wording and position',q('[data-setup-feature]').hidden&&q('#setup-neighbourText').value===applied.neighbourText&&q('#setup-guidancePosition').value==='above-header');
   await click('#setup-next');check(tag+' review reports hidden main screen',q('.setup-guidance-review').textContent.includes('Hidden on the main screen.'));await click('#setup-back');

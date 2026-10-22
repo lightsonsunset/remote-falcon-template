@@ -2,7 +2,7 @@
 
 **Make your Remote Falcon page your own.**
 
-Choose Lights on Sunset or Compact console, explore a seasonal style and personalise it for your show. No coding required. Each ready-made download includes all four seasonal starters and instructions.
+Choose Lights on Sunset or Compact console, explore a seasonal style and personalise it for your show. No coding required. Each ready-made download includes all six seasonal starters and instructions.
 
 **By christmasdave · Lights on Sunset.** The customiser personalises supplied layouts; each template retains its own visual identity.
 
@@ -12,9 +12,11 @@ Choose Lights on Sunset or Compact console, explore a seasonal style and persona
 
 ![The Lights on Sunset customiser with settings on the left and a phone preview on the right](docs/images/editor-overview.jpg)
 
+**Your current design** sits beside the introduction on wider screens, with **Change template** close at hand. On smaller screens these stack above the settings. Restoring a saved theme shows a brief confirmation without moving the working area.
+
 Lights on Sunset offers three logo designs per theme, including pixel-light displays, with an optional editable name heading. Choose Default, Rounded, Elegant, Festive or Spooky for the Home name, with an optional separate colour. A live sample shows your own name in the selected font, including in the wizard. A Home-name switch supports uploaded logos with lettering. Seven navbar decorations are available across Christmas and Halloween. Menu labels can be hidden for icons-only navigation, and the On air dot has an optional gentle glow. The header’s **What’s new** button separates **Released** updates from **In progress** summaries and planned themes. Its export reminder explains when an installed RF page needs fresh HTML.
 
-Choose a season and template, click a preview to explore it in a centred phone, then select **Set up my show** or **Straight to editor**. Setup asks for show details once. Finish with **Apply & open editor**. Tick **Take a quick tour after setup** for a short introduction to the shared editor; it starts unchecked each time setup opens. Existing saved designs resume in the editor.
+Choose a template, then a theme. One sample preview updates to match your choices; select **Explore full preview** for a centred phone view. **Set up my show** and **Straight to editor** stay in the footer while you browse. Setup asks for show details once. Finish with **Apply & open editor**. Tick **Take a quick tour after setup** for a short introduction to the shared editor; it starts unchecked each time setup opens. Existing saved designs resume in the editor.
 
 Under **Music → Player & queue**, optionally show the maximum queue length above the song choices. RF supplies the value; 0 means unlimited. The local preview uses an illustrative limit of 10.
 
@@ -22,13 +24,17 @@ Choose navigation icons under **Site setup → Navigation menu**, message icons 
 
 ## Choose a template
 
-![The current template chooser with seasonal previews, setup actions and compact contribution links](docs/images/welcome-modal.jpg)
+![Template choices beside one selected preview, theme choices below and setup actions in a fixed footer](docs/images/welcome-modal.jpg)
 
-The customiser now offers **Lights on Sunset** and **Compact console**. Use **Change template** to compare seasonal previews. Existing designs resume automatically. Choose Christmas, Halloween, Thanksgiving or Australia Day in either layout. Compact console keeps a separate saved design for each theme; Lights on Sunset keeps its established theme-switching behaviour.
+The customiser now offers **Lights on Sunset** and **Compact console**. Use **Change template** to compare seasonal previews. Existing designs resume automatically. Choose Christmas, Halloween, Thanksgiving, Australia Day, US Patriotic or Valentine’s Day in either layout. Both templates keep a separate saved design for each theme.
 
-**Undo / Redo** works across templates, with separate history for each design during the current session. Typing in a text field keeps native text undo. Reloading clears editor history, but keeps saved settings. **Copy show details** reviews selected content groups before applying them to another design.
+Use **Have an idea?** in the chooser header to suggest a theme, share a viewer page or find the private-contact link. The GitHub viewer-submission form asks you to confirm that you have permission to share and adapt the page.
 
-Compact console places music first, with Info and optional Support views. Its seasonal decorations, gentle motion, colour presets and date tiles can be adjusted in Site setup. Edit the small line above the show name under **Music → Welcome → Tagline**, or leave it blank to hide it. All themes are included in its settings backup; only the selected season is exported as RF HTML.
+**Undo / Redo** works across templates, with separate history for each design during the current session. Typing in a text field keeps native text undo. Reloading clears editor history, but keeps saved settings. **Reuse details from another saved design…**, under Site setup → Theme & style or Change template, copies chosen details from another design saved in this browser. It does not import your existing RF viewer page.
+
+Use the small **Clear** button below a text field to empty it. Editor changes can be restored with **Undo**; setup changes stay in the draft until you apply them. Required fields still need a valid value before export.
+
+Compact console places music first, with Info and optional Support views. Its seasonal decorations, gentle motion, colour presets and date tiles can be adjusted in Site setup. Edit the small line above the show name under **Music → Welcome → Tagline**, or leave it blank to hide it. All saved themes for the selected template are included in its settings backup; only the selected theme is exported as RF HTML.
 
 ![Compact console with its shared controls and music-first phone preview](docs/images/compact-overview.jpg)
 
@@ -46,7 +52,7 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 
 ![Help offers the quick-start guide, tour and detailed setup help](docs/images/friendly-help.jpg)
 
-![Visitor guidance in the optional five-step setup wizard](docs/images/setup-wizard.jpg)
+![Separate header artwork and logo choices in the optional five-step setup wizard](docs/images/setup-wizard.jpg)
 
 ![The optional tour highlighting the theme controls](docs/images/quick-tour.jpg)
 
@@ -77,9 +83,16 @@ For PulseMesh, choose **Download app only**, **Listen on PulseMesh only** or **B
 
 Extra information supports up to five cards, each with a heading, message, optional image and optional link. Expand a card to edit it, reorder it or remove it. Find these cards on Home for Lights on Sunset and Info for Compact console.
 
-Visitor guidance can appear above the header, below the header or below On air. Main-screen guidance appears only while on air. Compact console also keeps the same message on Info, including off air. All themes have separate saved Compact console designs; use Copy show details to reuse information.
+Visitor guidance can appear above the header, below the header or below On air. Main-screen guidance appears only while on air. Compact console also keeps the same message on Info, including off air. Both templates keep guidance within each saved theme; use Reuse details from another saved design to copy it when needed.
 
-Header appearance sits directly below Show name in setup and the editor. Compact console can use a styled name, an icon above the name or your own logo. Setup icon choices are saved only when you apply setup.
+**Site setup → Header, logo & show name** separates two choices, also available in setup:
+
+- **Header artwork** changes the top image: keep the theme default, choose one of three included pictures, or choose **No header artwork**.
+- **Logo** sits below it: choose a simple icon, an included picture, your own HTTPS image, or **No logo**. Both templates support these choices.
+
+You can show a chosen header with your own logo, or use an included picture as the logo and hide the top artwork. Show name, welcome text and lower decorations remain independent. Existing saved designs retain their appearance; reuse offers header and logo changes separately. Included styles use the destination theme’s pictures, shown in the reuse review. Setup choices are saved only when you apply setup.
+
+![Independent header artwork and logo choices](docs/images/header-logo.jpg)
 
 ### Social links
 
@@ -89,7 +102,7 @@ Under **Site setup → Social links**, add up to eight links with an icon and vi
 
 Try **Mobile, Tablet or Desktop**, then **On air / Off air** and **Jukebox / Voting**. The viewport choices check layout, not a particular phone's operating system. Mouse dragging scrolls phone/tablet previews; the wheel also works.
 
-**Reset demo** clears sample requests, votes and feedback. **Reset to defaults**, in the settings controls, resets the current design after confirmation; its dialog names the affected template and season. These are separate actions.
+**Reset demo** clears sample requests, votes and feedback. **Reset to defaults**, in the settings controls, lets you reset **This design** or **All saved designs** across both templates. Each design uses its own theme defaults; imported song lists stay available. All-design reset also clears reuse-update links. You can Undo or Redo within each changed design during the current session. Back up each template first to keep a permanent copy. Neither reset changes an installed RF page.
 
 The preview is a labelled demonstration with **no connection to your show**. Trying songs or messages does not send requests or votes to RF. Its mode switches are preview-only; RF controls the real viewer.
 
@@ -115,9 +128,21 @@ The sample catalogue demonstrates a Moving spotlights badge, a badge alongside N
 
 ![Song import with separate NEW and Moving heads choices, category setup and visible footer actions](docs/images/import-song-badges.jpg)
 
+### Switching themes and reusing details
+
+The first time you start a theme, a compact review groups the settings you have changed from the source theme’s defaults. Changed names, logos, navigation preferences, FAQs, guidance and messages start selected. Open **Review** to choose individual settings or messages. Cleared text and removed list entries count as changes; lists are reused as a whole. Unchanged values use the new theme’s defaults. If nothing has been customised, the new theme opens directly.
+
+**Dates & song selections** and **Custom colours** start unchecked. You can optionally reuse an imported song catalogue with its category and badge choices, or keep the new theme’s palette and seasonal details. **Start fresh** uses all new-theme defaults. Cancel changes nothing, and the source design stays intact.
+
+After creation, **Reuse more from Christmas** (or your source theme) makes it easy to bring across a skipped detail. **Reuse details from another saved design…**, under Theme & style and Change template, remains available later. This uses designs saved in this browser, not an existing RF viewer page. Later reuse starts unchecked and compares current and incoming values before replacing anything; already matching values are omitted. Applying choices supports Undo/Redo, including an optionally copied catalogue.
+
+Returning to a saved theme restores it immediately. When previously copied practical details change, such as an FM frequency, reused name or custom logo link, a quiet notice offers **Review changes** or **Keep saved details**. Review shows both values; fields edited on both sides start unchecked. Updates are never applied automatically. Keeping saved values stays quiet until those source details change again. Reviewing a new logo link does not re-enable a logo you have deliberately hidden.
+
+![Choosing which details to carry into a new seasonal design](docs/images/reuse-details.jpg)
+
 ### 5. Keep a settings backup
 
-The customiser saves your edits locally in this browser. Use **Download settings backup** (**Back up all themes** in Compact console) to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
+The customiser saves your edits locally in this browser. Use **Back up saved themes** in either template to keep a portable copy of that template’s saved designs, and **Load settings backup** to continue later or on another computer. Loading first lists the themes it will replace, with a chance to download your current settings. Themes absent from the backup are retained. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
 
 ### 6. Copy your page into RF
 
@@ -133,11 +158,23 @@ Both music modes and availability states are included in the export. No custom J
 
 ## Prefer to edit the HTML yourself?
 
-Choose the [Lights on Sunset package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) or [Compact console package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip), unzip it, and open **START-HERE.html**. Each includes that layout’s Christmas, Halloween, Thanksgiving and Australia Day HTML starters, fonts, instructions, credits and licences. Both packages include the new seasonal WebP artwork and lightweight SVG accents; Lights on Sunset also includes its optional Christmas/Halloween WebP illustrations. You do not need to use the customiser.
+Choose the [Lights on Sunset package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Festive-RF-Template.zip) or [Compact console package](https://lightsonsunset.github.io/remote-falcon-template/downloads/Compact-Console.zip), unzip it, and open **START-HERE.html**. Each includes that layout’s Christmas, Halloween, Thanksgiving, Australia Day, US Patriotic and Valentine’s Day HTML starters, fonts, instructions, credits and licences. Both packages include the new seasonal WebP artwork and lightweight SVG accents; Lights on Sunset also includes its optional Christmas/Halloween WebP illustrations. You do not need to use the customiser.
 
 The guide covers [NEW sashes](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#new), [Announcements](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#notice), [support cards](https://lightsonsunset.github.io/remote-falcon-template/START-HERE.html#donations), image hosting and other optional features.
 
 The package also includes **README.html**: an offline, browser-readable copy of this quick start with its screenshots included in the file.
+
+## US Patriotic and Valentine’s Day
+
+![Compact console with US Patriotic flags and eagle artwork beside Valentine’s Day roses, chocolates and a love letter](docs/images/patriotic-valentine-themes.jpg)
+
+**US Patriotic** brings stars, stripes and Fourth of July celebrations to both layouts. Eagle artwork, accurate SVG American flags and striped ribbons frame the header. White player and queue panels stand apart from navy song cards, with blue information cards and red support cards. Rounded headings complete the theme; Lights on Sunset uses an eagle for Home.
+
+**Valentine’s Day** pairs roses and flowing ribbon with a heart-shaped chocolate box and love letter. Cream player panels sit above deep rose song choices, with chocolate and blush details and Elegant headings. Lights on Sunset uses Cupid for Home. Both themes retain the familiar Music, Info and Support icons, and custom choices still take priority.
+
+Both themes keep all existing settings. Choose the top image under **Site setup → Header, logo & show name → Header artwork**. Lower artwork, navbar details and gentle motion stay under **Theme & style → Seasonal decorations**. US Patriotic sways the header flags and alternates small fireworks that rise, burst and fade in the upper corners. Fireworks follow the animation switch even when you change or hide the header artwork. Valentine’s has a fuller flow of gently rising hearts. Decorations never intercept taps. Reduced-motion preferences stop decorative movement and hide the fireworks and drifting hearts. Personal colours, logos, wording and icon choices retain priority. Both templates include three pictures per theme, usable as header artwork or a logo. Neither theme adds an automatic countdown.
+
+Both templates save each theme separately. Older backups update only the designs they contain, preserving other saved themes. To install a new theme, export fresh HTML and replace the intended RF viewer page; changing the customiser does not update an installed page.
 
 ## Thanksgiving and Australia Day
 
@@ -145,7 +182,7 @@ The package also includes **README.html**: an offline, browser-readable copy of 
 
 Under **Site setup → Theme & style**, Thanksgiving pairs amber lights and autumn leaves with a friendly turkey, pumpkin pie and cranberries. Cream player, queue and listening cards, forest-green information cards and cranberry support cards add variety to its warm brown song choices. Its welcoming starter wording and colours remain editable. Australia Day pairs flag blue and white with true green cards, gold trim, flag bunting and illustrated BBQ, cricket and beach details. Its Now playing, Up next and request queue use flag blue, distinct from the green song choices. Compact console includes a matching colour preset with advanced colour options. Personal card, accent and text colours take priority over these starter surfaces.
 
-In **Seasonal decorations**, choose **Image above logo / show name** and **Images in lower corners** independently: show either, both or neither. Hidden artwork leaves no reserved space. **Show navbar details** stays separate. Thanksgiving’s **Show falling leaves** adds a light shower across the full screen, independent of the header artwork; leaves never block taps and are hidden for reduced motion. Australia Day’s **Allow gentle animation** sways the top bunting; there are no falling flags. Lights on Sunset uses a turkey Home icon for Thanksgiving and a Southern Cross for Australia Day, with custom icons still available. Compact console keeps its Music, Info and Support icons. Motion respects reduced-motion preferences. The centre of the header remains available for your name or logo. These themes have no countdown; Christmas/Halloween countdown settings are retained when switching back.
+Choose **Header artwork** under **Header, logo & show name**, and **Images in lower corners** under **Seasonal decorations**, independently: show either, both or neither. Hidden artwork leaves no reserved space. **Show navbar details** stays separate. Thanksgiving’s **Show falling leaves** adds a light shower across the full screen, independent of the header artwork; leaves never block taps and are hidden for reduced motion. Australia Day’s **Allow gentle animation** sways its theme-default top bunting; there are no falling flags. Lights on Sunset uses a turkey Home icon for Thanksgiving and a Southern Cross for Australia Day, with custom icons still available. Compact console keeps its Music, Info and Support icons. Motion respects reduced-motion preferences. The centre of the header remains available for your name or logo. These themes have no countdown; Christmas/Halloween countdown settings are retained when switching back.
 
 Older two-theme Compact backups still load. Loading one replaces only its Christmas/Halloween designs, leaving any newer themed designs intact.
 

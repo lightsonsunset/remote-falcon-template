@@ -95,6 +95,36 @@ themes['australia-day']={
   },
  demoSongs:['Under Southern Stars','Summer at Sunset','Green and Golden','Dance Under the Lights','Backyard Celebration','G’day, Starlight','The Aussie Light Parade']
 };
-export const isNewSeason=theme=>['thanksgiving','australia-day'].includes(theme);
+themes['us-patriotic']={
+ name:'US Patriotic',description:'Stars, stripes & Fourth of July celebrations',symbol:'★',icon:'fa-star',brandIcon:'star',defaultFont:'rounded',
+ showName:'Your Patriotic Show',welcome:'Stars, stripes and favourite tunes.',
+ categories:['Patriotic favourites','Party favourites'],holiday:'Fourth of July',dateExample:'For example: 3-5 July',tile:'4',caption:'JUL',
+ colours:{home:'#091b3b',music:'#102b52',support:'#391827',info:'#14294c',card:'#173765',gold:'#d6e7ff',text:'#f7f5ef',secondary:'#dbe5f4'},
+ accents:['#d6e7ff','#d6e7ff','#ffd3d9','#d6e7ff'],
+ copy:{...gatheringCopy,SEASON:'US Patriotic',ON_AIR_HELP:'Let the celebration shine',OFF_AIR_HELP:'More stars and tunes next show',
+  LISTEN_TITLE:'Tune In to the Celebration',LISTEN_FALLBACK:'Listening details are coming soon. Get ready for lights and favourite tunes.',
+  HOME_JUKEBOX_HELP:'Pick a favourite and join the celebration.',HOME_VOTING_HELP:'Vote for your favourite and let it shine.',
+  MUSIC_CLOSED_TITLE:'The Next Celebration Is Coming',MUSIC_CLOSED_TEXT:'Check the show hours and join us for another evening of stars, stripes and music.',
+  INFO_TEXT:'Welcome to {show}! Bring your favourite people and enjoy the celebration. Here is how to join in.',
+  SUPPORT_TITLE:'Share the Spirit',SUPPORT_TEXT:'Thanks for celebrating with us. Your kindness and care for our neighbours help make the show special.',
+  SUCCESS_TITLE:'A star-spangled choice!',SUCCESS_JUKEBOX:'Your song is in the queue. Let the celebration shine!'},
+ demoSongs:['Stars at Sunset','Red White and Brilliant','A Sky Full of Sparkles','Dance Under the Lights','Summer Celebration','Together We Shine','The Starlight Parade']
+};
+themes['valentines-day']={
+ name:'Valentine’s Day',description:'Roses, chocolate & a little love in lights',symbol:'♥',icon:'fa-heart',brandIcon:'heart',defaultFont:'elegant',
+ showName:'Your Valentine’s Show',welcome:'A little love, a little light, and your favourite songs.',
+ categories:['Love songs','Party favourites'],holiday:'Valentine’s Day',dateExample:'For example: 12-14 February',tile:'14',caption:'FEB',
+ colours:{home:'#321322',music:'#3c182b',support:'#3b2028',info:'#422039',card:'#5a233a',gold:'#ffb7ca',text:'#fff8f4',secondary:'#f1d0d9'},
+ accents:['#ffb7ca','#ffb7ca','#ffd6c3','#f0c4e6'],
+ copy:{...gatheringCopy,SEASON:'Valentine’s Day',ON_AIR_HELP:'Love is in the lights',OFF_AIR_HELP:'Saving a little sparkle for next time',
+  LISTEN_TITLE:'A Soundtrack to Share',LISTEN_FALLBACK:'Listening details are coming soon. Stay for a little love and light.',
+  HOME_JUKEBOX_HELP:'Choose a song to share with someone special.',HOME_VOTING_HELP:'Give your favourite a little love with a vote.',
+  MUSIC_CLOSED_TITLE:'More Love and Lights Next Show',MUSIC_CLOSED_TEXT:'Our lights are resting for now. Check the show hours and join us for another evening together.',
+  INFO_TEXT:'Welcome to {show}! Share a little joy with the people you love. Here is how to join in.',
+  SUPPORT_TITLE:'Share a Little Love',SUPPORT_TEXT:'Thank you for sharing the lights with us. A little kindness and care for our neighbours make the evening sweeter.',
+  SUCCESS_TITLE:'Love that choice!',SUCCESS_JUKEBOX:'Your song is in the queue. A little more love in the lights!'},
+ demoSongs:['Love in the Lights','Roses at Sunset','Chocolate Hearts','Dance Under the Lights','A Song to Share','Together Tonight','The Sweetheart Parade']
+};
+export const isNewSeason=theme=>!['christmas','halloween'].includes(theme)&&Object.hasOwn(themes,theme);
 export const hasCountdown=theme=>['christmas','halloween'].includes(theme);
 export const dateExample=theme=>themes[theme].dateExample||(theme==='christmas'?'For example: 5–25 December':'For example: 24–31 October');

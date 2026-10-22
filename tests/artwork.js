@@ -1,4 +1,5 @@
-import {cloneDefaults,render,settingsFile,parseSettings} from '../src/template.js';
+import {createDesignStore} from '../src/design-store.js';
+import {cloneDefaults,render,settingsFile} from '../src/template.js';
 import {SETTINGS_KEY,PREFS_KEY} from '../src/storage.js';
 import {createPreview} from '../src/preview.js';
 const editor=document.querySelector('#editor'),viewer=document.querySelector('#viewer'),run=document.querySelector('#run'),results=document.querySelector('#results');
@@ -15,7 +16,7 @@ run.onclick=async()=>{
   check('RF setup help is a visible link',!!q('[data-section="30"] a[href$="look-up-artist--album-art"]'));
   check('Category help distinguishes hidden buttons from removed rows',q('[data-section="18"]').textContent.includes('Keep all categories shown on your RF page')&&!!q('[data-section="18"] [data-category-help]')&&d.querySelector('#category-help-dialog').textContent.includes('Keep rows; hide buttons'));
   field.value='none';field.dispatchEvent(new Event('input',{bubbles:true}));await wait(450);await reload();d=editor.contentDocument;
-  check('Artwork choice restores from saved settings',q('[data-key=songArtwork]').value==='none'&&parseSettings(localStorage.getItem(SETTINGS_KEY)).songArtwork==='none');
+  check('Artwork choice restores from saved settings',q('[data-key=songArtwork]').value==='none'&&createDesignStore(localStorage).read().settings.songArtwork==='none');
   const source=await(await fetch('../templates/christmas.html')).text(),demo=createPreview(viewer,()=>{}),v=()=>viewer.contentDocument;
   const update=async(s,mode)=>{demo.update(render(source,s),s,{mode,air:true,reset:true});await wait(180);demo.navigate('music');await wait(50);};
   for(const theme of ['christmas','halloween'])for(const mode of ['jukebox','voting']){
