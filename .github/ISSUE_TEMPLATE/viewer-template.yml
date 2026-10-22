@@ -11,7 +11,7 @@ body:
 
         **This submission and its attachments will be public.** Remove credentials, private settings, full catalogues, private links and personal information first. Keep original credits and licence notices.
 
-        Only submit pages you have permission to share and adapt, **not purchased templates**. We review suitability, reuse permissions and Remote Falcon compatibility; inclusion is not guaranteed. This is not an automatic HTML import.
+        We review suitability, reuse permissions and Remote Falcon compatibility; inclusion is not guaranteed. This is not an automatic HTML import.
   - type: input
     id: name
     attributes:
@@ -50,7 +50,7 @@ body:
     attributes:
       label: Before submitting
       options:
-        - label: I created this page or have permission to share and adapt its code and included assets. This is not a purchased template.
+        - label: I confirm I can share this viewer page and give permission for its code and included assets to be adapted. I created it or have the necessary permissions, and it is not a purchased template.
           required: true
         - label: I have removed private information and understand that this submission and its attachments are public.
           required: true

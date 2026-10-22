@@ -1,0 +1,12 @@
+import {registry} from '../src/template-registry.js';
+import {createPreview} from '../src/preview.js';
+import {setHeaderArtwork} from '../src/header-artwork.js';
+const frames=[...document.querySelectorAll('iframe')],previews=frames.map(f=>createPreview(f,()=>{}));
+const sources=Object.fromEntries(await Promise.all(registry.map(async t=>[t.id,await(await fetch('../'+t.source)).text()])));
+const motion=document.createElement('select');motion.id='motion-stage';motion.innerHTML='<option value="live">Live animation</option><option value="800">Rising trail</option><option value="2800">Main burst</option><option value="3800">Fading sparks</option>';
+const motionLabel=document.createElement('label');motionLabel.textContent='Fireworks ';motionLabel.append(motion);document.querySelector('nav').append(motionLabel);
+const artwork=document.createElement('select');artwork.id='header-choice';artwork.innerHTML='<option value="theme">Theme default</option><option value="classic">Included classic picture</option><option value="lights">Included lights picture</option><option value="crest">Included crest picture</option><option value="none">No header artwork</option>';
+const artworkLabel=document.createElement('label');artworkLabel.textContent='Header artwork ';artworkLabel.append(artwork);document.querySelector('nav').append(artworkLabel);
+function setMotion(){for(const frame of frames){const d=frame.contentDocument;for(const a of d.getAnimations().filter(a=>a.effect.target.matches('.celebration-rocket,.celebration-spark'))){if(motion.value==='live'){a.currentTime=0;a.play();}else{a.pause();a.currentTime=9000+Number(motion.value)+parseFloat(d.defaultView.getComputedStyle(a.effect.target).animationDelay)*1000;}}}}
+async function render(){const t=registry.find(t=>t.id===document.querySelector('#template').value);for(const [i,frame] of frames.entries()){frame.style.width=document.querySelector('#width').value+'px';const s=t.cloneDefaults(frame.id);setHeaderArtwork(s,artwork.value);s.showMainGuidance=false;await previews[i].update(t.render(sources[t.id],s),s,{air:true,mode:'jukebox',reset:true,templateId:t.id,landing:t.landing});await frame.contentDocument.fonts.ready;await new Promise(r=>setTimeout(r,60));const page=document.querySelector('#page').value;if(page!=='landing')frame.contentDocument.querySelector('[data-tab-target="'+page+'"]').click();}}
+document.querySelectorAll('select:not(#motion-stage)').forEach(s=>s.addEventListener('change',async()=>{await render();setMotion();}));motion.addEventListener('change',setMotion);await render();

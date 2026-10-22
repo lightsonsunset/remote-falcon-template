@@ -1,4 +1,6 @@
+import {setHeaderArtwork} from './header-artwork.js';
 import {createCategoryHelp,missingCategoryNotice} from './category-help.js';
+import {enhanceTextFields,installTextClearButtons} from './text-clear.js';
 import {createRFExportHelp} from './rf-export-help.js';
 import {categoryIcon,songArtworkMode,renameCategoryArtwork} from './song-artwork.js';
 import {updateSongArtworkForm} from './song-artwork-form.js';
@@ -8,7 +10,8 @@ import {captureViewport,captureField} from './editor-context.js';
 import {createIconPicker} from './icon-picker.js';
 import {defaultIcon} from './icons.js';
 import {seasonOptions} from './season-options.js';
-import {createDesignStore,copyDetails,copyGroups} from './design-store.js';
+import {createDesignStore} from './design-store.js';
+import {createThemeFlow} from './theme-flow.js';
 import {registry,templateById,parseBackup} from './template-registry.js';
 import {createHistoryBank} from './history.js';
 import {updateNameStyleForm} from './name-style-form.js';
@@ -29,6 +32,7 @@ import {viewports,defaultViewports} from './viewports.js';
 import {parseCatalogue,categoryNamesOf} from './catalogue.js';
 import {detectedCategories,applyCategories,catalogueMatches} from './category-settings.js';
 const $=id=>document.getElementById(id);
+installTextClearButtons();
 createChangelog();
 createCategoryHelp();
 createRFExportHelp();
@@ -41,7 +45,6 @@ const cloneDefaults=theme=>designStore.template.cloneDefaults(theme);
 const validate=s=>designStore.template.validate(s);
 const render=(source,s)=>designStore.template.render(source,s);
 const renderDraft=(source,s)=>designStore.template.renderDraft(source,s);
-const changeTheme=(s,theme)=>designStore.template.changeTheme(s,theme);
 const settingsFile=()=>designStore.backup();
 const savePrivateCatalogue=value=>designStore.saveCatalogue(value);
 const histories=createHistoryBank();
@@ -87,6 +90,7 @@ function form(){
  const openCopy=[...$('settings').querySelectorAll('[data-copy-group][open]')].map(d=>d.dataset.copyGroup);
  const openFAQs=new Set([...$('settings').querySelectorAll('[data-faq-row][open]')].map(d=>renderedFAQs[+d.dataset.faqRow]));
  $('settings').innerHTML=settingsForm(settings,designStore.template);
+ enhanceTextFields($('settings'));
  if(hadForm)$('settings').querySelectorAll('[data-section]').forEach(d=>d.open=open.includes(d.dataset.section));
  $('settings').querySelectorAll('[data-information-row]').forEach(d=>d.open=!hadForm?d.dataset.informationRow==='0':openInformation.includes(d.dataset.informationRow));
  $('settings').querySelectorAll('[data-copy-group]').forEach(d=>d.open=openCopy.includes(d.dataset.copyGroup));
@@ -101,10 +105,10 @@ function form(){
  if(!$('editor-groups'))$('validation-summary').insertAdjacentHTML('beforebegin',editorNavigation(editorGroups));
  selectSettingsGroup(editorGroup,false);features();restoreField();restoreViewport();
 }
-function features(){
+function features({deferContrast=false}={}){
  updateSongArtworkForm($('settings'),settings);
  updateHeaderIdentity($('settings'),settings,designStore.template.features);
- updateNameStyleForm($('settings'),settings,designStore.template.namePreview?.(settings));
+ updateNameStyleForm($('settings'),settings,designStore.template.namePreview?.(settings),{deferContrast});
  document.querySelectorAll('[data-feature]').forEach(el=>el.hidden=!el.dataset.feature.split('|').some(k=>settings[k])&&!el.querySelector('[data-copy][aria-invalid="true"]')&&!el.contains(document.activeElement));
  document.querySelectorAll('[data-pulsemesh-link]').forEach(el=>el.hidden=settings.pulsemeshButtons==='download');
  document.querySelectorAll('[data-support-menu-note]').forEach(el=>el.hidden=settings.showSupportTab);
@@ -261,7 +265,7 @@ $('apply-categories').addEventListener('click',()=>{
   document.querySelector('.workspace').dataset.view='settings';document.querySelectorAll('.narrow-tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.view==='settings'));
   section.scrollIntoView({block:'start',behavior:'smooth'});$('preview-status').textContent='Category names copied. Reorder them to match RF’s saved category order before exporting.';
 });
-function changed(action=editAction){history().record(snapshot(),action);historyUI();features();const saved=save();designUI();clearTimeout(updateTimer);updateTimer=setTimeout(refresh,250);return saved;}
+function changed(action=editAction,{refreshPreview=true,deferContrast=false}={}){history().record(snapshot(),action);historyUI();features({deferContrast});const saved=save();designUI();clearTimeout(updateTimer);if(refreshPreview)updateTimer=setTimeout(refresh,250);return saved;}
 function download(text,name,type='text/html;charset=utf-8'){
   const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
 }
@@ -302,6 +306,7 @@ $('settings').addEventListener('click',event=>{const b=event.target.closest('[da
 $('settings').addEventListener('submit',event=>event.preventDefault());
 $('settings').addEventListener('input',event=>{
   const el=event.target;editAction=fieldAction(el);if(el.dataset.key)settings[el.dataset.key]=el.type==='checkbox'?el.checked:el.value;
+  if(el.dataset.key==='headerArtwork')setHeaderArtwork(settings,el.value);
   if(el.dataset.information!==undefined){const rows=informationCards(settings);rows[+el.dataset.information][el.dataset.part]=el.value;setInformationCards(settings,rows);}
   if(el.dataset.information!==undefined||el.dataset.key==='homeCardTitle'){const row=el.closest('[data-information-row]');if(row)row.querySelector('.information-title').textContent=informationCards(settings)[+row.dataset.informationRow].title||'Extra information';}
   if(el.dataset.colour)settings.colours[el.dataset.colour]=el.value;
@@ -312,11 +317,15 @@ $('settings').addEventListener('input',event=>{
   if(el.dataset.faq!==undefined){settings.faq[+el.dataset.faq][el.dataset.part]=el.value;if(el.dataset.part==='question')el.closest('[data-faq-row]').querySelector('.faq-question-label').textContent=el.value||'New question';}
   if(el.dataset.list){settings[el.dataset.list][+el.dataset.row][el.dataset.part]=el.value;if(['title','label'].includes(el.dataset.part))el.closest('[data-list-row]').querySelector('.extras-row-title').textContent=el.value||listDefinitions[el.dataset.list].label;}
   if(el.dataset.copy){settings.copy[el.dataset.copy]=el.value;$('settings').querySelector(`[data-reset-copy="${el.dataset.copy}"]`).hidden=false;}
-  changed();
+  // Replacing the preview and restoring its fragment can steal focus from a
+  // native colour popup mid-drag. Keep the inline sample live, then render the
+  // viewer when the picker commits its selection with change.
+  changed(undefined,{refreshPreview:el.type!=='color',deferContrast:el.type==='color'});
 });
+$('settings').addEventListener('change',event=>{if(event.target.type==='color'){clearTimeout(updateTimer);refresh();}});
 $('settings').addEventListener('click',event=>{
   const el=event.target.closest('button');if(!el)return;
-  if(el.dataset.season){if(designStore.template.separateSeasons){switchDesign(designStore.template.id,el.dataset.season);return;}const importedNames=settings.categoryNames,importedIcons=settings.categoryIcons;settings=changeTheme(settings,el.dataset.season);if(catalogue){settings.categoryNames=importedNames;settings.categoryIcons=importedIcons;}form();changed();}
+  if(el.dataset.season){themeFlow.request(designStore.template.id,el.dataset.season).catch(err=>setError(err.message));return;}
   if(el.dataset.informationAction){
    const restoreViewport=captureViewport(el),rows=informationCards(settings),action=el.dataset.informationAction,i=+el.dataset.row;let next=i;
    if(action==='add'&&rows.length<5){rows.push(newInformationCard());next=rows.length-1;}
@@ -380,13 +389,13 @@ $('cancel-load-settings').addEventListener('click',closeSettingsLoad);
 $('close-load-settings').addEventListener('click',closeSettingsLoad);
 $('load-settings-dialog').addEventListener('cancel',event=>{event.preventDefault();closeSettingsLoad();});
 $('backup-before-load').addEventListener('click',()=>download(settingsFile(settings),designStore.template.name+' settings.json','application/json'));
-$('confirm-load-settings').addEventListener('click',()=>{
+$('confirm-load-settings').addEventListener('click',async()=>{
  if(!pendingSettings)return;
- const next=pendingSettings;closeSettingsLoad();clearTimeout(updateTimer);const result=designStore.import(next.text,(key,before,after)=>histories.get(key,before).record(after,{label:'Import '+themes[after.settings.theme].name+' settings'}));switchDesign(result.template,result.season);setError(result.saved?'':'Backup loaded for this session; browser storage is unavailable.');
+ const next=pendingSettings;closeSettingsLoad();clearTimeout(updateTimer);const result=designStore.import(next.text,(key,before,after)=>histories.get(key,before).record(after,{label:'Import '+themes[after.settings.theme].name+' settings'}));await switchDesign(result.template,result.season);themeFlow.refreshNotice();setError(result.saved?'':'Backup loaded for this session; browser storage is unavailable.');
 });
 $('load-settings').addEventListener('change',async event=>{
   const file=event.target.files[0];if(!file)return;
-  try{if(file.size>1000000)throw Error('That settings file is too large.');const text=await file.text(),next=parseBackup(text);pendingSettings={text,backup:next};const t=templateById(next.template);$('load-settings-title').textContent='Load '+t.name+' settings?';$('load-settings-description').textContent='Load “'+file.name+'” into '+t.name+(t.separateSeasons?' — '+Object.keys(next.designs).map(season=>themes[season].name).join(', ')+' designs':'')+'? This replaces those settings. Other templates and imported catalogues stay as they are.';$('load-settings-dialog').showModal();$('cancel-load-settings').focus();setError('');}
+  try{if(file.size>1000000)throw Error('That settings file is too large.');const text=await file.text(),next=parseBackup(text);pendingSettings={text,backup:next};const t=templateById(next.template);$('load-settings-title').textContent='Load '+t.name+' settings?';$('load-settings-description').textContent='Load “'+file.name+'” into '+t.name+' · '+Object.keys(next.designs).map(season=>themes[season].name).join(', ')+' designs'+'? This replaces those settings. Other saved themes, templates and imported catalogues stay as they are.';$('load-settings-dialog').showModal();$('cancel-load-settings').focus();setError('');}
   catch(err){setError(err.message);}
   event.target.value='';
 });
@@ -399,9 +408,28 @@ function finishExport(){
  (hasErrors?$('validation-count'):$('export-heading')).focus({preventScroll:true});
 }
 document.querySelectorAll('[data-finish-export]').forEach(button=>button.addEventListener('click',finishExport));
-$('reset-settings').addEventListener('click',()=>$('reset-dialog').showModal());
-$('cancel-reset').addEventListener('click',()=>$('reset-dialog').close());
-$('confirm-reset').addEventListener('click',()=>{settings=cloneDefaults(settings.theme);form();changed();setError('');$('reset-dialog').close();});
+function resetScopeUI(){
+ const all=$('reset-dialog').querySelector('[name="reset-scope"]:checked').value==='all';
+ $('reset-current-name').textContent=designStore.template.name+' · '+themes[settings.theme].name;
+ $('reset-title').textContent=all?'Reset all saved designs to their defaults?':'Reset this design to its defaults?';
+ $('reset-description').textContent=all?'Each saved design returns to its own theme defaults, including wording, colours and song badges. Reuse-update links are cleared. You can Undo in each design during this session. Back up each template first to keep a permanent copy.':'This replaces this design’s edits with its theme defaults. Other designs stay as they are. You can Undo during this session, or download a settings backup first to keep a permanent copy.';
+ $('confirm-reset').textContent=all?'Reset all saved designs':'Reset to defaults';
+}
+function closeReset(){ $('reset-dialog').close();$('reset-settings').focus({preventScroll:true}); }
+$('reset-settings').addEventListener('click',()=>{$('reset-dialog').querySelector('[value="current"]').checked=true;resetScopeUI();$('reset-dialog').showModal();$('cancel-reset').focus({preventScroll:true});});
+$('reset-dialog').addEventListener('change',resetScopeUI);
+$('reset-dialog').addEventListener('cancel',event=>{event.preventDefault();closeReset();});
+$('cancel-reset').addEventListener('click',closeReset);
+$('confirm-reset').addEventListener('click',()=>{
+ clearTimeout(updateTimer);
+ if($('reset-dialog').querySelector('[name="reset-scope"]:checked').value==='all'){
+  const result=designStore.resetAll((key,before,after)=>histories.get(key,before).record(after,{label:'Reset all saved designs'}));
+  settings=designStore.read().settings;form();refresh();historyUI();designUI();restoredSaveStatus();themeFlow.resetNotice();
+  $('history-status').textContent='Reset '+result.count+' saved designs. Undo is available within each changed design.';
+  setError(result.saved?'':'Designs were reset for this session, but some browser saves failed. Undo is available within each changed design; back up settings before closing.');
+ }else{settings=cloneDefaults(settings.theme);form();changed({label:'Reset to defaults'});setError('');}
+ closeReset();
+});
 function theme(value){document.documentElement.dataset.theme=value;$('theme').textContent=value==='dark'?'☀':'☾';$('theme').setAttribute('aria-label',`Switch to ${value==='dark'?'light':'dark'} editor`);}
 theme(readPreferences(storage).theme==='dark'?'dark':'light');
 $('theme').addEventListener('click',()=>{const value=document.documentElement.dataset.theme==='dark'?'light':'dark';theme(value);writePreferences(storage,{theme:value});});
@@ -432,32 +460,55 @@ const previewPane=document.querySelector('.preview-pane'),previewControls=docume
 const fitPreview=()=>previewPane.style.setProperty('--preview-chrome',`${previewControls.getBoundingClientRect().height+previewFoot.getBoundingClientRect().height+34}px`);
 const previewChromeObserver=new ResizeObserver(fitPreview);previewChromeObserver.observe(previewControls);previewChromeObserver.observe(previewFoot);
 
-let sourceGeneration=0,startChosenWizard=()=>{},copySources=[];
+let sourceGeneration=0,startChosenWizard=()=>{};
 const sources=new Map();
 async function templateSource(t){if(!sources.has(t.id)){const response=await fetch(t.source);if(!response.ok)throw Error('Template could not be loaded. Try again.');sources.set(t.id,await response.text());}return sources.get(t.id);}
-function designUI(){const t=designStore.template;$('active-design').textContent=t.name+' · '+themes[settings.theme].name;$('reset-dialog').querySelector('h2').textContent='Reset '+t.name+' · '+themes[settings.theme].name+' to its defaults?';$('reset-settings').textContent='Reset to defaults';$('save-settings').textContent=t.separateSeasons?'Back up all themes':'Download settings backup';$('copy-design-details').disabled=designStore.all().length===0;$('manual-template').href='downloads/'+t.package;$('manual-template').textContent='↓ Download '+t.name+' + instructions';}
+function designUI(){const t=designStore.template;$('active-design').textContent=t.name+' · '+themes[settings.theme].name;$('reset-settings').textContent='Reset to defaults';$('save-settings').textContent='Back up saved themes';$('copy-design-details').disabled=!designStore.all().some(d=>d.key!==designStore.key);$('manual-template').href='downloads/'+t.package;$('manual-template').textContent='↓ Download '+t.name+' + instructions';}
 async function switchDesign(id,season){
  const generation=++sourceGeneration;histories.endGroups();clearTimeout(updateTimer);
  const next=designStore.select(id,season);settings=next.settings;catalogue=next.catalogue;catalogueSource=catalogue?'imported':'samples';editorGroups=designStore.template.groups;editorGroup='setup';source='';$('editor-groups')?.remove();$('editor-area-help')?.remove();histories.seed(historyKey(),snapshot());history();form();historyUI();designUI();refresh();preview.navigate(designStore.template.landing);
  try{const loaded=await templateSource(designStore.template);if(generation!==sourceGeneration)return;source=loaded;refresh();scale();restoredSaveStatus();}catch(err){if(generation===sourceGeneration)setError(err.message);}
 }
-const chooser=$('template-dialog');let candidate=designStore.template.id,chooserSeason=settings.theme;
-const chooserPreviews=new Map();
+const chooser=$('template-dialog');let candidate=designStore.template.id,chooserSeason=settings.theme,chooserGeneration=0;
+const chooserPreview=createPreview($('template-preview'),()=>{});
 function paintTemplateChoices(){
  $('template-season').innerHTML=seasonOptions(chooserSeason,'data-chooser-season');
- for(const t of registry){const button=$('template-choice-'+t.id),selected=candidate===t.id;button.classList.toggle('selected',selected);button.closest('article').classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));button.querySelector('small').textContent=(selected?'✓ Selected · ':'')+(designStore.has(t.id,chooserSeason)?'Resume saved design':'Start a new design');}
+  $('template-season').querySelector('.selected strong').insertAdjacentHTML('beforeend','<span class="theme-selection-tick" aria-hidden="true"> ✓</span>');
+ for(const t of registry){const button=$('template-choice-'+t.id),selected=candidate===t.id;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));button.querySelector('small').textContent=(selected?'✓ Selected · ':'')+(designStore.has(t.id,chooserSeason)?'Saved design available':'New design');}
+ const t=registry.find(t=>t.id===candidate),label=t.name+' · '+themes[chooserSeason].name;
+ $('template-preview-label').textContent=label;
+ $('template-selection-name').textContent=label;
+ $('template-selection-status').textContent=designStore.has(candidate,chooserSeason)?'Resume your saved design.':'Start a new design. You can reuse saved details next.';
+ $('explore-template').setAttribute('aria-label','Explore '+label+' phone preview');
 }
-async function refreshTemplatePreviews(){const season=chooserSeason;for(const t of registry){const html=await templateSource(t);if(season!==chooserSeason)return;const s=t.cloneDefaults(season);chooserPreviews.get(t.id).update(t.render(html,s),s,{reset:true,thumbnail:true,landing:t.landing,templateId:t.id});}}
-function openTemplates(){candidate=designStore.template.id;chooserSeason=settings.theme;paintTemplateChoices();chooser.showModal();chooser.scrollTop=0;$('cancel-template').focus({preventScroll:true});refreshTemplatePreviews().catch(err=>setError(err.message));}
-$('template-cards').innerHTML=registry.map(t=>`<article class="template-choice"><button type="button" class="template-thumb" data-expand-template="${t.id}" aria-label="Explore ${e(t.name)} phone preview"><iframe id="template-preview-${t.id}" sandbox="allow-same-origin" tabindex="-1" aria-hidden="true" title="${e(t.name)} illustrative preview"></iframe><span>⤢ Explore full preview</span></button><h3>${e(t.name)}</h3><p>${e(t.description)}</p><button id="template-choice-${t.id}" type="button" data-template-choice="${t.id}">Choose ${e(t.name)}<small></small></button></article>`).join('');
-for(const t of registry)chooserPreviews.set(t.id,createPreview($('template-preview-'+t.id),()=>{}));
-const thumbnailSizer=new ResizeObserver(entries=>{for(const {target} of entries)target.style.setProperty('--thumb-scale',String(Math.min(.7,target.clientWidth/390)));});
-chooser.querySelectorAll('.template-thumb').forEach(el=>thumbnailSizer.observe(el));
+async function refreshTemplatePreviews(){
+ const generation=++chooserGeneration,season=chooserSeason,t=registry.find(t=>t.id===candidate);
+ $('template-preview-error').hidden=true;$('template-preview').hidden=true;
+ $('template-preview-loading').hidden=false;
+ try{
+  const html=await templateSource(t);if(generation!==chooserGeneration||!chooser.open)return;
+  const s=t.cloneDefaults(season);
+  await chooserPreview.update(t.render(html,s),s,{reset:true,thumbnail:true,landing:t.landing,templateId:t.id});
+  if(generation!==chooserGeneration||!chooser.open)return;
+  $('template-preview').hidden=false;
+ }catch(err){if(generation===chooserGeneration&&chooser.open){$('template-preview-error').textContent=err.message;$('template-preview-error').hidden=false;}}
+ finally{if(generation===chooserGeneration)$('template-preview-loading').hidden=true;}
+}
+function openTemplates(){candidate=designStore.template.id;chooserSeason=settings.theme;paintTemplateChoices();chooser.showModal();chooser.querySelector('.template-browser-body').scrollTop=0;$('cancel-template').focus({preventScroll:true});refreshTemplatePreviews();}
+$('template-cards').innerHTML=registry.map(t=>`<button class="template-choice" id="template-choice-${t.id}" type="button" data-template-choice="${t.id}" aria-pressed="false"><strong>${e(t.name)}</strong><span>${e(t.description)}</span><small></small></button>`).join('');
+const thumbnailSizer=new ResizeObserver(entries=>{for(const {target} of entries)target.style.setProperty('--thumb-scale',String(Math.min(.78,target.clientWidth/390)));});
+thumbnailSizer.observe($('explore-template'));
 $('choose-template').addEventListener('click',openTemplates);
-$('template-cards').addEventListener('click',event=>{const b=event.target.closest('[data-template-choice]');if(b){candidate=b.dataset.templateChoice;paintTemplateChoices();}const expand=event.target.closest('[data-expand-template]');if(expand){const t=registry.find(t=>t.id===expand.dataset.expandTemplate);openExpanded(t,t.cloneDefaults(chooserSeason));}});
-$('template-season').addEventListener('click',event=>{const b=event.target.closest('[data-chooser-season]');if(!b)return;chooserSeason=b.dataset.chooserSeason;paintTemplateChoices();$('template-season').querySelector(`[data-chooser-season="${chooserSeason}"]`).focus();refreshTemplatePreviews().catch(err=>setError(err.message));});
+$('template-cards').addEventListener('click',event=>{const b=event.target.closest('[data-template-choice]');if(!b)return;candidate=b.dataset.templateChoice;paintTemplateChoices();refreshTemplatePreviews();});
+$('explore-template').addEventListener('click',()=>{const t=registry.find(t=>t.id===candidate);openExpanded(t,t.cloneDefaults(chooserSeason));});
+$('template-season').addEventListener('click',event=>{const b=event.target.closest('[data-chooser-season]');if(!b)return;chooserSeason=b.dataset.chooserSeason;paintTemplateChoices();$('template-season').querySelector(`[data-chooser-season="${chooserSeason}"]`).focus({preventScroll:true});refreshTemplatePreviews();});
 $('cancel-template').addEventListener('click',()=>chooser.close());
-async function chooseDesign(setup){chooser.close();await switchDesign(candidate,chooserSeason);if(setup)startChosenWizard();}
+chooser.addEventListener('close',()=>{chooserGeneration++;});
+const contribute=$('template-contribute-dialog');
+$('open-template-contribute').addEventListener('click',()=>{contribute.showModal();$('close-template-contribute').focus({preventScroll:true});});
+$('close-template-contribute').addEventListener('click',()=>contribute.close());
+contribute.addEventListener('close',()=>{$('open-template-contribute').focus({preventScroll:true});});
+async function chooseDesign(setup){chooser.close();await themeFlow.request(candidate,chooserSeason,{setup});}
 $('apply-template').addEventListener('click',()=>chooseDesign(false));
 $('setup-template').addEventListener('click',()=>chooseDesign(true));
 const expanded=$('expanded-preview'),expandedAdapter=createPreview($('expanded-preview-frame'),()=>{});
@@ -479,13 +530,11 @@ expanded.querySelectorAll('[data-expanded-air]').forEach(button=>button.addEvent
 $('close-expanded-preview').addEventListener('click',()=>expanded.close());
 expanded.addEventListener('close',()=>{expandedGeneration++;expandedFocus?.focus({preventScroll:true});});
 $('expand-preview').addEventListener('click',()=>openExpanded(designStore.template,settings,{air,mode,catalogue:catalogueSource==='imported'?catalogue:null,categoriesMismatch:catalogueSource==='imported'&&!categoriesMatch()}));
-$('copy-design-details').addEventListener('click',()=>{copySources=designStore.all().filter(d=>d.template!==designStore.template.id||d.season!==settings.theme);$('copy-source').innerHTML=copySources.map((d,i)=>`<option value="${i}">${e(d.name+' · '+themes[d.season].name+' · '+d.settings.name)}</option>`).join('');$('copy-groups').innerHTML=Object.keys(copyGroups).map(group=>`<label class="toggle"><input type="checkbox" value="${group}" ${['identity','listening'].includes(group)?'checked':''}>${group[0].toUpperCase()+group.slice(1)}</label>`).join('');$('apply-copy-details').disabled=!copySources.length;$('copy-review').textContent='Copy only the selected groups into '+designStore.template.name+' · '+themes[settings.theme].name+'. Appearance and imported CSVs remain separate. Existing values in these groups will be replaced.';updateCopyReview();$('copy-design-dialog').showModal();});
-function updateCopyReview(){const from=copySources[+$('copy-source').value];const groups=[...$('copy-groups').querySelectorAll('input:checked')].map(el=>el.value);$('apply-copy-details').disabled=!from||!groups.length;if(!from){$('copy-details-preview').textContent='Save another design first to copy its details.';return;}const s=from.settings;const summaries={identity:s.name,listening:[s.fm?s.frequency+' FM':'',s.pulsemesh?'PulseMesh':'',s.listening].filter(Boolean).join(' · ')||'No listening options enabled',schedule:s.dates+' · '+s.schedule.map(r=>r.day+': '+r.hours).join('; '),music:s.categoryNames.length+' category rows · '+namesOf(s).length+' NEW assignments · '+namesOf(s,'movingHeadNames').length+' Moving heads badges',info:(s.homeCard?informationCards(s).length+' extra-information cards':'Extra-information cards off')+' · '+(s.showMainGuidance?'main-screen guidance on':'main-screen guidance off')+' · '+s.faq.length+' FAQs · '+s.playlists.length+' playlist entries · '+s.resources.length+' resource entries · '+s.socials.length+' social links',support:s.donations?(1+s.donationRecipients.length)+' support cards':'Support cards disabled'};$('copy-details-preview').replaceChildren(...groups.map(group=>{const row=document.createElement('p');const label=document.createElement('strong');label.textContent=group[0].toUpperCase()+group.slice(1)+': ';row.append(label,document.createTextNode(summaries[group]));return row;}));}
-$('copy-source').addEventListener('change',updateCopyReview);$('copy-groups').addEventListener('change',updateCopyReview);
-$('cancel-copy-details').addEventListener('click',()=>$('copy-design-dialog').close());
-$('apply-copy-details').addEventListener('click',()=>{const from=copySources[+$('copy-source').value];if(!from)return;const groups=[...$('copy-groups').querySelectorAll('input:checked')].map(el=>el.value);settings=copyDetails(from.settings,settings,groups,designStore.template);$('copy-design-dialog').close();form();changed({label:'Copy '+groups.join(', ')+' from '+from.name});designUI();});
+const themeFlow=createThemeFlow({store:designStore,getSettings:()=>structuredClone(settings),onSwitch:switchDesign,onSetup:()=>startChosenWizard(),onError:setError,onApply(next,label,options={}){settings=next;if(Object.hasOwn(options,'catalogue')){catalogue=options.catalogue;catalogueSource=catalogue?'imported':'samples';}form();catalogueUI();const saved=changed({label});refresh();return saved;}});
+$('copy-design-details').addEventListener('click',()=>{chooser.close();themeFlow.reuse();});
 designUI();
 form();presetOptions();historyUI();catalogueUI();if(designStore.errors.length)setError(designStore.errors.join(' '));
+themeFlow.refreshNotice();
 try{const response=await fetch(designStore.template.source);if(!response.ok)throw Error('Template could not be loaded. Refresh to try again.');source=await response.text();refresh();scale();restoredSaveStatus();if(catalogueSource==='imported')$('preview-status').textContent='Imported CSV snapshot — requests and votes stay in this preview. No live playback.';}
 catch(err){setError(err.message);$('export-status').textContent='Copy and Download are unavailable because the viewer template could not load. Reload to try again, or use the manual ZIP download above.';$('export-status').classList.add('export-blocked');}
 if(source){

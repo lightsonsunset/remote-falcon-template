@@ -1,4 +1,5 @@
-import {cloneDefaults,settingsFile,render,parseSettings} from '../src/template.js';
+import {createDesignStore} from '../src/design-store.js';
+import {cloneDefaults,settingsFile,render} from '../src/template.js';
 import {SETTINGS_KEY} from '../src/storage.js';
 import {restoreCatalogue} from '../src/catalogue.js';
 import {createPreview} from '../src/preview.js';
@@ -31,11 +32,11 @@ run.onclick=async()=>{
    await click('#pick-new');await click('#clear-new');await click('#cancel-new');check('Cancelled NEW clear keeps selections',q('[data-key="newNames"]').value===before);
   }else check('Import required guidance',q('#detect-categories').disabled&&q('#pick-new').disabled&&q('#pick-new-help').textContent.includes('Import'));
   await click('[data-editor-group="home"]');await input('[data-key="homeMusicLink"]',false);check('Home Music link hidden but navbar retained',!visible(p().querySelector('.music-tab-button'))&&visible(p().querySelector('.los-menu a[href="#music-panel"]')));
-  await click('[data-editor-group="setup"]');await click('[data-season="halloween"]');check('Halloween has independent off toggle',!q('[data-key="halloweenCountdown"]').checked&&!p().querySelector('#to-halloween-days'));
+  await click('[data-editor-group="setup"]');await click('[data-season="halloween"]');if(q('#copy-design-dialog').open)await click('[data-start-fresh]');await input('[data-key="homeMusicLink"]',false);check('Halloween has independent off toggle',!q('[data-key="halloweenCountdown"]').checked&&!p().querySelector('#to-halloween-days'));
   await input('[data-key="halloweenCountdown"]',true);await input('[data-copy="COUNTDOWN_TITLE"]','Our spooky evening');await click('[data-editor-group="home"]');check('Halloween countdown uses edited title',visible(p().querySelector('.halloween-countdown'))&&p().querySelector('.halloween-countdown').textContent.includes('Our spooky evening'));
   await input('[data-key="queueCount"]',true);await input('[data-key="votesRemaining"]',true);await load();d=editor.contentDocument;
   check('New settings restore',!q('[data-key="homeMusicLink"]').checked&&q('[data-key="halloweenCountdown"]').checked&&q('[data-key="queueCount"]').checked&&q('[data-key="votesRemaining"]').checked);
-  const restored=parseSettings(localStorage.getItem(SETTINGS_KEY));check('Settings backup preserves hidden choices',Array.isArray(restored.hiddenCategories));
+  const restored=createDesignStore(localStorage).read().settings;check('Settings backup preserves hidden choices',Array.isArray(restored.hiddenCategories));
   const source=await(await fetch('../templates/christmas.html')).text(),s=cloneDefaults('halloween');Object.assign(s,{categories:true,categoryNames:['First','Middle','Last'],hiddenCategories:['First','Middle'],newFilter:true,newNames:'One More Rainbow',homeMusicLink:false,halloweenCountdown:true,queueCount:true,votesRemaining:true});
   const demo=createPreview(viewer,()=>{}),v=()=>viewer.contentDocument;
   const update=async options=>{demo.update(render(source,s),s,options);await wait(180);};

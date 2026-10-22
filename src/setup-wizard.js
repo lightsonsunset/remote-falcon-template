@@ -1,6 +1,8 @@
 import {songArtworkForm,updateSongArtworkForm} from './song-artwork-form.js';
+import {enhanceTextFields} from './text-clear.js';
 import {artworkChoices,songArtworkMode,nowPlayingArtwork} from './song-artwork.js';
-import {headerIdentity,headerChoices,updateHeaderIdentity} from './header-identity.js';
+import {headerIdentity,headerLabel,updateHeaderIdentity} from './header-identity.js';
+import {headerArtworkLabel,setHeaderArtwork} from './header-artwork.js';
 import {createIconPicker,iconButton} from './icon-picker.js';
 import {defaultIcon} from './icons.js';
 import {nameStyleForm,updateNameStyleForm} from './name-style-form.js';
@@ -38,7 +40,7 @@ export function createSetupWizard({getSettings,applySettings,getTemplate=()=>nul
    content.innerHTML='<p class="hint">Help visitors enjoy your show and be considerate of your neighbours. Keep the suggested wording or make it your own.</p>'+visitorGuidanceForm({toggle,select,feature:(key,html)=>`<div data-setup-feature="${key}">${html}</div>`,field:(key,label,hint,type,optional)=>field(key,label,{hint,type,optional,max:20000})},getTemplate()?.features);
   }else{
    const listen=[s.fm?`${s.frequency} FM`:'',s.pulsemesh&&s.pulsemeshButtons!=='listen'?'Download PulseMesh button':'',s.pulsemesh&&s.pulsemeshButtons!=='download'?'Listen on PulseMesh: '+s.pulsemeshUrl:'',s.listening].filter(Boolean);
-   content.innerHTML='<p class="hint">Check your details, then start editing or take a quick tour. Your design is saved in this browser; download a settings backup to keep a portable copy.</p><dl class="setup-review"><div><dt>Your show</dt><dd>'+e(s.name)+'</dd><dd>'+e(themes[s.theme].name)+' · '+(headerChoices(s,getTemplate()?.features).find(([id])=>id===s.logoMode)?.[1]||'Your own logo')+'</dd>'+(s.welcome?'<dd>'+e(s.welcome)+'</dd>':'')+(s.logoMode==='custom'?'<dd class="setup-url">'+e(s.logo)+'</dd>':'')+'</div><div><dt>Dates & hours</dt><dd>'+e(s.dates)+'</dd>'+s.schedule.map(r=>'<dd>'+e(r.day)+' · '+e(r.hours)+'</dd>').join('')+'</div><div><dt>Music &amp; listening</dt>'+ (listen.length?listen.map(v=>'<dd class="setup-url">'+e(v)+'</dd>').join(''):'<dd>No listening options selected. You can add them later.</dd>')+'<dd>Song list: '+artworkChoices.find(([id])=>id===songArtworkMode(s))[1]+'</dd><dd>Now Playing artwork: '+(nowPlayingArtwork(s)?'shown where available':'hidden')+'</dd><dd>Artist names: '+(s.showSongArtists&&s.showQueueArtists?'song list and queue':s.showSongArtists?'song list only':s.showQueueArtists?'Now Playing, Up Next and queue only':'hidden')+'</dd></div></dl><p class="setup-next-note"><strong>Next, make it yours.</strong> Import your RF song CSV beside the preview to set up category filters and NEW sashes. Add support cards, FAQs and other extras in the page tabs.</p>';
+   content.innerHTML='<p class="hint">Check your details, then start editing or take a quick tour. Your design is saved in this browser; download a settings backup to keep a portable copy.</p><dl class="setup-review"><div><dt>Your show</dt><dd>'+e(s.name)+'</dd><dd>'+e(themes[s.theme].name)+'</dd><dd>Header artwork: '+e(headerArtworkLabel(s))+'</dd><dd>Logo: '+e(headerLabel(s,getTemplate()?.features))+'</dd>'+(s.welcome?'<dd>'+e(s.welcome)+'</dd>':'')+(s.logoMode==='custom'?'<dd class="setup-url">'+e(s.logo)+'</dd>':'')+'</div><div><dt>Dates & hours</dt><dd>'+e(s.dates)+'</dd>'+s.schedule.map(r=>'<dd>'+e(r.day)+' · '+e(r.hours)+'</dd>').join('')+'</div><div><dt>Music &amp; listening</dt>'+ (listen.length?listen.map(v=>'<dd class="setup-url">'+e(v)+'</dd>').join(''):'<dd>No listening options selected. You can add them later.</dd>')+'<dd>Song list: '+artworkChoices.find(([id])=>id===songArtworkMode(s))[1]+'</dd><dd>Now Playing artwork: '+(nowPlayingArtwork(s)?'shown where available':'hidden')+'</dd><dd>Artist names: '+(s.showSongArtists&&s.showQueueArtists?'song list and queue':s.showSongArtists?'song list only':s.showQueueArtists?'Now Playing, Up Next and queue only':'hidden')+'</dd></div></dl><p class="setup-next-note"><strong>Next, make it yours.</strong> Import your RF song CSV beside the preview to set up category filters and NEW sashes. Add support cards, FAQs and other extras in the page tabs.</p>';
   }
   if(step===reviewStep){
    const s=draft.value,hasMessage=!!(s.neighbourTitle.trim()||s.neighbourText.trim());
@@ -48,12 +50,12 @@ export function createSetupWizard({getSettings,applySettings,getTemplate=()=>nul
   if(getTemplate()?.separateSeasons){
    const walker=document.createTreeWalker(content,NodeFilter.SHOW_TEXT);while(walker.nextNode())walker.currentNode.textContent=walker.currentNode.textContent.replace(/\bHome\b/g,'Music');
   }
-  visibility();dialog.scrollTop=0;$('setup-title').focus({preventScroll:true});
+  enhanceTextFields(content);visibility();dialog.scrollTop=0;$('setup-title').focus({preventScroll:true});
  }
- function visibility(){
+ function visibility({deferContrast=false}={}){
   updateSongArtworkForm(content,draft.value);
   updateHeaderIdentity(content,draft.value,getTemplate()?.features);
-  updateNameStyleForm(content,draft.value,getTemplate()?.namePreview?.(draft.value));
+  updateNameStyleForm(content,draft.value,getTemplate()?.namePreview?.(draft.value),{deferContrast});
   content.querySelectorAll('[data-setup-feature]').forEach(el=>el.hidden=!draft.value[el.dataset.setupFeature]);
   if($('setup-fm-fields'))$('setup-fm-fields').hidden=!draft.value.fm;
   if($('setup-pulsemesh-fields'))$('setup-pulsemesh-fields').hidden=!draft.value.pulsemesh;
@@ -81,9 +83,11 @@ export function createSetupWizard({getSettings,applySettings,getTemplate=()=>nul
  content.addEventListener('input',event=>{
   const el=event.target;
   if(el.dataset.setupKey)draft.value[el.dataset.setupKey]=el.type==='checkbox'?el.checked:el.value;
+  if(el.dataset.setupKey==='headerArtwork')setHeaderArtwork(draft.value,el.value);
   if(el.dataset.setupRow!==undefined)draft.value.schedule[+el.dataset.setupRow][el.dataset.part]=el.value;
-  visibility();if(attempted)errors();
+  visibility({deferContrast:el.type==='color'});if(attempted)errors();
  });
+ content.addEventListener('change',event=>{if(event.target.type==='color'&&draft)visibility();});
  content.addEventListener('focusout',event=>{
   const el=event.target;if(!['logo','pulsemeshUrl'].includes(el.dataset.setupKey))return;
   const value=completeWebAddress(el.value);el.value=value;draft.value[el.dataset.setupKey]=value;if(attempted)errors();

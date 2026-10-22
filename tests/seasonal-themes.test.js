@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,access} from 'node:fs/promises';
-import {registry} from '../src/template-registry.js';
+import {registry,parseBackup} from '../src/template-registry.js';
 import {themes} from '../src/themes.js';
 import {settingsForm} from '../src/editor-form.js';
 import {createDesignStore,copyDetails} from '../src/design-store.js';
@@ -10,7 +10,7 @@ import {createSetupDraft} from '../src/setup-model.js';
 import {viewerFilename} from '../src/release-ux.js';
 import {seasonalAssetFiles} from '../src/seasonal-style.js';
 import {logoChoices} from '../src/assets.js';
-const seasons=['thanksgiving','australia-day'];
+const seasons=['thanksgiving','australia-day','us-patriotic','valentines-day'];
 const sources=new Map(await Promise.all(registry.map(async t=>[t.id,await readFile(new URL('../'+t.source,import.meta.url),'utf8')])));
 const memory=()=>{const m=new Map();return {getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};};
 
@@ -28,7 +28,7 @@ test('new seasonal exports keep both RF modes, attribution and script-free decor
 
 test('new seasonal controls share ownership without exposing unsupported countdowns',()=>{
  for(const t of registry)for(const theme of seasons){const s=t.cloneDefaults(theme),html=settingsForm(s,t);
-  for(const key of ['headerTopDecorations','headerBottomDecorations','navbarDetails','seasonalMotion'])assert.equal(html.split('data-key="'+key+'"').length-1,1);
+  for(const key of ['headerArtwork','headerBottomDecorations','navbarDetails','seasonalMotion'])assert.equal(html.split('data-key="'+key+'"').length-1,1);
   assert(!html.includes('data-key="flagPlacement"'));assert(!html.includes('data-section="21"'));
   assert(!html.includes('data-key="decorationMotion"'));assert(html.includes('data-season="christmas"'));assert(html.includes('data-season="thanksgiving"'));
  }
@@ -58,7 +58,7 @@ test('older two-season Compact storage and imports preserve new seasonal work an
  for(const theme of seasons){store.select(t.id,theme);let value=store.read();const h=bank.get(store.key,value);value.settings.name='Saved '+theme;value.settings.flagPlacement='edges';h.record(value);store.save(value);}
  legacy.christmas.name='Imported original';store.import(t.settingsFile(legacy),()=>{});
  for(const theme of seasons){store.select(t.id,theme);assert.equal(store.read().settings.name,'Saved '+theme);assert.equal(store.read().settings.flagPlacement,'edges');}
- store.save(bank.get(store.key).undo());assert.equal(store.read().settings.name,t.cloneDefaults('australia-day').name);
+ store.save(bank.get(store.key).undo());assert.equal(store.read().settings.name,t.cloneDefaults(seasons.at(-1)).name);
  store.select(t.id,'thanksgiving');assert.equal(store.read().settings.name,'Saved thanksgiving');
  const again=createDesignStore(storage);again.select(t.id,'thanksgiving');assert.equal(again.read().settings.name,'Saved thanksgiving');
  assert.deepEqual(Object.keys(JSON.parse(store.backup()).designs),Object.keys(themes));
@@ -124,7 +124,7 @@ test('older header-art switches migrate to both independent choices without chan
   const file=t.settingsFile(t.separateSeasons?Object.fromEntries(Object.keys(themes).map(k=>[k,k===theme?old:t.cloneDefaults(k)])):old);
   const parsed=t.parseSettings(file),fromBackup=t.separateSeasons?parsed[theme]:parsed;assert.equal(fromBackup.headerTopDecorations,enabled);assert.equal(fromBackup.headerBottomDecorations,enabled);
   const storage=memory();storage.setItem(t.storageKey,file);const store=createDesignStore(storage);store.select(t.id,theme);assert.equal(store.read().settings.headerTopDecorations,enabled);assert.equal(store.read().settings.headerBottomDecorations,enabled);
-  assert.equal(t.render(sources.get(t.id),restored).includes('<div class="season-header-art"'),enabled);
+  assert.equal(t.render(sources.get(t.id),restored).includes('<div class="season-header-art"'),enabled||theme==='us-patriotic');
   old.headerTopDecorations=!enabled;
   const partial=t.checkedSettings(old);assert.equal(partial.headerTopDecorations,!enabled);assert.equal(partial.headerBottomDecorations,enabled);
   for(const key of ['headerTopDecorations','headerBottomDecorations'])assert.throws(()=>t.checkedSettings({...restored,[key]:'yes'}));
@@ -137,11 +137,11 @@ test('independent header artwork survives storage, backups and history without c
   changed.settings.headerTopDecorations=top;changed.settings.headerBottomDecorations=bottom;
   const bank=createHistoryBank(),history=bank.get(store.key,original);history.record(changed);store.save(changed);
   const again=createDesignStore(storage);again.select(t.id,theme);assert.deepEqual(again.read().settings,changed.settings);
-  const backup=t.parseSettings(store.backup());assert.deepEqual(t.separateSeasons?backup[theme]:backup,changed.settings);
+  const backup=parseBackup(store.backup());assert.deepEqual(backup.designs[theme],changed.settings);
   const html=t.render(sources.get(t.id),changed.settings);
   assert.equal(/class="[^"\n]* season-header-top(?:[ "])/.test(html),top);assert.equal(/class="[^"\n]* season-header-bottom(?:[ "])/.test(html),bottom);
-  assert.equal(html.includes('<div class="season-header-art"'),top||bottom);
-  assert.equal(html.includes('<div class="season-drift '),theme==='thanksgiving');
+  assert.equal(html.includes('<div class="season-header-art"'),top||bottom||theme==='us-patriotic');
+  assert.equal(html.includes('<div class="season-drift '),['thanksgiving','valentines-day'].includes(theme));
   const copied=copyDetails(changed.settings,t.cloneDefaults(theme),['identity','schedule'],t);assert.equal(copied.headerTopDecorations,true);assert.equal(copied.headerBottomDecorations,true);
   if(!top||!bottom){assert.deepEqual(history.undo(),original);assert.deepEqual(history.redo(),changed);}
  }
@@ -177,8 +177,39 @@ test('Thanksgiving falling leaves are independent of header art and stay optiona
   assert.match(settingsForm(s,t),/Show falling leaves/);
   const storage=memory(),store=createDesignStore(storage);store.select(t.id,'thanksgiving');const original=store.read();const changed=structuredClone(original);changed.settings={...s,seasonalMotion:false};
   const history=createHistoryBank().get(store.key,original);history.record(changed);store.save(changed);
-  const parsed=t.parseSettings(store.backup()),restored=t.separateSeasons?parsed.thanksgiving:parsed;
+  const parsed=parseBackup(store.backup()),restored=parsed.designs.thanksgiving;
   assert.equal(restored.seasonalMotion,false);assert(!t.render(sources.get(t.id),restored).includes('<div class="season-drift '));
   assert.deepEqual(history.undo(),original);assert.deepEqual(history.redo(),changed);
  }
+});
+
+test('celebration themes preserve personal navigation, role colours and editable copy',()=>{
+ for(const t of registry)for(const theme of ['us-patriotic','valentines-day']){
+  const s=t.cloneDefaults(theme),source=sources.get(t.id),html=t.render(source,s);
+  assert(!Object.values(themes[theme].copy).some(value=>value.includes('\u2014')));
+  assert.match(html,/data-tab-target="music"[^>]*>\s*<i class="fa-solid fa-music"/);
+  assert.match(html,/data-tab-target="info"[^>]*>\s*<i class="fa-solid fa-circle-info"/);
+  assert.match(html,new RegExp('data-tab-target="support"[^>]*>\\s*<i class="fa-solid fa-'+(t.separateSeasons?'heart':'hand-holding-heart')+'"'));
+  if(t.landing==='home'){
+   assert.match(html,/data-tab-target="home"[^>]*>\s*<i class="season-nav-icon season-nav-(patriotic|valentine)-home"/);
+   assert.match(settingsForm(s,t),theme==='us-patriotic'?/Eagle/:/Cupid/);
+   s.icons.navHome='home';assert.match(t.render(source,s),/data-tab-target="home"[^>]*>\s*<i class="fa-solid fa-house"/);
+  }
+  s.icons.navMusic='star';s.copy.ON_AIR_HELP='Our own live message';
+  assert.match(t.render(source,s),/data-tab-target="music"[^>]*>\s*<i class="fa-solid fa-star"/);
+  for(const key of ['card','gold','text','secondary']){const custom=structuredClone(s);custom.colours[key]='#abcdef';if(t.separateSeasons)custom.advancedColours=true;const out=t.render(source,custom);assert(!out.includes('card colours:'));assert(out.includes('#abcdef'));assert(out.includes('Our own live message'));}
+ }
+});
+
+test('four-theme Compact backups preserve both newer saved designs',()=>{
+ const t=registry[1],storage=memory(),store=createDesignStore(storage),oldThemes=['christmas','halloween','thanksgiving','australia-day'];
+ for(const theme of ['us-patriotic','valentines-day']){store.select(t.id,theme);const value=store.read();value.settings.name='Personal '+theme;store.save(value);}
+ const old=Object.fromEntries(oldThemes.map(theme=>[theme,t.cloneDefaults(theme)]));store.import(t.settingsFile(old),()=>{});
+ const reload=createDesignStore(storage);for(const theme of ['us-patriotic','valentines-day']){reload.select(t.id,theme);assert.equal(reload.read().settings.name,'Personal '+theme);}
+});
+
+test('American flag uses thirteen stripes and fifty stars without external content',async()=>{
+ const svg=await readFile(new URL('../assets/seasonal/us-flag.svg',import.meta.url),'utf8');
+ assert.equal((svg.match(/<polygon /g)||[]).length,50);assert.equal((svg.match(/<rect /g)||[]).length,9);
+ assert.doesNotMatch(svg,/<script|<foreignObject|(?:href|src)=["']https?:|\son\w+=/i);
 });

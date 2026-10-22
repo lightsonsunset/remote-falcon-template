@@ -16,7 +16,10 @@ export function checkedIcons(value={}){
  const icons={};for(const [role,id] of Object.entries(value)){if(typeof id!=='string'||!Object.hasOwn(iconRoles,role)||!Object.hasOwn(iconLibrary,id))throw Error('Choose a supported icon.');icons[role]=id;}return icons;
 }
 // A theme-owned Home symbol does not add a new saved icon ID or affect custom choices.
-export function themedDefaultIcon(role,settings){return role!=='navHome'?null:settings.theme==='australia-day'?['Southern Cross','season-home-icon']:settings.theme==='thanksgiving'?['Turkey','season-turkey-icon']:null;}
+export function themedDefaultIcon(role,settings){
+ const prefix={'us-patriotic':'patriotic','valentines-day':'valentine'}[settings.theme];
+ if(prefix&&role==='navHome')return [prefix==='patriotic'?'Eagle':'Cupid','season-nav-icon season-nav-'+prefix+'-home'];
+ return role!=='navHome'?null:settings.theme==='australia-day'?['Southern Cross','season-home-icon']:settings.theme==='thanksgiving'?['Turkey','season-turkey-icon']:null;}
 export function applyIconTokens(html,settings){return html.replace(/\[\[ICON:([A-Za-z]+):([a-z -]+)\]\]/g,(_,role,fallback)=>settings.icons?.[role]?iconLibrary[settings.icons[role]][1]:themedDefaultIcon(role,settings)?.[1]||fallback);}
 export function defaultIcon(role,settings,compact=false){if(themedDefaultIcon(role,settings))return null;if(['brand','success'].includes(role)&&themes[settings.theme]?.brandIcon)return themes[settings.theme].brandIcon;if(['brand','success'].includes(role)&&settings.theme==='halloween')return 'ghost';if(role==='navSupport'&&compact)return 'heart';return iconRoles[role][1];}
 export function availableIconRoles(compact){return Object.entries(iconRoles).filter(([role])=>compact?!['navHome','notice','musicLink','infoLink','fm'].includes(role):role!=='schedule');}

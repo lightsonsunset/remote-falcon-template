@@ -1,4 +1,5 @@
-import {cloneDefaults,settingsFile,parseSettings,render} from '../src/template.js';
+import {createDesignStore} from '../src/design-store.js';
+import {cloneDefaults,settingsFile,render} from '../src/template.js';
 import {SETTINGS_KEY,PREFS_KEY} from '../src/storage.js';
 const frame=document.querySelector('#editor'),results=document.querySelector('#results'),run=document.querySelector('#run');
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -12,8 +13,8 @@ run.onclick=async()=>{
   localStorage.setItem(SETTINGS_KEY,settingsFile(initial));localStorage.setItem(PREFS_KEY,JSON.stringify({tourSeen:true}));await reload();
   const d=frame.contentDocument,q=s=>d.querySelector(s),v=()=>q('#preview').contentDocument;
   const click=async s=>{q(s).click();await wait(400);};
-  const input=async(s,value)=>{const el=q(s);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));await wait(400);};
-  const state=()=>parseSettings(localStorage.getItem(SETTINGS_KEY),true);
+  const input=async(s,value)=>{const el=q(s);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));if(el.type==='color')el.dispatchEvent(new Event('change',{bubbles:true}));await wait(400);};
+  const state=()=>createDesignStore(localStorage).read().settings;
   const w=frame.contentWindow, nativeAnchorClick=w.HTMLAnchorElement.prototype.click, blobs=new Map(), downloads=[];
   const nativeObjectURL=w.URL.createObjectURL;
   w.URL.createObjectURL=blob=>{const url=nativeObjectURL.call(w.URL,blob);blobs.set(url,blob);return url;};
