@@ -185,7 +185,7 @@ $('catalogue-file').addEventListener('change',async event=>{
   }catch(err){$('catalogue-error').textContent=err.message;$('catalogue-error').hidden=false;}
   event.target.value='';
 });
-$('catalogue-source').addEventListener('change',()=>{catalogueSource=$('catalogue-source').value;refresh();$('preview-status').textContent=catalogueSource==='samples'?'Sample songs include labelled message tests.':'Imported CSV snapshot — no live availability or playback information.';});
+$('catalogue-source').addEventListener('change',()=>{catalogueSource=$('catalogue-source').value;refresh();$('preview-status').textContent=catalogueSource==='samples'?'Sample songs include NEW, Moving spotlights and animated badge examples, plus labelled message tests.':'Imported CSV snapshot — no live availability or playback information.';});
 $('catalogue-options').addEventListener('click',()=>$('catalogue-dialog').showModal());
 $('close-catalogue').addEventListener('click',()=>$('catalogue-dialog').close());
 $('pick-new').addEventListener('click',()=>openNewPicker());
@@ -265,7 +265,24 @@ function changed(action=editAction){history().record(snapshot(),action);historyU
 function download(text,name,type='text/html;charset=utf-8'){
   const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
 }
-function showOutput(result,fallback=false){$('copy-result').textContent=result;$('html-fallback').hidden=!fallback;$('html-fallback').value=currentHTML;$('output-dialog').showModal();if(fallback){$('html-fallback').focus();$('html-fallback').select();}}
+let outputHTML='',outputFilename='',outputReturnFocus=null,outputGeneration=0;
+function outputStatus(kind){
+ const messages={copying:['Copying your HTML…','Please wait while the clipboard is updated.'],copied:['Copied!','Your complete viewer page is on the clipboard.'],downloaded:['Downloaded!','Open the file in a text editor and copy all its contents into RF.'],unavailable:['Copy the HTML below','Clipboard access was unavailable. Select and copy the HTML below, or download the same file.']};
+ const [title,detail]=messages[kind];$('copy-result-title').textContent=title;$('copy-result-detail').textContent=detail;
+ $('copy-result').dataset.state=kind;$('copy-output').textContent=kind==='copied'?'Copy again':'Copy HTML';$('copy-output').disabled=kind==='copying';
+ $('html-fallback').hidden=kind!=='unavailable';
+ if(kind==='unavailable'){$('html-fallback').focus({preventScroll:true});$('html-fallback').select();}
+}
+function showOutput(kind){
+ outputHTML=currentHTML;outputFilename=viewerFilename(settings,designStore.template);outputReturnFocus=document.activeElement;outputGeneration++;
+ $('html-fallback').value=outputHTML;outputStatus(kind);$('output-dialog').showModal();
+}
+async function copyOutput(){
+ const generation=outputGeneration;outputStatus('copying');
+ try{await navigator.clipboard.writeText(outputHTML);if(generation===outputGeneration&&$('output-dialog').open)outputStatus('copied');}
+ catch{if(generation===outputGeneration&&$('output-dialog').open)outputStatus('unavailable');}
+}
+$('output-dialog').addEventListener('close',()=>{outputGeneration++;if(outputReturnFocus?.isConnected)outputReturnFocus.focus({preventScroll:true});});
 function exportNow(){clearTimeout(updateTimer);refresh();return !!currentHTML&&!$('copy').disabled;}
 document.querySelector('.settings-pane').addEventListener('click',event=>{
   const button=event.target.closest('[data-focus-error]');if(!button)return;
@@ -348,13 +365,10 @@ function previewMessage(id,requestedMode){
  document.querySelector('.workspace').dataset.view='preview';document.querySelectorAll('.narrow-tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.view==='preview'));
  scale();$('preview-status').textContent='Message preview only — no request or vote was sent.';
 }
-$('copy').addEventListener('click',async()=>{
-  if(!exportNow())return;
-  try{await navigator.clipboard.writeText(currentHTML);showOutput('Copied! Your complete viewer page is on the clipboard.');}
-  catch{showOutput('Clipboard access was unavailable. Select and copy the HTML below, or download the same file.',true);}
-});
-$('download').addEventListener('click',()=>{if(exportNow()){download(currentHTML,viewerFilename(settings,designStore.template));showOutput('Downloaded! Open the file in a text editor and copy all its contents into RF.');}});
-$('fallback-download').addEventListener('click',()=>download(currentHTML,viewerFilename(settings,designStore.template)));
+$('copy').addEventListener('click',()=>{if(exportNow()){showOutput('copying');copyOutput();}});
+$('copy-output').addEventListener('click',copyOutput);
+$('download').addEventListener('click',()=>{if(exportNow()){showOutput('downloaded');download(outputHTML,outputFilename);}});
+$('fallback-download').addEventListener('click',()=>download(outputHTML,outputFilename));
 $('close-output').addEventListener('click',()=>$('output-dialog').close());
 $('save-settings').addEventListener('click',()=>{
   download(settingsFile(settings),designStore.template.name+' settings.json','application/json');setError('');

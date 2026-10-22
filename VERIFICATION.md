@@ -2,6 +2,31 @@
 
 Entries below record checks at the time of each batch. Earlier feature limitations and unpublished status are historical; use the latest release notes for current product status.
 
+## 1.11.0 release checks - 22 October 2026
+
+- The combined refinement batch passed 141 Node tests and 12,100 browser assertions, covering both templates and all four themes. The local suites below cover badge animation and samples, saved-design compatibility, import/export dialogs, Compact player styling and the five-step setup wizard, including narrow layouts and reduced motion.
+- Release preparation aligns the product and both canonical template headers to 1.11.0, refreshes the guides and regenerates eight manual starters and both ZIPs. Package verification checks exact contents, CRCs, offline links, attribution and export/privacy rules. The public progress summary retains the approved US patriotic and Valentine's Day development entries and planned Anzac Day.
+- These are local editor, illustrative preview and stylesheet checks. This batch has not received new hosted RF or physical-device playback verification. No RF/FPP page, setting, request or vote was changed; the previously reported RF Voting Now playing limitation remains separate.
+
+## Visitor guidance setup - local verification, 22 October 2026
+
+- Added a shared Visitor guidance step before Review & finish. Existing message, placement and visibility keys are reused; both templates preserve their defaults, with Compact console's Info guidance explained explicitly.
+- All 463 browser assertions passed: guidance across both templates and all four themes (256), existing setup checks (61), tour integration (63) and name-style setup (83). Coverage includes 320/390/desktop widths, dark mode, large text, Back/Skip, Cancel/Close/Escape, Apply, Undo/Redo, reload, backups, empty messages, escaped text and preserved unrelated settings. Keyboard focus wraps inside the new step.
+- Refreshed the setup guide and screenshot. These checks use the isolated local editor; no hosted RF or physical-device test, publication, version bump or RF/FPP changes were performed.
+
+## Sample badge examples - local verification, 22 October 2026
+
+- The shared sample catalogue now demonstrates static Moving spotlights, NEW with Moving spotlights, and one animated spotlight badge, alongside the existing NEW-only example. It reuses the shared badge renderer only inside the illustrative preview. Saved selections, the animation preference, imported catalogues and exported HTML remain unchanged.
+- All 416 focused sample checks and 1,536 existing preview checks passed, covering both templates, all four themes, Jukebox/Voting, narrow/desktop layouts, category/NEW filtering, sample interactions and imported-song isolation. All 141 Node tests, both manual-package audits and the local site build passed. No hosted RF or physical-device testing, publication or version bump.
+
+## Badge, export and import refinements - local verification, 22 October 2026
+
+- All 141 Node tests and 9,685 browser assertions passed across six local suites: animated Voting layout (5,832), badge dimensions, artwork and custom colours (1,472), seasonal themes (1,690), shared editor flows (416), Compact player (201) and export readiness (74). Coverage includes both templates, all four themes, 320/390/1280-pixel widths, Jukebox/Voting, grouped and ungrouped lists, NEW combinations, all artwork modes, long titles and missing artists. Animation adds no card height; reduced motion removes the wash and keeps a static fixture.
+- Import checks cover its single scrolling body, fixed title/footer, expanded categories, short screens, draft cancellation, category application and badge persistence. Export checks cover successful and denied clipboard access, retrying the same HTML without refreshing the preview, matching downloads, manual fallback and focus restoration. The confirmation was also visually reviewed in light and dark modes.
+- Compact's divider sits above Up next for empty and populated states across all themes. Its Halloween player and schedule share the new web ornament and respect the decoration switch. Animation-off badge styles and all four original-template default exports match the preceding release. All eight animated template/theme exports were checked for scripts, event handlers, local addresses and demo data.
+- Reviewed every guide screenshot, refreshed the affected chooser, Compact, seasonal and export views, and added a song-import example. These are local editor demonstrations and stylesheet checks, not hosted RF or physical-device verification. No RF/FPP pages, settings, requests or votes were changed, and no publication or version bump was performed.
+- Both rebuilt manual packages passed their content, CRC and offline-guide audits, with eight canonical starters and 97 combined ZIP entries. The allowlisted local website build contains 115 files. Product metadata remains 1.10.0; completed refinements are recorded under Unreleased.
+
 ## 1.10.0 release checks - 22 October 2026
 
 - All 140 Node tests, both manual-package audits and the allowlisted website build passed. Eight canonical starters match their renderers; the two ZIPs contain 95 expected entries with verified CRCs, attribution and offline-guide links. Release version and date match the changelog and both canonical headers. Exports contain no preview scripts or illustrative catalogue data.
