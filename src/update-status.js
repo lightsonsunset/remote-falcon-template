@@ -6,7 +6,7 @@ export const updateStatus = {
     {title:'US patriotic / Fourth of July',templates:['Lights on Sunset','Compact console'],description:'Developing a celebratory US patriotic theme for both layouts.'},
     {title:'Valentine’s Day',templates:['Lights on Sunset','Compact console'],description:'Developing a romantic seasonal theme for both layouts.'}
   ],
-  plannedThemes: ['Anzac Day'],
+  plannedThemes: ['Anzac Day','New Year’s Eve'],
   themeTemplates: ['Lights on Sunset','Compact console'],
   knownIssues: []
 };
