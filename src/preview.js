@@ -1,6 +1,7 @@
 // Illustrative product demo only. This module is never used by the exporter.
 import {hasCountdown} from './themes.js';
-import {namesOf,themes} from './template.js';
+import {namesOf,themes,escapeCSS} from './template.js';
+import {songBadgeCSS} from './song-badges.js';
 import {nowPlayingArtwork} from './song-artwork.js';
 import {categoryNamesOf} from './catalogue.js';
 import {assetBase} from './assets.js';
@@ -8,11 +9,11 @@ import {captureViewport} from './editor-context.js';
 import {installPreviewDrag} from './preview-drag.js';
 const catalogue = [
   {id:'Winter Starlight',category:0,colour:'#a54550',demoNew:true},
-  {id:'Sleigh Bells at Sunset',category:0,colour:'#2e7860',demoNew:true},
+  {id:'Sleigh Bells at Sunset',category:0,colour:'#2e7860',demoNew:true,demoMoving:true},
   {id:'A Little Christmas Sparkle',category:0,colour:'#a87c32',unavailable:true},
-  {id:'Dance Under the Lights',category:1,colour:'#4f6eae'},
+  {id:'Dance Under the Lights',category:1,colour:'#4f6eae',demoMoving:true},
   {id:'One More Rainbow',category:1,colour:'#84629d'},
-  {id:'Twinkling Together',category:0,colour:'#397b83'},
+  {id:'Twinkling Together',category:0,colour:'#397b83',demoMoving:true,demoAnimated:true},
   {id:'The Christmas Light Parade',category:1,colour:'#b25c41'}
 ];
 // Deliberate message fixtures, labelled in the UI; never an RF request/response.
@@ -110,6 +111,7 @@ export function createPreview(iframe, notify) {
         const cls=mode==='jukebox'?'jukebox-list':'cell-vote-playlist';
         const card=element(doc,'div',cls+(s.unavailable?' sequence-unavailable':''));card.dataset.key=s.id;
         if(s.demoNew)card.dataset.demoNew='';
+        if(s.demoMoving)card.dataset.demoMoving=s.demoAnimated?'animated':'static';
         card.setAttribute('role','button');card.tabIndex=s.unavailable?-1:0;card.setAttribute('aria-disabled',String(!!s.unavailable));
         if(!imported||s.imageUrl?.trim()){
           const img=element(doc,'img','sequence-image');img.alt='';
@@ -215,6 +217,15 @@ export function createPreview(iframe, notify) {
         // Saved NEW names and exported HTML never receive these demo assignments.
         const newRule=[...d.querySelector('style').sheet.cssRules].find(rule=>rule.style?.getPropertyValue('--los-new-sash'));
         if(newRule)newRule.selectorText+=', .jukebox-list[data-demo-new], .cell-vote-row:has(> .cell-vote-playlist[data-demo-new])';
+        // Show static, combined and animated examples without changing the user's
+        // assignments or animation preference. Imported catalogues use settings only.
+        const colours=d.defaultView.getComputedStyle(d.getElementById('music-panel'));
+        const demoStyle=element(d,'style','');demoStyle.dataset.demoBadges='';
+        for(const animated of [false,true]){
+          const names=songs().filter(song=>song.demoMoving&&!!song.demoAnimated===animated).map(song=>song.id).join('\n');
+          demoStyle.textContent+=songBadgeCSS({...settings,colours:{...settings.colours,gold:colours.getPropertyValue('--gold').trim()},movingHeadNames:names,movingHeadAnimation:animated},escapeCSS,colours.getPropertyValue('--accent-ink').trim());
+        }
+        d.head.append(demoStyle);
       }
       attach(d);
       if(d.querySelector('.seasonal-countdown'))countdownTimer=setInterval(()=>{if(!iframe.isConnected){clearInterval(countdownTimer);return;}updateCountdown(d);},1000);

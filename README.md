@@ -36,7 +36,7 @@ Compact console places music first, with Info and optional Support views. Its se
 
 ### 1. Add your show details
 
-Choose **Set up my show** on the template selection screen for a short wizard: Your show, Dates & hours, Music & listening, then Review & finish. Using the season already selected, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Choose album artwork, category icons or no artwork for song lists, and control Now Playing artwork separately. Set individual category icons in Music after setup. Everything remains editable afterwards. You can also enter these details directly under **Site setup**.
+Choose **Set up my show** on the template selection screen for a short wizard: Your show, Dates & hours, Music & listening, Visitor guidance, then Review & finish. Using the season already selected, enter your name and optional logo, add show hours and choose FM, PulseMesh or both. Choose album artwork, category icons or no artwork for song lists, and control Now Playing artwork separately. Set individual category icons in Music after setup. In Visitor guidance, edit your neighbour-friendly message and choose whether and where it appears on the main screen while on air. Compact console also uses this message on Info. Back keeps your answers; Skip keeps the settings from when you entered that step, and Cancel discards setup changes. Everything remains editable afterwards.
 
 Choose **Straight to editor** to skip setup. On the final review step, optionally tick **Take a quick tour after setup** before applying. Returning users resume their saved design directly.
 
@@ -46,7 +46,7 @@ Open **Help** for this illustrated **Quick-start guide**, **Take a quick tour**,
 
 ![Help offers the quick-start guide, tour and detailed setup help](docs/images/friendly-help.jpg)
 
-![The optional four-step setup wizard](docs/images/setup-wizard.jpg)
+![Visitor guidance in the optional five-step setup wizard](docs/images/setup-wizard.jpg)
 
 ![The optional tour highlighting the theme controls](docs/images/quick-tour.jpg)
 
@@ -107,6 +107,14 @@ Your CSV stays in this browser. The export uses RF's live catalogue, and your se
 
 Under **Music → Song badges**, choose songs from your imported catalogue or enter exact RF sequence names manually. Select **Moving heads** to add a **Moving spotlights** badge to their song-list cards in Jukebox and Voting. NEW always keeps its corner sash; songs with both selections show the sash and a separate Moving spotlights pill. The combined section shows both selection counts, separate manual name lists and the **Show “New this year” filter** option. This does not change categories, requests or which lights run. Both choices are available during CSV import and later through **Set song badges**. **Clear badges** clears both pending lists, including names outside the CSV. Cancel, X and Escape discard pending badge choices.
 
+**Animate moving-head badges** adds an optional small spotlight and a faint light wash inside marked song cards. It starts off, works in both templates and music modes, and respects reduced-motion preferences. It is decorative only; it does not control your lights.
+
+The import window keeps its actions visible while you scroll. **Set up and turn on category filters from this CSV** enables the reviewed filters when you apply; leaving it unchecked keeps your current category settings.
+
+The sample catalogue demonstrates a Moving spotlights badge, a badge alongside NEW, and one animated spotlight badge. These illustrative examples do not change your saved song choices or animation setting; imported songs use your own settings.
+
+![Song import with separate NEW and Moving heads choices, category setup and visible footer actions](docs/images/import-song-badges.jpg)
+
 ### 5. Keep a settings backup
 
 The customiser saves your edits locally in this browser. Use **Download settings backup** (**Back up all themes** in Compact console) to keep a portable copy, and **Load settings backup** to continue later or on another computer. Loading first asks before replacing your design, with a chance to download your current settings. Cancel, the X and Escape leave your work unchanged. Clearing browser data can remove local edits. To move from a local preview or another website address, download a settings backup there and load it here. Import your song CSV separately.
@@ -114,6 +122,8 @@ The customiser saves your edits locally in this browser. Use **Download settings
 ### 6. Copy your page into RF
 
 Choose **Finish & export** above the settings. It takes you to any fields needing attention, or to **Copy HTML** and **Download my HTML**. If Copy/Download HTML are disabled, the explanation and links to the fields needing attention appear beside those buttons. Downloaded HTML is named after your show and theme. In RF, create a separate draft under **Viewer Page → New Page**, replace its HTML with the complete document, then save and check RF's validator and preview. Test your own show before choosing **Set as Live**.
+
+After copying, a highlighted **Copied!** confirmation shows that your complete page is on the clipboard. **Copy again** repeats the same document; if clipboard access fails, select the displayed HTML or download it instead.
 
 ![Export instructions for installing the complete HTML in an RF draft](docs/images/export-to-rf.jpg)
 

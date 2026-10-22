@@ -15,7 +15,7 @@ document.getElementById('run').onclick=async()=>{
   await adapter.update(starterHTML,starter,{mode,air:true});
   adapter.navigate('music');await wait(30);
   const d=frame.contentDocument,rows=[...d.querySelectorAll('.los-song-list [role=button]')];
-  check(theme+' '+mode+': two sample sashes with no user NEW assignments',rows.filter(r=>getComputedStyle(r,'::after').content==='"NEW"').length===2&&starter.newNames==='');
+  check(theme+' '+mode+': two sample sashes with no user NEW assignments',rows.filter(r=>getComputedStyle(r).getPropertyValue('--los-new-sash').trim()==='"NEW"').length===2&&starter.newNames==='');
  }
  check(theme+': sample sashes never enter the exported template',!starterHTML.includes('data-demo-new')&&themes[theme].demoSongs.every(name=>!starterHTML.includes(name)));
  const s=cloneDefaults(theme);Object.assign(s,{fm:true,pulsemesh:true,listening:'Please bring headphones.',categories:true,newFilter:true,newNames:'New "quotes" & a \\ backslash\n'+themes[theme].demoSongs[2],notice:true,noticeTitle:'Tonight’s notice',noticeText:'A short message for visitors.',donations:true,donationHome:true,donationInfo:true,charity:'A local charity',donationText:'Help our community.',donationUrl:'https://example.org/donate',homeCard:true,homeCardTitle:'Photo spot',homeCardText:'Try our selfie wings.'});
@@ -42,7 +42,7 @@ document.getElementById('run').onclick=async()=>{
    const list=d.querySelector('.los-song-list');
    d.querySelector('.music-filter a[href="#songs-new"]').click();await wait(30);
    const rows=[...list.querySelectorAll('[role=button]')].filter(visible);
-   check(`${width}px ${mode}: NEW filter and escaped-name sash`,rows.length===4&&rows.every(r=>getComputedStyle(r,'::after').content==='"NEW"'));
+   check(`${width}px ${mode}: NEW filter and escaped-name sash`,rows.length===4&&rows.every(r=>getComputedStyle(r).getPropertyValue('--los-new-sash').trim()==='"NEW"'));
    check(`${width}px ${mode}: unavailable NEW song stays disabled`,rows.some(r=>r.classList.contains('sequence-unavailable')&&r.getAttribute('aria-disabled')==='true'));
    d.querySelector('.music-filter a[href="#songs-category-2"]').click();await wait(30);
    check(`${width}px ${mode}: second category filter`,[...list.querySelectorAll('[role=button]')].filter(visible).every(r=>r.closest('.category-section')===list.querySelectorAll('.category-section')[1]));

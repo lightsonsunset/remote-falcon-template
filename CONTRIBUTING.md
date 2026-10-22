@@ -39,7 +39,7 @@ Open `http://127.0.0.1:4188`. Serve over HTTP locally; browsers restrict module 
 - `src/preview.js`: isolated, parent-controlled demo adapter. Never imported by the renderer or packaging script.
 - `src/preview-drag.js`: mouse swipe support for phone/tablet previews only.
 - `src/tour.js`, `tour.css`: optional editor-only welcome tour. Its dismissal is an editor preference; it never changes show settings or demo interactions.
-- `src/setup-model.js`, `src/setup-wizard.js`, `setup.css`: optional four-step editor setup. Works on a detached draft, uses the existing validator/theme handling, and commits only on Apply. Uses the selected template’s settings adapter; no RF integration.
+- `src/setup-model.js`, `src/setup-wizard.js`, `setup.css`: optional five-step editor setup, including visitor guidance. Works on a detached draft, uses the existing validator/theme handling, and commits only on Apply. Uses the selected template’s settings adapter; `src/visitor-guidance-form.js` shares guidance controls with the editor. No RF integration.
 - `src/catalogue.js`: local RF CSV parsing and storage, used only by the editor and preview.
 - `src/rf-export-help.js`: shared editor-only CSV export instructions, linked from catalogue controls and Song badges. Help returns focus to its opener without changing settings or imports.
 - `src/category-help.js`: shared editor-only category guidance and missing-category notices, available from import review and Music settings without committing pending choices.

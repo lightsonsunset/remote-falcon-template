@@ -7,10 +7,10 @@ const fixtures=[['short','Short',0],['new-short','Short',3],['new','A longer lay
 const row=([id,title,count],inline)=>'<div class="cell-vote-row"'+(inline?' style="display:flex;width:100%;align-items:flex-end"':'')+'><div class="cell-vote-playlist'+(id==='unavailable'?' sequence-unavailable':'')+'" data-key="'+id+'">'+(id==='missing'?'':image)+(id==='unavailable'?'<span>'+title+'</span>':title)+(id==='missing'?'':'<div class="cell-vote-playlist-artist">Layout artist</div>')+(id==='unavailable'?'<span class="sequence-unavailable-hint">Back next show</span>':'')+'</div><div class="cell-vote">'+count+'</div></div>';
 const settle=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 run.onclick=async()=>{run.disabled=true;results.replaceChildren();try{
- const baseline=new URLSearchParams(location.search).has('baseline');
+ const baseline=new URLSearchParams(location.search).has('baseline'),animate=new URLSearchParams(location.search).has('animate');
  for(const t of registry.filter(t=>!baseline||t.id==='compact-console')){const source=await(await fetch('../'+t.source)).text();
  for(const theme of baseline?['christmas']:Object.keys(t.themes))for(const width of baseline?[390]:[320,390,1280])for(const artwork of baseline?['album']:['album','category','none'])for(const inline of baseline?[true]:[false,true]){
-  const s={...t.cloneDefaults(theme),songArtwork:artwork,newFilter:true,newNames:'new\nboth\nnew-short',movingHeadNames:'both',categories:true,showSongArtists:artwork!=='none'};
+  const s={...t.cloneDefaults(theme),songArtwork:artwork,newFilter:true,newNames:'new\nboth\nnew-short',movingHeadNames:'both',movingHeadAnimation:animate,categories:true,showSongArtists:artwork!=='none'};
   const d=new DOMParser().parseFromString(t.render(source,s),'text/html'),flags=d.getElementById('show-options').className;
   d.body.innerHTML='<div id="show-options" class="'+flags+'"></div><div class="music-filter-targets"><span id="songs-all"></span><span id="songs-new"></span><span id="songs-category-1"></span></div><section id="music-panel" class="content__body" style="display:block;max-width:680px;margin:auto"><nav class="music-filter"><a href="#songs-all">All</a><a href="#songs-new">New</a><a href="#songs-category-1">Category</a></nav><div class="los-song-list"><div class="category-section">'+fixtures.map(r=>row(t.id==='festive'&&r[0]==='both'?[r[0],'A very long layout title that wraps across several lines on narrow song cards',r[2]]:r,inline)).join('')+'</div></div></section>';
   frame.style.width=width+'px';frame.style.height='844px';await new Promise(resolve=>{frame.onload=resolve;frame.srcdoc='<!doctype html>'+d.documentElement.outerHTML;});
@@ -37,6 +37,7 @@ run.onclick=async()=>{run.disabled=true;results.replaceChildren();try{
   measure('All');
   if(t.id==='compact-console')check(tag+' NEW does not add height to a short card',Math.abs(doc.querySelector('[data-key="new-short"]').getBoundingClientRect().height-doc.querySelector('[data-key="short"]').getBoundingClientRect().height)<1);
   check(tag+' artwork and artists respect settings',[...doc.querySelectorAll('.cell-vote-playlist')].every(c=>visible(c.querySelector('img'))===(artwork==='album'&&c.dataset.key!=='missing')&&visible(c.querySelector('.cell-vote-playlist-artist'))===(s.showSongArtists&&c.dataset.key!=='missing')));
+  if(animate){const c=doc.querySelector('[data-key=both]');check(tag+' animated fixture and wash are present',win.getComputedStyle(c,'::after').backgroundImage.includes('data:image/svg+xml')&&win.getComputedStyle(c).backgroundImage.includes('data:image/svg+xml'));}
   check(tag+' moving badge remains separate',win.getComputedStyle(doc.querySelector('[data-key="both"]'),'::after').content.includes('Moving spotlights'));
   check(tag+' availability hint remains visible',visible(doc.querySelector('.sequence-unavailable-hint')));
   win.location.hash='#songs-new';await settle();measure('NEW');check(tag+' NEW filter retains only three assignments',[...doc.querySelectorAll('.cell-vote-row')].filter(visible).length===3);

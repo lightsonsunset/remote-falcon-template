@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.11.0 — Song badges and setup refinements — 22 October 2026
+
+### Shared customiser
+
+- Added a Visitor guidance setup step with the existing message, on-air visibility and placement controls, plus a summary before applying. Both templates retain their saved wording and defaults.
+- Added an optional moving-head illustration and gentle card-local light wash beside Moving spotlights badges. It starts off, respects reduced motion and preserves existing designs.
+- Added sample-song examples of a Moving spotlights badge, NEW with Moving spotlights, and an animated spotlight badge. These demonstrations do not change saved selections or exports.
+- Made copy confirmation more prominent and added Copy again, retaining manual-copy and download fallbacks.
+- Kept import actions visible while scrolling, tightened category controls and clarified that CSV category setup also enables the filters when applied.
+- Viewer changes require freshly exported HTML in RF. Customiser dialog changes do not alter an installed viewer page.
+
+### Compact console
+
+- Replaced Halloween player and schedule corner rings with a clearer spiderweb, and moved the player divider above Up next in every theme.
+
 ## 1.10.0 — Thanksgiving and Australia Day — 22 October 2026
 
 ### Shared customiser

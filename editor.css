@@ -130,3 +130,46 @@
 /* Theme-owned Home symbol, shared with the Australia Day viewer. */
 .season-turkey-icon{display:inline-block;width:1em;height:1em;background:currentColor;mask:url("assets/seasonal/turkey.svg") center/contain no-repeat;-webkit-mask:url("assets/seasonal/turkey.svg") center/contain no-repeat}
 .season-home-icon{display:inline-block;width:1em;height:1em;background:currentColor;mask:url("assets/seasonal/southern-cross.svg") center/contain no-repeat;-webkit-mask:url("assets/seasonal/southern-cross.svg") center/contain no-repeat}
+
+/* Export status is distinct from instructions, without a side stripe. */
+#output-dialog{max-height:calc(100dvh - 24px);overflow:auto}
+.output-result{margin:16px 0;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--soft)}
+.output-result>strong{display:block;font-size:18px;line-height:1.4;color:var(--ink)}
+.output-result>p{margin:4px 0 0;color:var(--ink)}
+.output-result[data-state=copied]{border-color:#73a58a;background:#e8f4eb}
+[data-theme=dark] .output-result[data-state=copied]{border-color:#58886b;background:#1c392b}
+#output-dialog .small-actions button{min-height:44px}
+
+/* One scrolling import body. The dialog heading and actions never scroll away. */
+#new-picker[open]{display:flex;flex-direction:column;max-height:calc(100dvh - 24px);padding:0;overflow:hidden}
+#new-picker>.dialog-heading{flex:none;padding:16px 20px;border-bottom:1px solid var(--border)}
+#new-picker>.dialog-heading h2{font-size:18px;line-height:1.4}
+#new-picker>.dialog-heading button{min-height:44px;min-width:44px}
+.new-picker-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:12px 20px}
+#new-picker-note{margin:0 0 8px;overflow-wrap:anywhere;line-height:1.5}
+#new-picker .category-help-links{margin:0 0 8px;gap:2px 14px}
+#new-picker .picker-categories{margin:8px 0 14px;padding:0;background:var(--soft);border:1px solid var(--border)}
+#new-picker .picker-categories>summary{padding:10px 12px;min-height:44px;font-size:13px}
+#new-picker .picker-categories>p{margin:0 12px 8px;line-height:1.5}
+#new-picker .picker-categories>.toggle{margin:4px 12px 8px;min-height:44px;line-height:1.5}
+#new-picker .picker-categories>ol{margin:8px 12px 12px}
+#new-picker .picker-categories li button{min-height:36px;min-width:36px}
+#new-picker .new-picker-intro{margin:12px 0}
+#new-picker .new-picker-intro h3{font-size:15px;margin-bottom:4px}
+#new-picker .new-picker-intro p{font-size:12px;line-height:1.5}
+#new-picker .field{margin-bottom:10px}
+#new-picker-list{max-height:none;overflow:visible;margin:10px 0 0}
+.new-picker-footer{flex:none;padding:10px 20px 14px;border-top:1px solid var(--border);background:var(--surface)}
+.new-picker-footer>.error{margin:0 0 8px;font-size:12px}
+.new-picker-footer .small-actions{display:grid;grid-template-columns:1fr auto auto;gap:8px}
+#new-picker-count{grid-column:1 / -1;line-height:1.5}
+.new-picker-footer button{min-height:44px}
+#clear-new{justify-self:start}
+@media(max-width:420px){
+ #new-picker>.dialog-heading{padding:10px 14px}
+ .new-picker-body{padding:10px 14px}
+ .new-picker-footer{padding:8px 14px 12px}
+ .new-picker-footer .small-actions{grid-template-columns:1fr 1fr;gap:6px}
+ #clear-new{justify-self:stretch}
+ #apply-new{grid-column:1 / -1}
+}

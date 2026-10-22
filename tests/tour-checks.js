@@ -14,7 +14,7 @@ run.onclick=async()=>{
   check('Template choices and exact username are clear',d.title==='Lights on Sunset Template Customiser'&&q('.brand-author').textContent==='by christmasdave'&&q('.intro').textContent.includes('Compact console'));
   check('Existing saved design resumes directly',!q('#template-dialog').open&&!q('#quick-tour').open);
   const initialSettings=localStorage.getItem(SETTINGS_KEY);
-  const finishSetup=async(takeTour=false)=>{await click('#start-setup');for(let i=0;i<3;i++)await click('#setup-next');check('Tour choice starts unchecked on every opening',!q('#setup-take-tour').checked);if(takeTour)await click('#setup-take-tour');await click('#setup-next');};
+  const finishSetup=async(takeTour=false)=>{await click('#start-setup');for(let i=0;i<4;i++)await click('#setup-next');check('Tour choice starts unchecked on every opening',!q('#setup-take-tour').checked);if(takeTour)await click('#setup-take-tour');await click('#setup-next');};
   for(let repeat=0;repeat<2;repeat++){
    await finishSetup();check('Unchecked finish skips the tour on visit '+(repeat+1),!q('#quick-tour').open&&!q('#setup-wizard').open&&d.body.style.overflow==='');
    await finishSetup(true);check('Checked finish starts step one explicitly on visit '+(repeat+1),q('#quick-tour').matches(':modal')&&q('#tour-progress').textContent==='1 of 6'&&JSON.parse(localStorage.getItem(PREFS_KEY)).tourSeen===true);

@@ -22,7 +22,7 @@ const starterFAQ=[
   {kind:'text',question:'How do you build a show like this?',answer:'Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.'}
 ];
 export const defaults = {
-  ...seasonalDefaults,...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,movingHeadNames:'',
+  ...seasonalDefaults,...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,movingHeadNames:'',movingHeadAnimation:false,
   name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
   logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,showAlbumArtwork:true,showSongArtists:true,showQueueArtists:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,showQueueLimit:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
@@ -105,7 +105,7 @@ export function checkedSettings(input) {
   s.extraInfoCards=checkedInformationCards(input.extraInfoCards);
   for(const [k,v] of Object.entries(s)) {
     if ([...Object.keys(artworkDefaults),'extraInfoCards','icons','schedule','colours','categoryNames','hiddenCategories','faq','copy','donationRecipients',...Object.keys(listDefinitions)].includes(k)) continue;
-    if([...Object.keys(seasonalDefaults),'movingHeadNames','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
+    if([...Object.keys(seasonalDefaults),'movingHeadNames','movingHeadAnimation','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
     if(typeof input[k]!==typeof v) throw Error(`Invalid or missing setting: ${k}.`);
     if(typeof v==='string' && (input[k].length>20000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(input[k]))) throw Error(`Invalid text in ${k}.`);
     s[k]=input[k];

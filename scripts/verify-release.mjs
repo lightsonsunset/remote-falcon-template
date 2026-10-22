@@ -11,7 +11,9 @@ const files=await releaseFiles();
 const {version}=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
 assert(/^\d+\.\d+\.\d+$/.test(version),'Product version must use MAJOR.MINOR.PATCH');
 const changelog=await readFile(join(root,'CHANGELOG.md'),'utf8');
-const releaseHeading=changelog.split(/\r?\n/).find(line=>line.startsWith('## '));
+const headings=changelog.split(/\r?\n/).filter(line=>line.startsWith('## '));
+// Local review may describe completed work without preparing another release.
+const releaseHeading=headings[0]==='## Unreleased'?headings[1]:headings[0];
 assert(releaseHeading?.startsWith('## '+version+' — '),'Current changelog release must match package version');
 const releaseDate=releaseHeading.split(' — ').at(-1);
 assert(/^\d{1,2} [A-Z][a-z]+ \d{4}$/.test(releaseDate),'Release needs a publication date');
