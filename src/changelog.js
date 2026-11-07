@@ -64,7 +64,7 @@ export function createChangelog(){
  const reminderTitle=el('h3','Already using a template in Remote Falcon?');reminderTitle.id='updates-reminder-title';
  const reminderCopy=el('p');
  reminderCopy.append("Your Remote Falcon page won't update automatically. Changes marked ",exportBadge(),' require you to export fresh HTML from the customiser and replace the existing HTML in Remote Falcon to apply those updates or fixes.');
- reminder.append(reminderTitle,reminderCopy);
+ reminder.append(reminderTitle,reminderCopy,el('p','We recommend testing your updated HTML on a separate Remote Falcon viewer page before replacing your existing page.','updates-small'));
  const content=el('div');content.id='changelog-content';content.setAttribute('aria-live','polite');
  const historyLink=el('p');historyLink.append(link('Read the full changelog ↗','CHANGELOG.md'));
  panels.released.append(reminder,content,historyLink);
