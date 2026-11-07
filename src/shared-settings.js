@@ -1,3 +1,4 @@
+import {welcomeDefaults,welcomeStyles,welcomePositions,welcomeTokens,welcomeCSS} from './welcome-message.js';
 import {songBadgeCSS} from './song-badges.js';
 import {artworkDefaults,checkedArtwork,artworkCSS,songArtworkMode,renameCategoryArtwork} from './song-artwork.js';
 import {checkedInformationCards,validateInformation,renderInformation,informationCSS} from './information-cards.js';
@@ -22,8 +23,8 @@ const starterFAQ=[
   {kind:'text',question:'How do you build a show like this?',answer:'Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.'}
 ];
 export const defaults = {
-  ...seasonalDefaults,...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...artworkDefaults,movingHeadNames:'',movingHeadAnimation:false,
-  name: 'Your Christmas Show', logo: '', welcome: 'A little Christmas magic, shared with you.',
+  ...seasonalDefaults,...extraDefaults,...nameStyleDefaults,...guidanceDefaults,...welcomeDefaults,...artworkDefaults,movingHeadNames:'',movingHeadAnimation:false,
+  name: 'Your Christmas Show', logo: '', showWelcome:true, welcome: 'A little Christmas magic, shared with you.',
   logoMode:'icon',logoStyle:'classic',combineLogoName:false,showNameOnHome:true,showMenuLabels:true,showAlbumArtwork:true,showSongArtists:true,showQueueArtists:true,onAirPulse:false,christmasDecoration:'default',halloweenDecoration:'default',decorations:false,homeLiveSchedule:false,countdown:true,halloweenCountdown:false,homeMusicLink:true,musicFM:true,queueCount:false,showQueueLimit:false,votesRemaining:false,
   neighbourTitle:'Please help us be a good neighbour.',neighbourText:'Keep radios at a reasonable volume.\nDo not park in or block driveways.\nWhen stopped, please dim headlights and leave running lights on.',
   dates: 'To be announced',
@@ -100,12 +101,13 @@ export function validate(s) {
 export function checkedSettings(input) {
   if (!input || typeof input!=='object' || Array.isArray(input)) throw Error('Settings must be an object.');
   const s=cloneDefaults();
+  if(input.showWelcome===undefined)s.showWelcome=true; // Existing designs keep their visible welcome.
   Object.assign(s,checkedArtwork(input));
   s.icons=checkedIcons(input.icons);
   s.extraInfoCards=checkedInformationCards(input.extraInfoCards);
   for(const [k,v] of Object.entries(s)) {
     if ([...Object.keys(artworkDefaults),'extraInfoCards','icons','schedule','colours','categoryNames','hiddenCategories','faq','copy','donationRecipients',...Object.keys(listDefinitions)].includes(k)) continue;
-    if([...Object.keys(seasonalDefaults),'movingHeadNames','movingHeadAnimation','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults)].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
+    if([...Object.keys(seasonalDefaults),'movingHeadNames','movingHeadAnimation','socialMain','socialInfo','socialTitle','socialText','showQueueLimit','showSongArtists','showQueueArtists','homeCardImage',...Object.keys(guidanceDefaults),...Object.keys(welcomeDefaults),'showWelcome'].includes(k) && input[k]===undefined) continue; // Additive fields keep their compatible defaults in older backups.
     if(typeof input[k]!==typeof v) throw Error(`Invalid or missing setting: ${k}.`);
     if(typeof v==='string' && (input[k].length>20000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(input[k]))) throw Error(`Invalid text in ${k}.`);
     s[k]=input[k];
@@ -114,6 +116,9 @@ export function checkedSettings(input) {
   for(const key of ['headerTopDecorations','headerBottomDecorations'])if(input[key]===undefined)s[key]=input.headerDecorations??true;
   if(!['theme','none','classic','lights','crest'].includes(s.headerArtwork))throw Error('Choose supported header artwork.');
   if(!['header','edges'].includes(s.flagPlacement))throw Error('Choose a supported flag placement.');
+  for(const key of ['welcomeCardColour','welcomeTextColour'])if(!/^#[a-f0-9]{6}$/i.test(s[key]))throw Error('Choose a six-digit welcome colour.');
+  if(!welcomeStyles.includes(s.welcomeStyle))throw Error('Choose a supported welcome style.');
+  if(!welcomePositions.includes(s.welcomePosition))throw Error('Choose a supported welcome position.');
   if(!['status','above-header','below-header'].includes(s.guidancePosition))throw Error('Choose a supported guidance position.');
   if(!Object.hasOwn(themes,s.theme))throw Error('Unknown seasonal theme.');
   if(!['download','listen','both'].includes(s.pulsemeshButtons))throw Error('Choose supported PulseMesh buttons.');
@@ -237,15 +242,18 @@ ${base} .los-song-list > .category-section:nth-child(${i+1} of .category-section
 }
 const rgb=hex=>hex.slice(1).match(/../g).map(n=>parseInt(n,16)).join(', ');
 export function renderDocument(source,s,extra={}){
+  if(!s.showWelcome)source=source.replace(/^[ \t]+(?=\[\[WELCOME_BLOCK\]\])/gm,'');
   const e=escapeHTML,names=namesOf(s),t=themes[s.theme],copy=copyFor(s),c=Object.fromEntries(Object.entries(copy).map(([k,v])=>[k,e(formatCopy(v,s))]));
   const flags=[!s.showSongArtists&&'hide-song-artists',!s.showQueueArtists&&'hide-queue-artists',s.fm&&'has-fm',s.pulsemesh&&'has-pulsemesh',(s.fm||s.pulsemesh||s.listening.trim())&&'has-listening',s.donations&&'has-donations',s.categories&&s.categoryNames.some(n=>!s.hiddenCategories.includes(n))&&'has-categories',s.newFilter&&'has-new-songs',s.donationHome&&'has-donations-home',s.donationInfo&&'has-donations-info'].filter(Boolean).join(' ');
   const v={
-    SHOW_NAME:e(s.name),FEATURE_CLASSES:flags+seasonalClasses(s),...seasonalTokens(s),WELCOME:e(s.welcome),SHOW_DATES:e(s.dates),
+    SHOW_NAME:e(s.name),FEATURE_CLASSES:flags+seasonalClasses(s),...seasonalTokens(s),...welcomeTokens(s,e),SHOW_DATES:e(s.dates),
     LOGO:s.logoMode==='none'?'':s.logoMode==='seasonal'?`<img class="show-logo" src="${assetBase+logoFile(s)}" alt="">`:s.logoMode==='custom'&&s.logo?`<img class="show-logo" src="${e(s.logo)}" alt="${e(s.name)} logo">`:`<i class="[[ICON:brand:fa-solid ${t.icon}]]" aria-hidden="true"></i>`,
     BRAND_CLASS:s.logoMode==='seasonal'&&s.combineLogoName&&s.showNameOnHome?'brand-combined':'',
     NAME_CLASS:s.showNameOnHome?'':'show-name-hidden',
     DECORATION_CSS:s.decorations&&!isNewSeason(s.theme)?decorationCSS(s):'',
     VIEWER_OPTIONS_CSS:viewerOptionsCSS(s),
+    // Reserve the floating menu's wrapped height without viewer JavaScript.
+    NAV_CLEARANCE:'<div class="nav-clearance" aria-hidden="true">'+(extra.COMPACT_CLASSES?['music','info','support']:['home','music','support','info']).filter(k=>k!=='support'||s.showSupportTab).map(k=>'<span class="nav-clearance__item"><i class="[[ICON:nav'+k[0].toUpperCase()+k.slice(1)+':fa-solid '+({home:'fa-house',music:'fa-music',support:'fa-heart',info:'fa-circle-info'})[k]+']]"></i><span class="los-menu__label">'+c['NAV_'+k.toUpperCase()]+'</span></span>').join('')+'</div>',
     NOTICE_HIDDEN:s.notice?'':'hidden',NOTICE_TITLE:e(s.noticeTitle||'Show update'),NOTICE_TEXT:e(s.noticeText),
     SCHEDULE_ROWS:s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('\n'),
     SCHEDULE_FAQ:'<div class="hours-list">'+s.schedule.map(r=>`<div class="hours-row"><span>${e(r.day)}</span><span>${e(r.hours)}</span></div>`).join('')+'</div>',
@@ -327,13 +335,14 @@ const halloweenCSS=`
 `;
 function viewerOptionsCSS(s){return [
   nameStyleCSS(s),
+  welcomeCSS(s),
   s.homeCard&&informationCSS,
   artworkCSS(s),
   songBadgeCSS(s,escapeCSS,accentInk(s.colours.gold)),
-  !s.showMenuLabels&&'.los-menu__label { display:none; } .los-menu .los-menu__item i { font-size:24px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1; }',
+  !s.showMenuLabels&&'.los-menu__label { display:none; } :is(.los-menu .los-menu__item,.nav-clearance__item) i { font-size:24px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1; }',
   !s.showSupportTab&&`
 /* Hide only the menu entry; retain Support for direct links and editor preview. */
-.los-menu { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.los-menu, .nav-clearance { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .los-menu__item[data-tab-target="support"] { display:none; }
 `,
   s.onAirPulse&&`

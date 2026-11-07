@@ -7,6 +7,8 @@ export function createEditorGroups({landing='home',extraInformationPage='Home',g
  if(extraInformationPage==='Info')info.splice(1,0,8);else main.splice(3,0,8);
  if(guidanceInfo)info.splice(2,0,19);else main.splice(1,0,19);
  if(playlistPage==='info')info.splice(3,0,25);else music.splice(-1,0,25);
+ // The optional Home shortcut owns its wording and icon, independently of Welcome.
+ if(landing!=='music')main.splice(main.indexOf(13)+1,0,34);
  const groups=landing==='music'?{
   music:{name:'Music',panel:'music',sections:[...main,...music],description:'Music is your starting page in this template.'},
   info:{name:'Info',panel:'info',sections:info},

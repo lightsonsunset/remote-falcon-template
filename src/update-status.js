@@ -9,11 +9,5 @@ export const updateStatus = {
   }],
   plannedThemes: ['Anzac Day','New Year’s Eve'],
   themeTemplates: ['Lights on Sunset','Compact console'],
-  knownIssues: [{
-    title: 'Header artwork can overlap Home text',
-    templates: ['Lights on Sunset (Christmas and Halloween)'],
-    status: 'Fix being tested; not yet released',
-    description: 'Header artwork can overlap welcome text or visitor guidance in the customiser preview and exported viewer HTML.',
-    workaround: 'Under Site setup → Header, logo & show name, choose No header artwork. If you still want the picture, combine it with your logo in one image and use that as your logo. Check your preview before exporting.'
-  }]
+  knownIssues: []
 };

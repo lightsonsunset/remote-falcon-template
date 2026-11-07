@@ -8,9 +8,10 @@ export function headerArtworkTokens(s){
  const file=headerArtworkFile(s);
  if(!file)return {html:'',css:''};
  return {html:`<div class="header-artwork-picture" aria-hidden="true"><img src="${assetBase+file}" alt="" draggable="false"></div>`,css:`
-/* Chosen upper artwork stays separate from the logo and lower decorations. */
+/* Chosen upper artwork stays separate from the logo and lower decorations.
+   Keep the header at content height inside the scrolling flex panel. */
 #show-options .share-brand>.header-artwork-picture{position:relative;z-index:1;display:block;width:100%;max-width:420px;margin:0 auto 20px;pointer-events:none}
 #show-options .header-artwork-picture img{display:block;width:100%;height:auto;max-height:180px;object-fit:contain;margin:0 auto;border-radius:0}
-#show-options .share-brand:has(>.header-artwork-picture){padding-top:24px;min-height:0}
+#show-options .share-brand:has(>.header-artwork-picture){padding-top:24px;min-height:0;flex-shrink:0}
 `};
 }

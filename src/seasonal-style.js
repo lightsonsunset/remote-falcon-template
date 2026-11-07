@@ -51,7 +51,7 @@ export function seasonalTokens(s){
 /* Seasonal artwork remains outside the interactive content. */
 @font-face{font-family:"LOS Nunito";src:url("${assetBase}fonts/nunito.ttf") format("truetype");font-weight:100 900;font-display:swap}
 @font-face{font-family:"LOS Playfair Display";src:url("${assetBase}fonts/playfair-display.ttf") format("truetype");font-weight:400 900;font-display:swap}
-${scoped}{font-family:"LOS Nunito",Arial,sans-serif}
+${scoped}{--nav-font:"LOS Nunito",Arial,sans-serif;font-family:"LOS Nunito",Arial,sans-serif}
 #show-options.season-theme{--season-heading:"${font}",Georgia,serif}
 #show-options.season-theme .content__body h2,#show-options.season-theme .content__body h3{font-family:var(--season-heading)}
 #show-options.season-theme .logo-stage::before,#show-options.season-theme .logo-stage::after{display:none}
@@ -88,7 +88,7 @@ body:has(#show-options.season-thanksgiving) .season-turkey-icon{font-size:26px;d
 `:''}
 ${scoped} .los-menu{background:color-mix(in srgb,var(--panel) 30%,#080e12);border-color:color-mix(in srgb,var(--gold) 45%,transparent)}
 ${scoped} .los-menu__item{--nav-tint:color-mix(in srgb,var(--panel) 75%,var(--gold));--nav-accent:var(--gold)}
-body:has(#show-options.season-navbar-on) .los-menu{border:2px solid ${config.navBorder};box-shadow:0 10px 30px #0009,inset 0 0 0 2px ${config.navInset}}
+body:has(#show-options.season-navbar-on) :is(.los-menu,.nav-clearance){border:2px solid ${config.navBorder};box-shadow:0 10px 30px #0009,inset 0 0 0 2px ${config.navInset}}
 ${aussie?`
 /* Only the header bunting sways. The page and corner illustrations stay still. */
 #show-options.season-australia-day.season-header-on .share-brand{padding-top:108px;padding-bottom:125px;min-height:350px}

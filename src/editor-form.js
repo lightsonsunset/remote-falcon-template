@@ -3,7 +3,7 @@ import {rfExportHelpLink} from './rf-export-help.js';
 import {songArtworkForm} from './song-artwork-form.js';
 import {informationForm} from './information-form.js';
 import {visitorGuidanceForm} from './visitor-guidance-form.js';
-import {headerIdentity} from './header-identity.js';
+import {headerIdentity,welcomeControls} from './header-identity.js';
 import {iconSettings} from './icon-picker.js';
 import {seasonalConfig} from './seasonal-config.js';
 import {isNewSeason,hasCountdown,dateExample} from './themes.js';
@@ -35,7 +35,7 @@ export function settingsForm(s,{groups=editorGroups,features={},presets=null,sep
  const direct=groups=>groups.map(g=>copyFields(g[1])).join('');
  const feature=(key,html)=>`<div data-feature="${key}">${html}</div>`;
  const section=(n,title,content,attrs='')=>({title,content,attrs});
- const renderSection=(n,{title,content,attrs})=>`<details data-section="${n}" ${[1,6,11,12,16,17].includes(n)?'open':''} ${attrs}><summary>${title}<span class="section-error" hidden>Needs attention</span></summary><div class="section-body">${content}</div></details>`;
+ const renderSection=(n,{title,content,attrs})=>`<details data-section="${n}" ${attrs}><summary>${title}<span class="section-error" hidden>Needs attention</span></summary><div class="section-body">${content}</div></details>`;
  const subgroup=(id,title,content)=>`<details class="copy-group" data-copy-group="${id}"><summary>${title}</summary><div class="copy-fields">${content}</div></details>`;
  const icons=(roles,title)=>iconSettings(s,features.homeMusicLink===false,roles,title);
  const scheduleRows=s.schedule.map((r,i)=>`<div class="schedule-row"><label><input aria-label="Days for row ${i+1}" data-schedule="${i}" data-part="day" maxlength="200" value="${e(r.day)}"><span class="error" data-error="schedule.${i}.day"></span></label><label><input aria-label="Hours for row ${i+1}" data-schedule="${i}" data-part="hours" maxlength="200" value="${e(r.hours)}"><span class="error" data-error="schedule.${i}.hours"></span></label><button type="button" data-remove="${i}" aria-label="Remove schedule row ${i+1}" ${s.schedule.length===1?'disabled':''}>×</button></div>`).join('');
@@ -65,7 +65,8 @@ export function settingsForm(s,{groups=editorGroups,features={},presets=null,sep
   8:section(8,'Extra information',toggle('homeCard','Show extra information on '+(features.extraInformationPage||'Home'))+feature('homeCard',informationForm(s,{e,field}))),
   9:section(9,'Support cards',toggle('donations','Show support cards')+feature('donations','<p class="hint">For charities, creators and people you want to thank. Each card has its own wording and link.</p><h3 class="support-card-label">First card</h3>'+field('charity','Name')+field('donationText','Support page description','','textarea')+field('donationUrl','Link','Include https://. A www. address is completed for you when you leave the field.','url')+direct([editorCopy.donations[0]])+'<p class="hint">For example: Donate, Visit our supporter or Listen to the podcast. {charity} inserts this card’s name.</p>'+field('donationImage','Image link','Logo or picture for this card.','url',true)+imageHelp()+'<p class="hint">Full card on Support. Also show a small linked card on:</p>'+toggle('donationHome','Home')+toggle('donationInfo','Info')+'<details class="copy-group" data-copy-group="donations-teaser"><summary>Home &amp; Info teaser</summary><div class="copy-fields">'+teaserHelp+direct([editorCopy.donations[1]])+'</div></details>'+donationRows+'<button type="button" id="add-donation-recipient" '+(s.donationRecipients.length===4?'disabled':'')+'>+ Add another support card</button><p class="hint">Up to five cards, each with its own image, button and Home / Info teaser.</p>')),
   10:section(10,'Frequently asked questions','<p class="hint">'+shortcut(25,'Set up playlist links for this FAQ')+'</p>'+direct(editorCopy.faq)+faqRows+'<div class="small-actions"><button type="button" id="add-faq" '+(s.faq.length===20?'disabled':'')+'>+ Add question</button>'+['schedule','listening'].filter(kind=>!s.faq.some(f=>f.kind===kind)).map(kind=>`<button type="button" data-restore-faq="${kind}">Restore ${kind==='schedule'?'show times':'listening'} answer</button>`).join('')+'</div>'),
-  11:section(11,'Welcome',tagline+field('welcome','Welcome message','','textarea')+'<p class="hint">'+shortcut(2,'Edit header, logo & show name')+'</p>'+(features.homeMusicLink===false?'':'<details class="copy-group" data-copy-group="home-buttons-0"><summary>Link to Music on Home</summary><div class="copy-fields">'+toggle('homeMusicLink','Show a Music link on Home')+feature('homeMusicLink',direct([editorCopy.home[0]]))+'</div></details>'+'<p class="hint">'+shortcut(15,'Edit the shared music-button headings')+'</p>')),
+  11:section(11,'Welcome',tagline+welcomeControls(s)+'<p class="hint">'+shortcut(2,'Edit header, logo & show name')+'</p>'),
+  34:section(34,'Music link on Home',toggle('homeMusicLink','Show a Music link on Home')+'<p class="hint">A shortcut to request or vote while your show is on air. Hiding it keeps Music available in the navigation menu.</p>'+feature('homeMusicLink',direct([editorCopy.home[0]])+icons(['musicLink'],'Music link icon')+'<p class="hint">'+shortcut(15,'Edit shared request and voting headings')+' (also used on the Music page).</p>')),
   19:section(19,'Visitor guidance',visitorGuidanceForm({toggle,select,feature,field},features)),
   13:section(13,'On-air & off-air wording',toggle('onAirPulse','Gently pulse the On air dot')+'<p class="hint">A soft glow while on air. Stays still when visitors prefer reduced motion.</p>'+'<p class="hint">RF controls when the show is available. Off-air wording also appears on Music.</p>'+direct(editorCopy.status)),
 
@@ -105,7 +106,7 @@ export function settingsForm(s,{groups=editorGroups,features={},presets=null,sep
  parts[23].title='Player & queue';parts[23].content=copyRows(editorCopy.player,'player')+parts[23].content;
  parts[7].content+=icons(['notice'],'Announcement icon');
  parts[9].content+=icons(['support'],'Support icon');
- parts[11].content+='<p class="shared-links">'+shortcut(3,'Edit show dates & hours')+' · '+shortcut(4,'Edit listening details')+' · '+shortcut(31,'Edit social links')+'</p>'+icons(['musicLink'],'Music link icon');
+ parts[11].content+='<p class="shared-links">'+shortcut(3,'Edit show dates & hours')+' · '+shortcut(4,'Edit listening details')+' · '+shortcut(31,'Edit social links')+'</p>';
  parts[17].content+='<p class="hint">'+shortcut(31,'Edit social links & YouTube button')+'</p>';
  parts[26].content+=icons(['showVideo'],'Video icon');
  parts[31].content+=subgroup('social-youtube','Separate YouTube button on Info','<p class="hint">An optional labelled button below the Info introduction, independent of the social links row and off-air video.</p>'+parts[27].content+icons(['youtube'],'YouTube icon'));

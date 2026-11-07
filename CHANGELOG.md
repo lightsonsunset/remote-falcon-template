@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.13.0 — Layout fixes and welcome controls — 7 November 2026
+
+### Shared customiser
+
+- Give Music link on Home its own section in Lights on Sunset. Editor sections start collapsed; changing pages keeps your manual open or closed choices. Shortcuts and error links still reveal their targets.
+- Make What's new easier to scan with compact version/date cards, a green Latest badge and older releases collapsed by default. Every release remains expandable. Update HTML badges identify groups that include viewer changes requiring a fresh export.
+- Shorten Welcome help and keep Clear close to the text field. Refresh the guides, screenshots and manual downloads.
+
+### Both templates
+
+- Add independent Welcome visibility, style and placement: plain text or a card like visitor guidance, with the show name, above or below the header, or below On air. Welcome and visitor guidance can share a position without overlapping. Below On air appears only while the show is on air.
+- Add optional Welcome-card background and text colours that override the active theme, with a theme reset and readable-contrast guidance. Each saved design retains its choices; existing wording, visibility, style and positions are preserved.
+- Keep floating menus clear of the final content when labels wrap or text is enlarged, including narrow and landscape screens.
+- Export fresh HTML from your saved design and replace the installed RF viewer page to receive these viewer features and fixes. You do not need to recreate your design.
+
+### Lights on Sunset
+
+- Fix chosen header artwork overlapping Welcome, visitor guidance and following cards. The header now reserves its full content height, including long text and separate artwork, logo and show name.
+- Keep vote totals, long song titles and NEW / Moving spotlights badges clear of one another in narrow or enlarged-text Voting layouts, including RF's grouped and ungrouped song rows.
+
+### Compact console
+
+- Keep popup content within short viewports with internal scrolling, including phone landscape layouts.
+
 ## 1.12.0 — Patriotic and Valentine themes, saved seasonal designs — 22 October 2026
 
 ### Shared customiser

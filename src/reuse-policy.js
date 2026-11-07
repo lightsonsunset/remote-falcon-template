@@ -23,7 +23,7 @@ const sections={
  season:{dates:'Show dates',schedule:'Hours and holiday rows',categorySetup:'Category filters & artwork',newNames:'Songs marked NEW',movingHeadNames:'Songs marked Moving heads',countdown:'Christmas countdown',halloweenCountdown:'Halloween countdown',countdownFormat:'Christmas countdown format',halloweenCountdownFormat:'Halloween countdown format',christmasDecoration:'Christmas navbar ornament',halloweenDecoration:'Halloween navbar ornament'},
  colours:{nameColourChoice:'Custom show-name colour'}
 };
-const bundles={headerArtwork:['headerArtwork','headerTopDecorations'],categorySetup:['categories','categoryNames','hiddenCategories','categoryIcons'],nameColourChoice:['customNameColour','nameColour']};
+const bundles={welcome:['welcome','showWelcome','welcomeStyle','welcomePosition','customWelcomeColours','welcomeCardColour','welcomeTextColour'],headerArtwork:['headerArtwork','headerTopDecorations'],categorySetup:['categories','categoryNames','hiddenCategories','categoryIcons'],nameColourChoice:['customNameColour','nameColour']};
 export const transferPolicy=Object.fromEntries(Object.entries(sections).flatMap(([group,fields])=>Object.entries(fields).map(([id,label])=>[id,{id,label,group,keys:bundles[id]||[id]}])));
 // Retained for old backups, or applied through a resolved field above. Never copy IDs/preset IDs.
 export const excludedTransferSettings={theme:'Destination identity',headerDecorations:'Legacy upper/lower artwork fallback',flagPlacement:'Retired decoration choice',showAlbumArtwork:'Resolved into the two artwork choices',colours:'Effective colour overrides',colourPreset:'Resolved into effective colour overrides',advancedColours:'Set when applying colours',copy:'Compared one wording override at a time',icons:'Compared one supported icon at a time'};
@@ -33,13 +33,14 @@ const equal=(a,b)=>fingerprint(a)===fingerprint(b);
 const read=(s,id)=>id==='headerArtwork'?headerArtworkValue(s):id==='songArtwork'?songArtworkMode(s):id==='showNowPlayingArtwork'?nowPlayingArtwork(s):bundles[id]?Object.fromEntries(bundles[id].map(k=>[k,s[k]])):s[id];
 const modes={none:'No logo',icon:'Simple seasonal icon',symbol:'Icon above show name',seasonal:'Included seasonal picture',custom:'My own logo'};
 const messageLabels=Object.fromEntries(messageCopyGroups.flatMap(([group,fields])=>fields.map(([key,label])=>[key,group+' - '+label.toLowerCase()])));
-const enumLabels={headerArtwork:{theme:'Theme default',none:'No header artwork',classic:'First included picture',lights:'Second included picture',crest:'Third included picture'},nameFont:{current:'Theme default',rounded:'Rounded',elegant:'Elegant',festive:'Festive',spooky:'Spooky'},songArtwork:{album:'Album artwork',category:'Category icons',none:'No artwork'},guidancePosition:{'above-header':'Above the header','below-header':'Below the header',status:'Below On air'},pulsemeshButtons:{download:'Download app',listen:'Listen to this show',both:'Download and listen'}};
+const enumLabels={welcomeStyle:{plain:'Plain text',card:'Card like visitor guidance'},welcomePosition:{header:'With show name','above-header':'Above the header','below-header':'Below the header',status:'Below On air'},headerArtwork:{theme:'Theme default',none:'No header artwork',classic:'First included picture',lights:'Second included picture',crest:'Third included picture'},nameFont:{current:'Theme default',rounded:'Rounded',elegant:'Elegant',festive:'Festive',spooky:'Spooky'},songArtwork:{album:'Album artwork',category:'Category icons',none:'No artwork'},guidancePosition:{'above-header':'Above the header','below-header':'Below the header',status:'Below On air'},pulsemeshButtons:{download:'Download app',listen:'Listen to this show',both:'Download and listen'}};
 export function transferValue(item,value){
  if(value===undefined)return 'Not available';
  if(item.artworkLabels)return value===item.value?item.artworkLabels.incoming:item.artworkLabels.current;
  if(item.id==='logoMode')return value==='icon'&&item.compactHeader?'Styled show name':modes[value]||value;
  if(item.id==='catalogue')return value?`${value.filename} (${value.songs.length} songs)`:'No imported catalogue';
  if(item.id.startsWith('icons.')||item.id==='uncategorisedIcon')return iconLibrary[value]?.[0]||'Theme default';
+ if(item.id==='welcome'&&value&&typeof value==='object')return 'Welcome message: '+(value.welcome||'Empty (cleared)')+'\nShow welcome message: '+(value.showWelcome?'On':'Off')+'\nWelcome style: '+enumLabels.welcomeStyle[value.welcomeStyle]+'\nWelcome position: '+enumLabels.welcomePosition[value.welcomePosition]+'\nUse custom card colours: '+(value.customWelcomeColours?'On':'Off')+'\nBackground colour: '+value.welcomeCardColour+'\nText colour: '+value.welcomeTextColour;
  if(enumLabels[item.id])return enumLabels[item.id][value]||String(value);
  if(typeof value==='boolean')return value?'On':'Off';
  if(value==='')return 'Empty (cleared)';
@@ -82,6 +83,9 @@ export function transferChoices(source,sourceTemplate,destination,target,{catalo
   const value=read(source,p.id);if(value===undefined||equal(value,read(defaults,p.id)))continue;
   if(p.id==='nameColourChoice'&&!source.customNameColour)continue;
   const item=project({...p,value:clone(value),current:clone(read(destination,p.id))},sourceTemplate,target);
+  // Unedited seasonal wording follows the destination; deliberate edits and blanks travel.
+  if(p.id==='welcome'&&source.welcome===defaults.welcome)item.value.welcome=existing?destination.welcome:target.cloneDefaults(destination.theme).welcome;
+  if(existing&&equal(item.value,item.current))continue;
   if(['headerArtwork','logoStyle'].includes(p.id)){
    const label=(theme,choice)=>logoChoices[theme].find(c=>c.id===choice)?.label||({theme:'Theme default',none:'No header artwork'})[choice];
    const from=label(source.theme,item.value),to=label(destination.theme,item.value);
