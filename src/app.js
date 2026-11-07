@@ -1,3 +1,4 @@
+import {updateWelcomeColours,resetWelcomeColours} from './welcome-colour-form.js';
 import {setHeaderArtwork} from './header-artwork.js';
 import {createCategoryHelp,missingCategoryNotice} from './category-help.js';
 import {enhanceTextFields,installTextClearButtons} from './text-clear.js';
@@ -106,6 +107,7 @@ function form(){
  selectSettingsGroup(editorGroup,false);features();restoreField();restoreViewport();
 }
 function features({deferContrast=false}={}){
+ updateWelcomeColours($('settings'),settings,{deferContrast});
  updateSongArtworkForm($('settings'),settings);
  updateHeaderIdentity($('settings'),settings,designStore.template.features);
  updateNameStyleForm($('settings'),settings,designStore.template.namePreview?.(settings),{deferContrast});
@@ -322,9 +324,10 @@ $('settings').addEventListener('input',event=>{
   // viewer when the picker commits its selection with change.
   changed(undefined,{refreshPreview:el.type!=='color',deferContrast:el.type==='color'});
 });
-$('settings').addEventListener('change',event=>{if(event.target.type==='color'){clearTimeout(updateTimer);refresh();}});
+$('settings').addEventListener('change',event=>{if(event.target.type==='color'){features();clearTimeout(updateTimer);refresh();}});
 $('settings').addEventListener('click',event=>{
   const el=event.target.closest('button');if(!el)return;
+  if(resetWelcomeColours(event,$('settings')))return;
   if(el.dataset.season){themeFlow.request(designStore.template.id,el.dataset.season).catch(err=>setError(err.message));return;}
   if(el.dataset.informationAction){
    const restoreViewport=captureViewport(el),rows=informationCards(settings),action=el.dataset.informationAction,i=+el.dataset.row;let next=i;

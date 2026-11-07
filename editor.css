@@ -264,3 +264,11 @@ input[type=search].text-clear-input::-webkit-search-cancel-button{-webkit-appear
 @media(max-width:1100px){.intro{grid-template-columns:minmax(0,1fr) 310px;gap:22px}}
 @media(max-width:900px){.intro{grid-template-columns:minmax(0,1fr);gap:16px}.intro .design-toolbar{width:fit-content;max-width:100%}.intro .design-identity{flex:1 1 auto}.intro .design-toolbar>button{width:auto}}
 @media(max-width:760px){.intro{padding:20px 14px}.intro .design-toolbar{width:100%}.design-switch-status.design-switch-toast{right:14px;bottom:14px;max-width:calc(100% - 28px)}}
+
+/* Welcome helper and Clear share a normal-flow footer directly under its textarea. */
+.welcome-field.clearable-field{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;row-gap:0}
+.welcome-field.clearable-field .field-label{grid-column:1/-1;grid-row:1}
+.welcome-field.clearable-field textarea{grid-column:1/-1;grid-row:2}
+.welcome-field.clearable-field [data-welcome-help]{grid-column:1;grid-row:3;align-self:center;min-width:0;margin:0}
+.welcome-field.clearable-field .error{grid-column:1/-1;grid-row:4}
+.welcome-field.clearable-field>button.clear-text,#setup-content .welcome-field.clearable-field>button.clear-text{grid-column:2;grid-row:3;align-self:center;min-height:44px;min-width:44px}

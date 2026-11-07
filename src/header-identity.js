@@ -1,3 +1,4 @@
+import {welcomeColourForm} from './welcome-colour-form.js';
 // Shared identity controls for the editor and its detached setup draft.
 import {escapeHTML as e} from './shared-settings.js';
 import {themes} from './themes.js';
@@ -26,4 +27,18 @@ export function updateHeaderIdentity(root,s,features={}){
  root.querySelectorAll('[data-logo-field]').forEach(el=>el.hidden=s.logoMode!=='custom');
  root.querySelectorAll('[data-seasonal-logo]').forEach(el=>el.hidden=s.logoMode!=='seasonal');
  root.querySelectorAll('.artwork-choice,.setup-artwork').forEach(el=>el.src='assets/'+logoFile(s));
+}
+
+// Welcome visibility never clears wording or changes logo/name settings.
+export const welcomeStyles=[['plain','Plain text'],['card','Card like visitor guidance']];
+export const welcomePositions=[['header','With show name'],['above-header','Above the header'],['below-header','Below the header'],['status','Below On air']];
+export function welcomeControls(s,{setup=false}={}){
+ const attr=setup?'data-setup-key':'data-key',prefix=setup?'setup-':'';
+ const select=(key,label,choices,fallback)=>'<label class="field"><span class="field-label">'+label+'</span><select id="'+prefix+key+'" '+attr+'="'+key+'">'+choices.map(([id,label])=>'<option value="'+id+'" '+((s[key]||fallback)===id?'selected':'')+'>'+e(label)+'</option>').join('')+'</select></label>';
+ return '<label class="toggle"><input type="checkbox" '+attr+'="showWelcome" '+(s.showWelcome!==false?'checked':'')+'>Show welcome message</label><label class="field welcome-field"><span class="field-label">Welcome message<span class="optional">Optional</span></span><textarea id="'+prefix+'welcome" '+attr+'="welcome" rows="3" maxlength="20000" aria-describedby="'+prefix+'hint-welcome '+prefix+'error-welcome">'+e(s.welcome||'')+'</textarea><span class="hint" data-welcome-help id="'+prefix+'hint-welcome">Hidden text is kept. Blank shows nothing.</span><span class="error" id="'+prefix+'error-welcome" '+(setup?'data-setup-error':'data-error')+'="welcome"></span></label>'+select('welcomeStyle','Welcome style',welcomeStyles,'plain')+select('welcomePosition','Welcome position',welcomePositions,'header')+'<p class="hint">Below On air is only shown while your show is on air.</p>'+welcomeColourForm(s,{setup});
+}
+export function welcomeSummary(s){
+ if(s.showWelcome===false)return 'Hidden (wording kept)';
+ if(!String(s.welcome||'').trim())return 'No welcome text';
+ return (welcomeStyles.find(([id])=>id===(s.welcomeStyle||'plain'))?.[1]||'Plain text')+' / '+(welcomePositions.find(([id])=>id===(s.welcomePosition||'header'))?.[1]||'With show name');
 }

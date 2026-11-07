@@ -60,3 +60,13 @@ test('reuse offers one effective header choice independently of logo settings an
   s.headerTopDecorations=false;const hidden=transferChoices(s,a,d,b);assert.equal(applyTransfer(d,b,hidden,['headerArtwork']).settings.headerTopDecorations,false);
  }
 });
+
+test('chosen header artwork keeps its content height for all guidance placements',async()=>{
+ for(const t of registry){const source=await readFile(t.source,'utf8');for(const theme of Object.keys(t.themes))for(const position of ['above-header','below-header','status'])for(const upper of ['classic','lights','crest']){
+  const s=t.cloneDefaults(theme);setHeaderArtwork(s,upper);s.showMainGuidance=true;s.guidancePosition=position;s.welcome='Welcome and enjoy the show. '.repeat(30);
+  const html=t.render(source,s);
+  assert.match(html,/#show-options \.share-brand:has\(>\.header-artwork-picture\)\{[^}]*flex-shrink:0/);
+  assert(html.includes(s.welcome));assert(html.includes('class="header-artwork-picture"'));
+  assert(!/<script\b|\son\w+=|localhost|127\.0\.0\.1/.test(html));
+ }}
+});

@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.12.0 / 22 October 2026
+<!-- LIGHTS ON SUNSET TEMPLATE / customiser edition 1.13.0 / 7 November 2026
      Open START-HERE.html for setup. Edit this file as plain UTF-8 text.
      Generated from Lights on Sunset Template Customiser by christmasdave. Leave RF's {...} elements intact.
      No custom JavaScript. Install in a separate RF draft before going live.
@@ -24,7 +24,7 @@
         --panel: rgba(15, 15, 18, 0.78);
         --nav-height: 4.75rem;
         --nav-gap: 12px;
-        --nav-clearance: calc(var(--nav-height) + var(--nav-gap) + env(safe-area-inset-bottom, 0px) + 20px);
+        --nav-clearance: calc(var(--nav-gap) + env(safe-area-inset-bottom, 0px) + 20px);
       }
 
       html {
@@ -328,7 +328,7 @@
       .preview-link,
       .selfie-card {
         display: grid;
-        grid-template-columns: 54px 1fr;
+        grid-template-columns: 54px minmax(0, 1fr);
         gap: 0.75em;
         align-items: center;
         padding: 0.85em;
@@ -1265,6 +1265,14 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
       }
 
       /* Use our own class name so RF's optional menu script does not attach. */
+      .los-menu, .nav-clearance {
+        display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px; max-width: 30rem; min-height: var(--nav-height);
+        padding: 6px; border: 1px solid transparent; font-family: inherit;
+      }
+      /* Invisible, unfocusable geometry keeps the final content above a menu
+         whose labels grow with the visitor's text size. */
+      .nav-clearance { width: 100%; flex: 0 0 auto; visibility: hidden; pointer-events: none; }
       .los-menu {
         position: fixed;
         left: calc(var(--nav-gap) + env(safe-area-inset-left, 0px));
@@ -1275,7 +1283,7 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 4px;
         max-width: 30rem;
-        height: var(--nav-height);
+        height: auto;
         margin: 0 auto;
         padding: 6px;
         border: 1px solid rgba(255, 255, 255, 0.18);
@@ -1299,7 +1307,7 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
       .los-menu__item.tab-blue { --nav-tint: #233552; --nav-accent: #a8c7ff; }
       .los-menu__item.tab-yellow { --nav-tint: #45381c; --nav-accent: #ffe08b; }
 
-      .los-menu__item {
+      .los-menu__item, .nav-clearance__item {
         display: flex;
         min-width: 0;
         min-height: 44px;
@@ -1317,12 +1325,13 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
         transition: background-color 0.18s ease, color 0.18s ease;
       }
 
-      .los-menu__item i {
+      .los-menu__item i, .nav-clearance__item i {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         width: 1.5rem;
         height: 1.5rem;
+        flex: 0 0 auto;
         font-size: 1.25rem;
         line-height: 1;
       }
@@ -1639,6 +1648,7 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
       body:has(#los-voting-live .playing-now) .los-voting-copy { display: block; }
       /* RF places each tally beside its clickable song. Overlay the tally on
          that same card so tapping the tally still reaches the song beneath. */
+      .los-song-list { container-type: inline-size; }
       .cell-vote-row { position: relative; margin-bottom: 0.7em; }
       .cell-vote-row > .cell-vote-playlist {
         min-width: 0;
@@ -1668,6 +1678,22 @@ body:has(#show-options.has-categories):has(#songs-category-2:target) .los-song-l
       .cell-vote::after { content: "votes"; display: block; margin-top: 0.12rem; font-size: 0.6rem; font-weight: 500; }
       @media (max-width: 440px) {
         .cell-vote-row > .cell-vote-playlist { min-height: var(--los-new-vote-height, 70px); }
+      }
+
+      /* On narrow cards, reserve a footer for the tally instead of squeezing
+         enlarged votes beside artwork, song titles and artists. */
+      @container (max-width: 16rem) {
+        .content__body .los-song-list .cell-vote-row > .cell-vote-playlist {
+          padding-right: .78em;
+          /* NEW is a five-rem corner drawing, including the combined badge. */
+          padding-top: calc(.72em + var(--los-new-text-gutter, 0px) * 1.667);
+          padding-bottom: calc(3.25rem + .72em); overflow-wrap: anywhere;
+        }
+        .cell-vote-row > .cell-vote { top: auto; bottom: .5rem; transform: none; }
+        /* RF also emits ungrouped song/tally siblings. Stack those native
+           pairs rather than reducing the artwork/title column to a sliver. */
+        #show-options .content__body .los-song-list > .cell-vote-playlist { grid-column: 1 / -1; padding-right: .78em; padding-top: calc(.72em + var(--los-new-text-gutter, 0px) * 1.667); overflow-wrap: anywhere; }
+        #show-options .content__body .los-song-list > .cell-vote-playlist + .cell-vote { grid-column: 1 / -1; justify-self: end; min-width: 3.1rem; }
       }
 
       /* A small listening shortcut, shown only inside the active music mode. */
@@ -1984,6 +2010,7 @@ When stopped, please dim headlights and leave running lights on.</p>
         
         
 
+        <div class="nav-clearance" aria-hidden="true"><span class="nav-clearance__item"><i class="fa-solid fa-house"></i><span class="los-menu__label">Home</span></span><span class="nav-clearance__item"><i class="fa-solid fa-music"></i><span class="los-menu__label">Music</span></span><span class="nav-clearance__item"><i class="fa-solid fa-heart"></i><span class="los-menu__label">Support</span></span><span class="nav-clearance__item"><i class="fa-solid fa-circle-info"></i><span class="los-menu__label">Info</span></span></div>
       </div>
       <div class="content__body tab-green" id="music-panel" data-tab-panel="music">
         <div class="music-filter-targets"><span id="songs-all"></span><span class="category-filter-target" id="songs-category-1"></span><span class="category-filter-target" id="songs-category-2"></span><span id="songs-new"></span></div>
@@ -2028,6 +2055,7 @@ When stopped, please dim headlights and leave running lights on.</p>
               <a href="#songs-all">All</a><a class="category-filter-link" href="#songs-category-1">Halloween</a><a class="category-filter-link" href="#songs-category-2">Party favourites</a><a href="#songs-new">New this year</a>
             </div><div id="voting_playlists_container" class="los-song-list">{PLAYLISTS}</div></div>
         </div>
+        <div class="nav-clearance" aria-hidden="true"><span class="nav-clearance__item"><i class="fa-solid fa-house"></i><span class="los-menu__label">Home</span></span><span class="nav-clearance__item"><i class="fa-solid fa-music"></i><span class="los-menu__label">Music</span></span><span class="nav-clearance__item"><i class="fa-solid fa-heart"></i><span class="los-menu__label">Support</span></span><span class="nav-clearance__item"><i class="fa-solid fa-circle-info"></i><span class="los-menu__label">Info</span></span></div>
       </div>
       <div class="content__body tab-blue" id="support-panel" data-tab-panel="support">
         <div class="section-card support-intro"><h2>A Little Kindness, a Little Magic</h2><p>Thank you for being part of the show. Your smiles, kind words and consideration for our neighbours help make this a special time of year.</p></div>
@@ -2039,6 +2067,7 @@ When stopped, please dim headlights and leave running lights on.</p>
           </div>
         </div>
         
+        <div class="nav-clearance" aria-hidden="true"><span class="nav-clearance__item"><i class="fa-solid fa-house"></i><span class="los-menu__label">Home</span></span><span class="nav-clearance__item"><i class="fa-solid fa-music"></i><span class="los-menu__label">Music</span></span><span class="nav-clearance__item"><i class="fa-solid fa-heart"></i><span class="los-menu__label">Support</span></span><span class="nav-clearance__item"><i class="fa-solid fa-circle-info"></i><span class="los-menu__label">Info</span></span></div>
       </div>
       <div class="content__body tab-yellow" id="info-panel" data-tab-panel="info">
         <div class="section-card info-intro"><h2>Show Info</h2><p>Welcome to Your Halloween Show. Here is how to listen and join in.</p></div>
@@ -2055,6 +2084,7 @@ When stopped, please dim headlights and leave running lights on.</p>
 <div class="faq-item"><strong>Why can I not choose a particular song?</strong><p class="faq-answer">Some songs take a break to give other favourites a turn. The message under a song tells you when it will be available again.</p></div>
 <div class="faq-item"><strong>How do you build a show like this?</strong><p class="faq-answer">Planning, props, wiring, controllers, sequencing, testing and a suspicious number of zip ties all come together before opening night.</p></div></div></div>
         
+        <div class="nav-clearance" aria-hidden="true"><span class="nav-clearance__item"><i class="fa-solid fa-house"></i><span class="los-menu__label">Home</span></span><span class="nav-clearance__item"><i class="fa-solid fa-music"></i><span class="los-menu__label">Music</span></span><span class="nav-clearance__item"><i class="fa-solid fa-heart"></i><span class="los-menu__label">Support</span></span><span class="nav-clearance__item"><i class="fa-solid fa-circle-info"></i><span class="los-menu__label">Info</span></span></div>
       </div>
     </div>
     <!-- Keep RF messages outside panel stacking contexts so they cover all page controls. -->

@@ -20,8 +20,22 @@
 #changelog-dialog .updates-scope{color:var(--green);font-size:.82rem}
 #changelog-dialog .updates-themes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;list-style:none;padding:0;margin:12px 0}
 #changelog-dialog .updates-themes li{padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--soft);font-size:.9rem;color:var(--ink);overflow-wrap:anywhere}
-#changelog-dialog .updates-release{padding-top:8px}
-#changelog-dialog .updates-release+article{margin-top:22px;border-top:1px solid var(--border)}
+#changelog-dialog .updates-release{margin-top:16px;border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:clip}
+#changelog-dialog .updates-release>summary{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 8px;list-style:none;cursor:pointer;background:var(--soft);color:var(--ink);text-transform:none;letter-spacing:normal}
+#changelog-dialog .updates-release>summary::-webkit-details-marker{display:none}
+#changelog-dialog .updates-release>summary::after{content:'+';flex:none;margin-left:0;font-size:1.25rem;font-weight:500;transform:none}
+#changelog-dialog .updates-release[open]>summary::after{content:'−'}
+#changelog-dialog .updates-release>summary:focus-visible{outline:3px solid var(--green);outline-offset:-3px}
+#changelog-dialog .updates-release-stamp{display:flex;flex-direction:column;justify-content:center;gap:2px;flex:0 0 4.5rem;min-height:3rem;padding:3px;border:1px solid var(--border);border-radius:8px;background:var(--surface);text-align:center;box-sizing:border-box;overflow-wrap:anywhere}
+#changelog-dialog .updates-release-version{font-size:.9rem;font-weight:750}
+#changelog-dialog .updates-release-date{font-size:.68rem;line-height:1.25;font-weight:500;color:var(--muted)}
+#changelog-dialog .updates-release-label{flex:1;min-width:0;text-align:center;overflow-wrap:anywhere}
+#changelog-dialog .updates-release-label{margin:0;font-size:1rem;line-height:1.45}
+#changelog-dialog .updates-latest{display:table;margin:3px auto 0;border:1px solid var(--green);border-radius:20px;padding:1px 7px;font-size:.7rem;line-height:1.4;font-weight:650;color:var(--surface);background:var(--green)}
+#changelog-dialog .updates-release-body{padding:0 16px 12px;overflow-wrap:anywhere}
+#changelog-dialog .updates-release-body ul{padding-left:22px}
+@media(max-width:420px){#changelog-dialog .updates-release>summary{gap:8px;padding:6px}#changelog-dialog .updates-release-stamp{flex-basis:4.5rem;min-height:3rem;padding:3px}#changelog-dialog .updates-release-body{padding-inline:12px}}
+
 #changelog-content .updates-release h3{font-size:1rem;line-height:1.5}
 #changelog-content .updates-release h4{font-size:.92rem;margin:16px 0 5px}
 #changelog-content li{font-size:.93rem;line-height:1.65}
@@ -30,3 +44,17 @@
 
 #changelog-dialog .updates-header{position:sticky;top:-22px;padding-top:22px;margin-top:-22px;background:var(--surface);z-index:2}
 @media(max-width:420px){#changelog-dialog .updates-header{top:-16px;padding-top:16px;margin-top:-16px}}
+
+/* Wrap the stamp and title as whole blocks when text is enlarged. */
+#changelog-dialog .updates-release>summary{position:relative;flex-wrap:wrap;padding-right:30px}
+#changelog-dialog .updates-release>summary::after{position:absolute;right:10px;top:12px}
+#changelog-dialog .updates-release-stamp{max-width:100%;margin-inline:auto}
+#changelog-dialog .updates-release-label{flex:1 1 6rem}
+
+#changelog-dialog .updates-tabs{flex-wrap:wrap}
+#changelog-dialog [role=tab]{flex:1 1 5rem;overflow-wrap:anywhere}
+#changelog-dialog .updates-release>summary{scroll-margin-top:11rem}
+
+#changelog-content .updates-group-heading{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px}
+#changelog-dialog .updates-export-badge{display:inline-block;max-width:100%;padding:2px 7px;border:1px solid transparent;border-radius:20px;background:var(--gold);color:#20362f;font-size:.7rem;font-weight:650;line-height:1.4;overflow-wrap:anywhere}
+#changelog-dialog .updates-export-note{margin:12px 0 0}

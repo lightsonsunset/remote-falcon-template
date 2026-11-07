@@ -1,5 +1,6 @@
 // Editor-only release history and public progress. Never imported by viewer renderers.
 import {updateStatus} from './update-status.js';
+import {exportRequiredGroups} from './changelog-export-metadata.js';
 
 // Only released entries belong in the Released tab; local Unreleased notes stay in the file.
 export function parseReleasedChanges(markdown){
@@ -19,6 +20,19 @@ export function parseReleasedChanges(markdown){
  return releases;
 }
 
+// Keep older date-first headings and unfamiliar headings readable without inventing metadata.
+export function releaseHeading(title){
+ const parts=title.split(/\s+[\u2014\u2013-]\s+/),version=/^v?\d+\.\d+(?:\.\d+)?(?:[-+][\w.]+)?$/.test(parts[0])?parts.shift():'';
+ const isDate=value=>/^\d{1,2} [A-Za-z]+ \d{4}$/.test(value||'');
+ let date='';if(isDate(parts.at(-1)))date=parts.pop();else if(isDate(parts[0]))date=parts.shift();
+ return {version,date,title:parts.join(' - ')||title};
+}
+
+export function needsNewHTML(release,groupTitle=''){
+ const version=releaseHeading(release.title).version;
+ return (exportRequiredGroups[version||'heading:'+release.title]||[]).includes(groupTitle);
+}
+
 export function createChangelog(){
  const dialog=document.getElementById('changelog-dialog'),open=document.getElementById('open-changelog');
  if(!document.getElementById('changelog-styles')){
@@ -35,6 +49,7 @@ export function createChangelog(){
    else node.append(document.createTextNode(part));
   }
  };
+ const exportBadge=()=>el('span','Update HTML','updates-export-badge');
  const heading=el('div',null,'dialog-heading'),title=el('h2','What’s new'),close=el('button','×');
  title.id='changelog-title';close.id='close-changelog';close.type='button';close.setAttribute('aria-label','Close What’s new');
  heading.append(title,close);
@@ -47,9 +62,9 @@ export function createChangelog(){
  }
  const reminder=el('section',null,'updates-reminder');reminder.setAttribute('aria-labelledby','updates-reminder-title');
  const reminderTitle=el('h3','Already using a template in Remote Falcon?');reminderTitle.id='updates-reminder-title';
- reminder.append(reminderTitle,
-  el('p','Your installed RF page doesn’t update automatically. For new viewer features or styling fixes, open your saved design, export fresh HTML and update your RF viewer page. You don’t need to recreate your design.'),
-  el('p','Customiser-only improvements don’t need a new export.','updates-small'));
+ const reminderCopy=el('p');
+ reminderCopy.append("Your Remote Falcon page won't update automatically. Changes marked ",exportBadge(),' require you to export fresh HTML from the customiser and replace the existing HTML in Remote Falcon to apply those updates or fixes.');
+ reminder.append(reminderTitle,reminderCopy);
  const content=el('div');content.id='changelog-content';content.setAttribute('aria-live','polite');
  const historyLink=el('p');historyLink.append(link('Read the full changelog ↗','CHANGELOG.md'));
  panels.released.append(reminder,content,historyLink);
@@ -87,11 +102,20 @@ export function createChangelog(){
    const response=await fetch('CHANGELOG.md');if(!response.ok)throw Error('Unavailable');
    const releases=parseReleasedChanges(await response.text());if(!releases.length)throw Error('Empty');
    const fragment=document.createDocumentFragment();
-   for(const release of releases){
-    const article=el('article',null,'updates-release');article.append(el('h3',release.title));
+   for(const [index,release] of releases.entries()){
+    const article=el('details',null,'updates-release');article.open=index===0;
+    const summary=el('summary'),meta=releaseHeading(release.title),stamp=el('span',null,'updates-release-stamp');
+    if(meta.version)stamp.append(el('span',meta.version,'updates-release-version'));
+    if(meta.date)stamp.append(el('span',meta.date,'updates-release-date'));
+    if(stamp.childNodes.length)summary.append(stamp);
+    const label=el('h3',meta.title,'updates-release-label');
+    if(index===0)label.append(el('span','Latest','updates-latest'));
+    summary.append(label);article.append(summary);
+    const body=el('div',null,'updates-release-body');article.append(body);
+    if(needsNewHTML(release)){const note=el('p',null,'updates-export-note');note.append(exportBadge());body.append(note);}
     for(const group of release.groups){
-     if(group.title)article.append(el('h4',group.title));
-     const list=el('ul');for(const item of group.items){const li=el('li');inline(li,item);list.append(li);}article.append(list);
+     if(group.title){const heading=el('h4',group.title,'updates-group-heading');if(needsNewHTML(release,group.title))heading.append(exportBadge());body.append(heading);}
+     const list=el('ul');for(const item of group.items){const li=el('li');inline(li,item);list.append(li);}body.append(list);
     }fragment.append(article);
    }
    content.replaceChildren(fragment);loaded=true;
