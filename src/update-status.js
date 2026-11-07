@@ -1,7 +1,7 @@
 // Public, editor-only progress summary. Keep private planning and conversations elsewhere.
 // Review before each release; move completed items into CHANGELOG.md and remove them here.
 export const updateStatus = {
-  reviewed: '2026-10-28',
+  reviewed: '2026-11-07',
   inProgress: [{
     title: 'Full Setup Wizard',
     templates: ['Lights on Sunset','Compact console'],
@@ -9,5 +9,11 @@ export const updateStatus = {
   }],
   plannedThemes: ['Anzac Day','New Year’s Eve'],
   themeTemplates: ['Lights on Sunset','Compact console'],
-  knownIssues: []
+  knownIssues: [{
+    title: 'Header artwork can overlap Home text',
+    templates: ['Lights on Sunset (Christmas and Halloween)'],
+    status: 'Fix being tested; not yet released',
+    description: 'Header artwork can overlap welcome text or visitor guidance in the customiser preview and exported viewer HTML.',
+    workaround: 'Under Site setup → Header, logo & show name, choose No header artwork. If you still want the picture, combine it with your logo in one image and use that as your logo. Check your preview before exporting.'
+  }]
 };
